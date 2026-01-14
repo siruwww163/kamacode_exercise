@@ -19,7 +19,7 @@ format:
     number-sections: true
     smooth-scroll: true
     code-fold: false
-    code-tools: true
+    code-tools: false  
 
 execute:
   enabled: false
