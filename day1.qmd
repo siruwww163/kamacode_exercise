@@ -1,0 +1,21 @@
+---
+title: "算法训练营Day 1"
+author: "Siru Wu"
+date: today
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    code-tools: true
+    smooth-scroll: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+今天是算法训练营的第一天。先是试图看了[数组理论基础](https://programmercarl.com/%E6%95%B0%E7%BB%84%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80.html)，发现完全看不懂。现在就是很迷茫。
+
