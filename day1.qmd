@@ -2,20 +2,152 @@
 title: "算法训练营Day 1"
 author: "Siru Wu"
 date: today
-format:
-  html:
-    theme: cosmo
-    toc: true
-    toc-depth: 3
-    number-sections: true
-    code-fold: true
-    code-tools: true
-    smooth-scroll: true
-execute:
-  echo: true
-  warning: false
-  message: false
 ---
 
 今天是算法训练营的第一天。先是试图看了[数组理论基础](https://programmercarl.com/%E6%95%B0%E7%BB%84%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80.html)，发现完全看不懂。现在就是很迷茫。
 
+## [LeetCode 704 - 二分查找](https://leetcode.com/problems/binary-search/)
+
+题目描述：
+
+> **Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums. If target exists, then return its index. Otherwise, return -1. You must write an algorithm with O(log n) runtime complexity.**
+>
+> **给定一个 n 个元素有序的（升序）整型数组 nums 和一个目标值 target  ，写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1。**
+
+看到这个题目是时候我是有思路但是不知道怎么写，所以今天的重点是重新熟悉怎么把我的思路用代码写出来。之前没有见过`左闭右开`和`左闭右闭`这两个词，所以搜索了ChatGPT了解了一下。
+
+`左闭右开`：[0, n)。允许取的值是：left ≤ x < right
+
+`左闭右闭`：[0, n-1]。允许取的值是：left ≤ x ≤ right
+
+> 例子：下标：0 1 2 3 4
+> 
+> 数组：[a b c d e]
+> 
+> 左闭右开：区间：[0, 5)
+>
+> 左闭右闭：区间：[0, 4]
+
+左闭右闭思路：
+
+```{python}
+from typing import List
+
+class Solution(object):
+  def search(self, nums:List[int], target:int) -> int:
+    left, right = 0, len(nums)-1 # [0, n-1]
+
+    while left <= right:
+      middle = (left + right) // 2
+      if nums[middle] < target:
+        left = middle + 1 # 丢掉 mid 以及左边
+      elif nums[middle] > target:
+        right = middle-1 # 丢掉 mid 以及右边
+      else:
+        return middle
+    return -1 # return -1 when there is no corresponding output
+```
+
+左闭右开思路：
+
+```{python}
+class Solution:
+  def search(self, nums:List[int], target:int) -> int:
+    left, right = 0, len(nums) # 左闭右开 [0, n)
+
+    while left < right:
+      middle = (left + right) // 2
+      if nums[middle] < target:
+        left = middle + 1 # target 在右区间，在[middle + 1, right)中
+      elif nums[middle] > target:
+        right = middle # target 在左区间，在[left, middle)中
+      else:
+        return middle
+    return -1
+```
+
+今天还了解到，class类里面调用函数的时候需要`self`，但是普通函数不需要`self`, 
+
+
+## [LeetCode 27 - 移除元素](https://leetcode.cn/problems/remove-element/description/)
+
+题目描述：给你一个数组 nums 和一个值 val，你需要 原地 移除所有数值等于 val 的元素。元素的顺序可能发生改变。然后返回 nums 中与 val 不同的元素的数量。假设 nums 中不等于 val 的元素数量为 k，要通过此题，您需要执行以下操作：更改 nums 数组，使 nums 的前 k 个元素包含不等于 val 的元素。nums 的其余元素和 nums 的大小并不重要。
+返回 k。
+
+双指针解法：（fast负责“看”，遍历数组里的每一个元素，slow负责“写”，指向下一个可以放合法元素的位置）
+
+当 fast 指向的元素是合法的，就把它写到 slow 的位置，然后 slow 往右走
+```{python}
+# if nums[fast] != val:
+#   nums[slow] = nums[fast]
+#   slow += 1
+```
+
+```{python}
+class Solution:
+  def removeElement(self, nums:List[int], val:int) -> int:
+    fast = 0
+    slow = 0
+    size = len(nums)
+
+    while fast < size:
+      if nums[fast] != val:
+        nums[slow] = nums[fast] # slow 和 fast的顺序不能写反了
+        slow += 1
+      fast += 1
+    return slow
+```
+
+暴力解法
+```{python}
+class Solution:
+  def removeElement(self, nums:List[int], val:int) -> int:
+    i, l = 0, len(nums)
+
+    while i < l:
+      if nums[i] == val: # 这里要用 == 而不是 =
+        for j in range(i+1, l):
+          nums[j-1] = nums[j] # 用nums[j] 的值替换nums[j-1]的值
+        l -= 1
+        i -= 1
+      i +=1
+    return l
+```
+
+## [LeetCode 977 - 有序数组的平方](https://leetcode.cn/problems/squares-of-a-sorted-array/description/)
+
+题目描述：给你一个按 非递减顺序 排序的整数数组 nums，返回 每个数字的平方 组成的新数组，要求也按 非递减顺序 排序。
+
+暴力解法：
+```{python}
+class Solution:
+  def sortedSquares(self, nums:List[int]) -> List[int]:
+    for i in range(len(nums)):
+      nums[i] *= nums[i] #注意这里不能写成nums *= nums
+    nums.sort()
+    return nums
+```
+
+双指针法：
+```{python}
+class Solution:
+  def sortedSquares(self, nums:List[int]) -> List[int]: # List[int]要用[], 而不是()
+    l, r, i = 0, len(nums) - 1, len(nums) - 1
+
+    # [float('inf')] 是一个只有 1 个元素的列表[∞], 
+    # [float('inf')] * len(nums) 就变成了[∞, ∞, ∞, ..., ∞], 一共 len(nums) 个
+    # res初始化：必须先有一个固定长度的列表，里面的初始值其实无所谓，用 ∞ 只是一个占位符
+    res = [float('inf')] * len(nums)
+
+    while l <= r: # 这里必须用 <=, 不然会丢失一个值
+      if nums[l] ** 2 < nums[r] ** 2:
+        res[i] = nums[r] ** 2
+        r -= 1 # 右指针往左移动
+      else:
+        res[i] = nums[l] ** 2
+        l += 1 # 左指针往右移动
+      i -= 1 # 存放结果的指针需要往前平移一位
+    return res 
+```
+
+今天主要是理解双指针的思路，然后尝试自己把代码写出来。很多时候看到example code觉得自己完全看懂了，但是实际自己写的时候不是忘记思路就是会写错很多细节的地方。总而言之今天很有收获。

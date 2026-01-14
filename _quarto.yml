@@ -1,0 +1,14 @@
+project:
+  type: website
+website:
+  title: "算法训练营笔记"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: day1.qmd
+        text: Day 1
+format:
+  html:
+    theme: cosmo
+    toc: true
