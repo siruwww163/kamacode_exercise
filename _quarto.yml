@@ -10,8 +10,8 @@ website:
         text: Home
       - href: day1.qmd
         text: Day 1
-      # - href: day2.qmd
-      #   text: Day 2
+      - href: day2.qmd
+        text: Day 2
 
 format:
   html:
