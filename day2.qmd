@@ -71,3 +71,49 @@ class Solution:
 > 
 > 示例: 输入: 3 输出: [ [ 1, 2, 3 ], [ 8, 9, 4 ], [ 7, 6, 5 ] ]
 
+```{python}
+# 这道题的思路就是先创一个全部为0的matrix，然后创建x,y轴的起始点，确定loop和中心点。然后开始建四条边，再填充。最后填充中心点matrix[mid][mid]。
+class Solution(object):
+    def generateMatrix(self, n):
+        """
+        :type n: int
+        :rtype: List[List[int]]
+        """
+        matrix = [[0] * n for _ in range(n)] # 创建一个全部值为0的matrix
+        layer_count = n//2
+        num = 1
+
+        # 创建四条边
+        for layer in range(layer_count):
+            top = layer
+            bottom = n - 1 - layer
+            left = layer
+            right = n - 1 - layer
+
+            # 填充上边，matrix[top][j]
+            for j in range(left, right): # 这里不能用range(n), 不然的话填到内圈的时候会重复填外圈的东西
+                matrix[top][j] = num
+                num += 1
+
+            # 填充右边 matrix[i][right]
+            for i in range(top, bottom):
+                matrix[i][right] = num
+                num += 1
+
+            # 填充下边 matrix[bottom][j]
+            for j in range(right, left, -1):
+                matrix[bottom][j] = num
+                num += 1
+
+            # 填充左边 matrix[i][left]
+            for i in range(bottom, top, -1):
+                matrix[i][left] = num
+                num += 1
+
+        # 如果n是基数，那么这个matrix是有一个中心点matrix[mid][mid]， 值为n*n，也就是累计的num
+        if n % 2 == 1:
+            mid = n // 2
+            matrix[mid][mid] = num # 这里也可以写成n*n
+
+        return matrix
+```
