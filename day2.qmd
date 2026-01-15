@@ -1,0 +1,73 @@
+---
+title: "算法训练营Day 2"
+author: "Siru Wu"
+date: today
+format: 
+  html:
+    embed-resources: true
+---
+
+今天是算法训练营的第二天。激动！
+
+## [209 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/description/)
+
+> 给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的 连续 子数组，并返回其长度。如果不存在符合条件的子数组，返回 0。
+> 
+> 示例：
+> 
+> - 输入：s = 7, nums = [2,3,1,2,4,3]
+> - 输出：2
+> - 解释：子数组 [4,3] 是该条件下的长度最小的子数组。
+> - 提示：
+> - 1 <= target <= 10^9
+> - 1 <= nums.length <= 10^5
+> - 1 <= nums[i] <= 10^5
+
+在看视频讲解之前只想到了暴力解法（甚至还是双指针版本的但是做出来效果跟暴力解法一模一样的那种。。。），看了视频讲解才发现原来还有固定终止位置，然后移动起始位置，不断地缩小起始位置和终止位置的区间来判断是否有更小的区间能满足题目的要求。for 循环里面的j表示的是终止位置。
+
+滑动窗口 - 双指针法
+```{python}
+class Solution:
+    def minSubArrayLen(self, target:int, nums:List[int]) -> int:
+        len_nums = len(nums)
+        left = 0
+        right = 0
+        # 这里不能用min_len = 0代替，这样的话min_len的值就被固定成了0，不管再短的子数组长度都不会短于0
+        min_len = float('inf') # 这里用∞作为初始值，表示“还没找到任何合法子数组”。
+        cum_sum = 0
+
+        while right < len_nums: # 这里也可以写成 for right in range(len_nums) 或者right <= len_nums-1
+            cum_sum += nums[right]
+
+            while cum_sum >= target:
+                min_len = min(min_len, right - left + 1)
+                cum_sum -= nums[left]
+                left += 1
+            
+            right += 1
+        return min_len if min_len != float('inf') else 0
+```
+
+暴力法
+```{python}
+class Solution:
+    def minSubArrayLen(self, target:int, nums:List[int]) -> int:
+        len_num = len(nums)
+        min_len = float('inf')
+
+        for i in range(len_num):
+            cum_sum = 0
+            for j in range(i, len_num): # 这里的j是从i开始的，不是1
+                cum_sum += nums[j]
+                if cum_sum >= target:
+                    min_len = min(min_len, j-i+1)
+                    break
+         return min_len if min_len != float('inf') else 0
+```
+
+## [59.螺旋矩阵II](https://leetcode.cn/problems/spiral-matrix-ii/description/)
+
+> 给定一个正整数 n，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的正方形矩阵。
+> 
+> 示例: 输入: 3 输出: [ [ 1, 2, 3 ], [ 8, 9, 4 ], [ 7, 6, 5 ] ]
+
