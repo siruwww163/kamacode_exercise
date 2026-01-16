@@ -43,24 +43,6 @@ class Solution:
 
 
 ### 原链表删除法
-```{python}
-class Solution:
-    def removeElements(self, head: ListNode, val: int) -> ListNode:
-        # 1. 删除头节点
-        while head and head.val == val:
-            head = head.next
-
-        # 2. 删除中间节点
-        cur = head
-        while cur and cur.next:
-            if cur.next.val == val:
-                cur.next = cur.next.next
-            else:
-                cur = cur.next
-
-        return head
-
-```
 
 ```{python}
 class Solution:
@@ -83,3 +65,198 @@ class Solution:
         
         return head
 ```
+
+## [707 设计链表](https://leetcode.cn/problems/design-linked-list/)
+
+> 你可以选择使用单链表或者双链表，设计并实现自己的链表。
+> 
+> 单链表中的节点应该具备两个属性：val 和 next 。val 是当前节点的值，next 是指向下一个节点的指针/引用。
+> 
+> 如果是双向链表，则还需要属性 prev 以指示链表中的上一个节点。假设链表中的所有节点下标从 0 开始。
+> 在链表类中实现这些功能：
+> 
+> - get(index)：获取链表中第 index 个节点的值。如果索引无效，则返回-1。
+> - addAtHead(val)：在链表的第一个元素之前添加一个值为 val 的节点。插入后，新节点将成为链表的第一个节点。
+> - addAtTail(val)：将值为 val 的节点追加到链表的最后一个元素。
+> - addAtIndex(index,val)：在链表中的第 index 个节点之前添加值为 val  的节点。如果 index 等于链表的长度，则该节点将附加到链表的末尾。如果 index 大于链表长度，则不会插入节点。如果index小于0，则在头部插入节点。
+> - deleteAtIndex(index)：如果索引 index 有效，则删除链表中的第 index 个节点。
+
+### 单链表
+
+> 这份代码一共分三层：
+> 
+> - ListNode: 定义节点长什么样
+> 
+> - MyLinkedList: 定义链表这个对象有什么属性
+> 
+> - 链表提供的 5 个操作: get / add / delete
+
+```{python}
+class ListNode():
+    def __init__(self, val = 0, next = None): # 因为我们在新创一个链表，而不是在操作一个已经存在的链表，所以这里必须用_init_初始化创建链表对象
+        self.val = val
+        self.next = next
+
+class MyLinkedList(object):
+
+    def __init__(self):
+        # 这里的这两行是 数据结构层面的长期 dummy
+        self.dummy = ListNode()
+        self.size = 0
+
+        # LeetCode 203的版本是 算法函数里的临时 dummy
+        # dummy = ListNode(0)
+        # dummy.next = head
+        # cur = dummy
+        
+    # 获取链表中第 index 个节点的值。如果索引无效，则返回-1。
+    def get(self, index):
+        """
+        :type index: int
+        :rtype: int
+        """
+        if index < 0 or index >= self.size: # 这里必须用 >= ， index = self.size是非法的
+            return -1
+
+        current = self.dummy.next
+        for i in range(index):
+            current = current.next
+        return current.val
+
+    # 在链表的第一个元素之前添加一个值为 val 的节点
+    def addAtHead(self, val):
+        """
+        :type val: int
+        :rtype: None
+        """
+        self.dummy.next = ListNode(val, self.dummy.next)
+        # 这一句拆开写的话就是
+        # new_node = ListNode(val, self.dummy.next)
+        # self.dummy.next = new_node
+
+        self.size += 1 # 链表里多了一个节点，长度加 1，get 要用，index 判断要用
+        
+    # 将值为 val 的节点追加到链表的最后一个元素
+    def addAtTail(self, val):
+        """
+        :type val: int
+        :rtype: None
+        """
+        current = self.dummy # 这里不能用self.dummy.next，addAtTail要考虑空列表的情况
+        while current.next:
+            current = current.next
+        current.next = ListNode(val)
+        self.size  += 1
+        
+    # 在链表中的第 index 个节点之前添加值为 val  的节点
+    def addAtIndex(self, index, val):
+        """
+        :type index: int
+        :type val: int
+        :rtype: None
+        """
+        # 先判断会不会越界
+        if index < 0 or index > self.size: 
+            # 这里不用>=是因为index = self.size的时候就是尾插的情况
+            return 
+
+        current = self.dummy
+        for i in range(index):
+            current = current.next
+
+        current.next = ListNode(val, current.next) 
+        # 这里不用current而是用current.next是因为要替换current.next(新加的值)而不是替换current本身的值。
+        # 把这一句拆开等价于
+        # new_node = ListNode(val)
+        # new_node.next = current.next
+        # current.next = new_node
+
+        self.size += 1
+
+    # 如果索引 index 有效，则删除链表中的第 index 个节点。
+    def deleteAtIndex(self, index):
+        """
+        :type index: int
+        :rtype: None
+        """
+        if index < 0 or index >= self.size:
+            return # 这里不能return -1, return ≈ stop（结束函数）
+
+        current = self.dummy
+        for i in range(index):
+            current = current.next # 这一句只负责移动current，不要在for里面删除节点
+        current.next = current.next.next
+        self.size -= 1
+
+
+
+# Your MyLinkedList object will be instantiated and called as such:
+# obj = MyLinkedList()
+# param_1 = obj.get(index)
+# obj.addAtHead(val)
+# obj.addAtTail(val)
+# obj.addAtIndex(index,val)
+# obj.deleteAtIndex(index)
+```
+
+### 双链表
+
+```{python}
+class MyLinkedList(object):
+
+    def __init__(self):
+        
+
+    def get(self, index):
+        """
+        :type index: int
+        :rtype: int
+        """
+        
+
+    def addAtHead(self, val):
+        """
+        :type val: int
+        :rtype: None
+        """
+        
+
+    def addAtTail(self, val):
+        """
+        :type val: int
+        :rtype: None
+        """
+        
+
+    def addAtIndex(self, index, val):
+        """
+        :type index: int
+        :type val: int
+        :rtype: None
+        """
+        
+
+    def deleteAtIndex(self, index):
+        """
+        :type index: int
+        :rtype: None
+        """
+        
+
+
+# Your MyLinkedList object will be instantiated and called as such:
+# obj = MyLinkedList()
+# param_1 = obj.get(index)
+# obj.addAtHead(val)
+# obj.addAtTail(val)
+# obj.addAtIndex(index,val)
+# obj.deleteAtIndex(index)
+```
+
+## [反转链表](https://leetcode.cn/problems/reverse-linked-list/description/)
+
+> 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+>
+> ![](image\206-example1.png)
+>
+> ![](image\206-example2.png)
