@@ -11,7 +11,7 @@ format:
 
 ## [203 移除链表元素](https://leetcode.cn/problems/remove-linked-list-elements/description/)
 
-> 给你一个链表的头节点 head 和一个整数 val ，请你删除链表中所有满足 Node.val == val 的节点，并返回 新的头节点 。
+> 给你一个链表的头节点 head 和一个整数 val，请你删除链表中所有满足 Node.val == val 的节点，并返回 新的头节点 。
 >
 > 示例 1： 输入：head = [1,2,6,3,4,5,6], val = 6 输出：[1,2,3,4,5]
 > ![](image\203-example1.png){width=50%}
@@ -39,4 +39,47 @@ class Solution:
 
         # 在链表里，next 不是下一个数字，而是 指向下一个节点的指针，而每个节点又继续指向下一个节点，所以从一个节点开始，就能读到整条链表
         return dummy.next # 这个地方不能直接return current, 因为current是一个val值，而不是一个链表
+```
+
+
+### 原链表删除法
+```{python}
+class Solution:
+    def removeElements(self, head: ListNode, val: int) -> ListNode:
+        # 1. 删除头节点
+        while head and head.val == val:
+            head = head.next
+
+        # 2. 删除中间节点
+        cur = head
+        while cur and cur.next:
+            if cur.next.val == val:
+                cur.next = cur.next.next
+            else:
+                cur = cur.next
+
+        return head
+
+```
+
+```{python}
+class Solution:
+    def removeElements(self, head: ListNode, val: int) -> ListNode:
+        # 删谁，就用谁做 while 条件，检查 head，就只判断 head，别用 head.next 来控制 head
+        # while head and head.next:
+        #     if head.val == val:
+        #         head = head.next
+        # 删除头节点
+        while head and head.val == val:
+            head = head.next
+
+        # 删除中间节点
+        current = head
+        while current and current.next: # 这个地方要加current是因为 current 本身有可能是 None，而我们不能在 None 上访问 .next
+            if current.next.val == val:
+                current.next = current.next.next
+            else:
+                current = current.next
+        
+        return head
 ```
