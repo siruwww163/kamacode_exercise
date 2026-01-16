@@ -8,12 +8,16 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: day1.qmd
-        text: Day 1
-      - href: day2.qmd
-        text: Day 2
-      - href: day3.qmd
-        text: Day 3
+      - text: "Note"
+        menu:
+          - href: note/day1.qmd
+            text: Day 1
+          - href: note/day2.qmd
+            text: Day 2
+          - href: note/day3.qmd
+            text: Day 3
+          - href: note/day4.qmd
+            text: Day 4
 
 format:
   html:
