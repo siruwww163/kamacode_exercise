@@ -260,3 +260,41 @@ class MyLinkedList(object):
 > ![](image\206-example1.png)
 >
 > ![](image\206-example2.png)
+
+### 双指针法
+
+```{python}
+class Solution:
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+       pre = None
+       cur = head
+
+       while cur: # 反转链表要处理的是 当前节点，不是当前节点的下一个, 所以这里不能用cur.next
+        cur = temp
+        cur.next = pre
+        pre = cur
+        cur = temp
+       return pre
+
+```
+
+### 递归法
+
+```{python}
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        # 从 head 开始反转
+        # pre 表示已经反转好的那一段的头
+        # 初始时还没有反转任何节点，所以 pre = None
+        return self.reverse(head, None)
+
+    def reverse(self, cur: ListNode, pre: ListNode) -> ListNode:
+        if cur == None:
+            return pre
+        temp = cur.next
+        cur.next  = pre
+
+        # 下一个要处理的是原来的 cur.next，也就是 temp
+        # 当前节点 cur 已经反转好了，成为新的 pre
+        return self.reverse(temo, cur)
+```
