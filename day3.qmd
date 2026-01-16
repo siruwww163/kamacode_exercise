@@ -1,0 +1,42 @@
+---
+title: "算法训练营Day 3"
+author: "Siru Wu"
+date: today
+format: 
+  html:
+    embed-resources: true
+---
+
+今天是算法训练营的第三天。今天要学习关于链表的知识。先是看了[链表理论基础](https://programmercarl.com/%E9%93%BE%E8%A1%A8%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80.html#%E9%93%BE%E8%A1%A8%E7%9A%84%E7%B1%BB%E5%9E%8B),说实话看文字讲解和图表看不懂，但是看到python code就那么两行的时候似乎又看懂了。希望通过今天的刷题能掌握关于链表的知识。
+
+## [203 移除链表元素](https://leetcode.cn/problems/remove-linked-list-elements/description/)
+
+> 给你一个链表的头节点 head 和一个整数 val ，请你删除链表中所有满足 Node.val == val 的节点，并返回 新的头节点 。
+>
+> 示例 1： 输入：head = [1,2,6,3,4,5,6], val = 6 输出：[1,2,3,4,5]
+> ![](image\203-example1.png){width=50%}
+> 
+> 示例 2： 输入：head = [], val = 1 输出：[]
+> 
+> 示例 3： 输入：head = [7,7,7,7], val = 7 输出：[]
+
+这道理有两个解法：虚拟头解法 和 原链表删除法
+
+### 虚拟头解法
+```{python}
+class Solution:
+    def removeElements(self, head:Optional[ListNode], val:int) -> Optional[ListNode]:
+        # 初始化
+        dummy = Listnode(0) # dummy 永远不动
+        dummy.next = head
+        current = dummy # current 负责检查它后面的节点, 并且current必须指向dummy
+
+        while current.next: # while current.next是在检查current之后是否还有val，这个链表是否结束
+            if current.next.val == val: # 这个地方记得用 ==，而不是=
+                current.next = current.next.next # 如果发现有val值，用next.next的值来覆盖next的值
+            else:
+                current = current.next
+
+        # 在链表里，next 不是下一个数字，而是 指向下一个节点的指针，而每个节点又继续指向下一个节点，所以从一个节点开始，就能读到整条链表
+        return dummy.next # 这个地方不能直接return current, 因为current是一个val值，而不是一个链表
+```
