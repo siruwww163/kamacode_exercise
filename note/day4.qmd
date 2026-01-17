@@ -112,3 +112,94 @@ class Solution(object):
 > ![](/image/02-07-example2.png)
 >
 > ![](/image/02-07-example3.png)
+
+```{python}
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution(object):
+    def getIntersectionNode(self, headA, headB):
+        """
+        :type head1, head1: ListNode
+        :rtype: ListNode
+        """
+        # not headA 等价于 headA is None
+        # 如果链表 A 是空的，或者链表 B 是空的，就直接返回 None
+        if not headA or not headB:
+            return None
+
+        # pA 指向链表 A 的头节点
+        # pB 指向链表 B 的头节点
+        # 我们不直接用 headA、headB是因为我们需要在遍历过程中不断移动指针，如果直接用 headA = headA.next，会把原来的头指针弄乱
+        # 所以要保留 headA、headB 不动，用 pA、pB 来“走链表”
+        pA, pB = headA, headB
+
+        # 这里考虑的是节点相同，而不是节点值相同。
+        # 判断相交用的是：pA == pB。不是：pA.val == pB.val
+
+        while pA != pB: # 当两个指针第一次走到那个共享节点时，pA == pB 成立，循环结束，返回这个节点
+
+            pA = pA.next if pA else headB # 指针没走到头就继续往前走，走到头了就换一条链表，从另一条链表的头重新走。
+
+            # 这一句等价于:
+            # if pA is not None:
+            #     pA = pA.next
+            # else:
+            #     pA = headB
+            pB = pB.next if pB else headA # headB和pB不是一个情况，虽然我们前面检查了headA / headB是否为None, 但是pA / pB是我们后面自己又定义的，所以还是要检查是否为None。
+        return pA
+```
+
+## [142 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/description/)
+
+> 给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+> 
+> 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。如果 pos 是 -1，则在该链表中没有环。注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。
+> 
+> **不允许修改 链表。**
+>
+> ![](/image/142-example1.png)
+>
+> ![](/image/142-example2.png)
+>
+> ![](/image/142-example3.png)
+
+
+```{python}
+# Definition for singly-linked list.
+class ListNode(object):
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+class Solution(object):
+    def detectCycle(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        slow = head
+        fast = head
+
+        # 用来判断是否有环
+        while fast and fast.next: # 这一步需要保证：fast 不是 None，fast.next 也不是 None，否则会访问空指针报错。
+            # 同时这也等价于：如果链表走到末尾（无环），fast 会先变成 None 或 fast.next 变成 None，循环结束。
+            slow = slow.next # slow 走 1 步
+            fast = fast.next.next # fast 走 2 步
+
+            if slow == fast: # 相遇判断：发现有环
+                # 把 slow 拉回 head，这一步是为了找 环的入口
+                slow = head
+                
+                # 第二段 while: 同速前进，第一次相遇就是入口
+                while slow != fast:
+                    slow = slow.next
+                    fast = fast.next
+                return slow
+        
+        # 如果没环，return None
+        return None
+```
