@@ -118,4 +118,49 @@ class Solution(object):
         return matrix
 ```
 
-区间和和开发商土地今天实在没时间完成了，这两天会补起来的。
+## [58 区间和](https://kamacoder.com/problempage.php?pid=1070)
+
+```{python}
+import sys # sys用来读不知道长度的输入
+input = sys.stdin.read
+
+def main():
+    data = input().split()
+    index = 0
+    n = int(data[index]) # 此时n读的是data[0]的那个数字，也就是整个 数组 vec 的长度
+    index += 1 # 这里我们已经得到n的值了，所以把index挪到list的第一个数字上用来创list
+
+    vec = [] 
+    for i in range(n):
+        # 这里 vec.append 必须要把 字符串 转化成 int
+        vec.append(int(data[index + i])) # 这里是创建整个list，只是把数字填进去
+    index += n # 这里我们已经创好了list，所以把index挪到第一个区间上准备求区间和
+
+    p = [0] * n # 创建一个全部值为0的list
+    presum = 0
+    # 这里我们要直接把range(n)的sum算出来，就可以用p[b] - p[a - 1]来算区间和，而不是每次新给一个区间就全部重头开始算
+    for i in range(n):
+        presum += vec[i]
+        p[i] = presum # 每求出来一个presum就直接填进p list
+    
+    results = []
+    while index < len(data):
+        a = int(data[index]) # 记得这里要转化成int，不然a是字符串
+        b = int(data[index + 1]) 
+        index += 2 # 这里我们读data的时候是把所有的input都放进一行，不管是n还算是list还是区间，所以我们要自己定义哪一段到哪一段是什么，这里区间是两个数字所以 index +=2
+
+        if a == 0: # 这里要用 a == 0, 
+            # 在python里面 “=” 是赋值, a=0 意思是给a赋值0, a == 0 是判断a是否为0, 返回 True / False
+            sum_value = p[b]
+        else:
+            sum_value = p[b] - p[a - 1] # 举例：区间[2, 5]的sum 等于p[5] - p[1]
+
+        results.append(sum_value)
+
+    for result in results:
+        print(result)
+
+if __name__ == "__main__": # 这里也要用 ==， 而不是 =
+    main()
+```
+
