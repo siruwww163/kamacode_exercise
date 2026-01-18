@@ -24,7 +24,7 @@ format:
     theme: cosmo
     toc: true
     toc-depth: 3
-    number-sections: true
+    # number-sections: true
     smooth-scroll: true
     code-fold: false
     code-tools: false  
