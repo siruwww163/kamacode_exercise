@@ -120,6 +120,10 @@ class Solution(object):
 
 ## [58 区间和](https://kamacoder.com/problempage.php?pid=1070)
 
+> ![](/image/interval_sum_question.png)
+>
+> ![](/image/interval_sum_example.png)
+
 ```{python}
 import sys # sys用来读不知道长度的输入
 input = sys.stdin.read
@@ -164,3 +168,136 @@ if __name__ == "__main__": # 这里也要用 ==， 而不是 =
     main()
 ```
 
+## [44. 开发商购买土地](https://kamacoder.com/problempage.php?pid=1044)
+
+> 在一个城市区域内，被划分成了n * m个连续的区块，每个区块都拥有不同的权值，代表着其土地价值。目前，有两家开发公司，A 公司和 B 公司，希望购买这个城市区域的土地。 
+> 
+> 现在，需要将这个城市区域的所有区块分配给 A 公司和 B 公司。
+> 
+> 然而，由于城市规划的限制，只允许将区域按横向或纵向划分成两个子区域，而且每个子区域都必须包含一个或多个区块。 为了确保公平竞争，你需要找到一种分配方式，使得 A 公司和 B 公司各自的子区域内的土地总价值之差最小。 
+> 
+> 注意：区块不可再分。
+
+
+### 暴力版本
+
+```{python}
+"""
+思路说明：
+1. 读入 n×m 的土地价值矩阵，同时统计总和 total
+2. 计算每一行的和 horizontal[i]，每一列的和 vertical[j]
+3. 横向切分：用 horizontal 的前缀和模拟在某一行后切一刀，
+   计算上下两部分价值差，取最小值
+4. 纵向切分：用 vertical 的前缀和模拟在某一列后切一刀，
+   同样更新最小差值
+5. 输出所有切分方案中的最小差
+"""
+import sys
+input = sys.stdin.read
+
+def main():
+    data = input().split()
+
+    # 读n和m的值
+    idx = 0
+    n = int(data[idx])
+    idx += 1
+    m = int(data[idx])
+    idx += 1 # 记得这里读完 m 之后还要 idx += 1
+
+    # 创建matrix
+    sum = 0
+    vec = []
+    for i in range(n):
+        row = []
+        for j in range(m):
+            num = int(data[idx])
+            idx += 1
+            row.append(num)
+            sum += num
+        vec.append(row)
+
+    # 横向统计， horizontal是横向统计用 i 是因为切出来 i 行，然后计算每一行的horizontal sum
+    horizontal = [0] * n
+    for i in range(n):
+        for j in range(m):
+            horizontal[i] += vec[i][j] 
+            # horizontal是一个list, 不能直接用 horizontal += vec[i][j]
+
+    # 纵向统计， 
+    vertical = [0] * m
+    for j in range(m):
+        for i in range(n):
+            vertical[j] += vec[i][j]
+
+    # 横向切分
+    result = float('inf')
+    horizontalcut = 0
+    for i in range(n - 1): # 这个地方可以用 n 也可以用 n-1, 用 n - 1更严谨是因为一般不会切到最后一行
+        horizontalcut += horizontal[i]
+        result = min(result, abs(sum - 2 * horizontalcut))
+    
+    # 纵向切分
+    verticalcut = 0
+    for j in range(m - 1): # m - 1 同理，也可以用 m
+        verticalcut += vertical[j]
+        result = min(result, abs(sum - 2 * verticalcut))
+
+    print(result)
+
+if __name__ == "__main__":
+    main()
+```
+
+### 优化暴力版本
+
+```{python}
+"""
+这个版本的思路是：
+在遍历矩阵计算每一行（或每一列）累计和的同时，
+在行末 / 列末对应的合法切分位置直接计算两部分的差值，
+避免在后面再单独遍历一次进行比较。
+"""
+import sys
+input = sys.stdin.read
+
+def main():
+    data = input().split()
+    idx = 0
+    n = int(data[idx])
+    idx += 1
+    m = int(data[idx])
+    idx += 1
+
+    sum = 0
+    vec = []
+    for i in range(n):
+        row = []
+        for j in range(m):
+            num = int(data[idx])
+            idx += 1
+            row.append(sum)
+            sum += num
+        vec.append(row)
+
+    result = float('inf')
+
+    count = 0
+
+    # 行切分
+    for i in range(n):
+        for j in range(m):
+            count += vec[i][j]
+            if j < m - 1:
+                result = min(result, abs(sum - 2 * count))
+
+    count = 0
+    # 列切分
+    for j in range(m):
+        for i in range(n):
+            count += vec[i][j]
+            if i < n - 1:
+                result = min(result, abs(sum - 2 * count))
+
+
+```
