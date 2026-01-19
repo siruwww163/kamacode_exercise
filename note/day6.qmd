@@ -148,7 +148,103 @@ class Solution(object):
 
 ## [202 快乐数](https://leetcode.cn/problems/happy-number/description/)
 
+> 编写一个算法来判断一个数 n 是不是快乐数。
+> 
+> 「快乐数」 定义为：
+> 
+> 对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和。
+> 
+> 然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。
+> 
+> 如果这个过程 结果为 1，那么这个数就是快乐数。
+> 
+> 如果 n 是 快乐数 就返回 true ；不是，则返回 false 。
+>
+> ![](/image/202.png)
 
+### 使用集合
+
+```{python}
+class Solution:
+    def isHappy(self, n: int) -> bool:
+        record = set() # 因为这题我们只是想判断是否有重复值，不需要排序，不关心出现过几次
+
+        while n != 1:
+            if n in record:
+                return False
+
+            record.add(n) # set用add
+
+            next_num = 0
+            while n > 0:
+                digit = n % 10 # 取小数位
+                next_num += digit * digit # 这个地方要用 +=，而不是 =，这里要把 每一位的平方累加起来，而不是只保留 最后一位数字的平方
+                n //= 10 # 删除小数位
+
+            n = next_num
+
+        return True
+```
+
+### 使用集合 (不同的 while 条件)
+
+```{python}
+class Solution:
+   def isHappy(self, n: int) -> bool:
+    record = set()
+
+    while n not in record:
+        record.add(n)
+
+        new_sum = 0
+        n_str = str(n)
+        for i in range(len(n_str)):
+            new_sum += int(n_str[i]) ** 2
+        if new_sum == 1:
+            return True
+        else: n = new_sum
+
+    return False
+```
+
+
+### 使用数组+精简 （#为集合+精简）
+
+```{python}
+class Solution:
+   def isHappy(self, n: int) -> bool:
+    record = []
+    # record = set()
+
+    while n != 1:
+        n = sum(int(i) ** 2 for i in str(n))
+        if n in record:
+            return False
+        record.append(n)
+        # record.add(n)
+    return True
+```
+
+```{python}
+class Solution:
+    def get_sum(self, n):
+        total = 0
+        while n:
+            n, r = divmod(n, 10)
+            total += r * r
+        return total
+
+    def isHappy(self, n: int) -> bool:
+        slow = n
+        fast = self.get_sum(n)
+
+        while fast != 1 and slow != fast:
+            slow = self.get_sum(n)
+            fast = self.get_sum(self.get_sum(fast)) # 这里fast一次走两步，所以要写两遍self.get_sum， 只写一遍的话fast就和slow的速度一样了
+        
+        return fast == 1 # == 是bool，返回为True / False， 而不是赋值给fast等于1
+
+```
 
 ## [两数之和](https://leetcode.cn/problems/two-sum/description/)
 
@@ -180,6 +276,8 @@ class Solution(object):
 ### 使用字典，不使用enumerate
 
 ```{python}
+# 这个解法的思路就是用target减去已经有的值判断这个差值 record里面有没有，有的话说明找到了两数之和，没有的话就继续直到nums循环完成
+
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         record = {} # record是读一个i存一个数字，而不是一次性读完，所以最少要读到 i=1才能判断两数之和
