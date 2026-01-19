@@ -64,6 +64,9 @@ class Solution:
 >
 > ![](/image/349_example1.png)
 
+- **set 用 add**
+- **list 用 append**
+
 ### 版本1：字典和集合
 
 ```{python}
@@ -96,7 +99,7 @@ class Solution(object):
         res = set()
         for num in nums2:
             if num in table:
-                res.add(num)
+                res.add(num) # set 用 add
                 del table[num]
 
         return list(res) # 这个地方必须用list转成List，不然res输出是个set
@@ -126,8 +129,26 @@ class Solution(object):
         :type nums2: List[int]
         :rtype: List[int]
         """
+        count1 = [0] * 1001
+        count2 = [0] * 1001
+        result = []
 
+        for i in range(len(nums1)):
+            count1[nums1[i]] += 1 # 这个地方没有在数每个数字出现了几次，而是把val转成index，只要这个数次出现了一次，就在这个对应的index上 += 1
+
+        for j in range(len(nums2)):
+            count2[nums2[j]] += 1
+
+        for k in range(1001):
+            if count1[k] * count2[k] > 0:
+                result.append[k]
+
+        return result
 ```
+
+## [202 快乐数](https://leetcode.cn/problems/happy-number/description/)
+
+
 
 ## [两数之和](https://leetcode.cn/problems/two-sum/description/)
 
