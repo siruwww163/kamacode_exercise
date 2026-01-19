@@ -9,7 +9,7 @@ format:
 
 今天是第三章 **哈希表**
 
-![](/image/set_map_comparison.png)
+![](/image/set_map_comparison.png){width=50%}
 
 ## [242 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/description/)
 
@@ -62,7 +62,7 @@ class Solution:
 
 > 给定两个数组 nums1 和 nums2 ，返回 它们的 交集 。输出结果中的每个元素一定是 唯一 的。我们可以 不考虑输出结果的顺序 。
 >
-> ![](/image/349_example1.png)
+> ![](/image/349_example1.png){width=50%}
 
 - **set 用 add**
 - **list 用 append**
@@ -160,7 +160,7 @@ class Solution(object):
 > 
 > 如果 n 是 快乐数 就返回 true ；不是，则返回 false 。
 >
-> ![](/image/202.png)
+> ![](/image/202.png){width=50%}
 
 ### 使用集合
 
@@ -246,7 +246,7 @@ class Solution:
 
 ```
 
-## [两数之和](https://leetcode.cn/problems/two-sum/description/)
+## [1 两数之和](https://leetcode.cn/problems/two-sum/description/)
 
 > 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target  的那 两个 整数，并返回它们的数组下标。
 > 
@@ -254,7 +254,7 @@ class Solution:
 > 
 > 你可以按任意顺序返回答案。
 >
-> /![](/image/1_example.png)
+> /![](/image/1_example.png){width=50%}
 
 
 ### 暴力法
