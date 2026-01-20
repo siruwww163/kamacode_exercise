@@ -9,7 +9,7 @@ format:
 
 今天是第三章 **哈希表**
 
-![](/image/set_map_comparison.png){width=50%}
+![](/image/set_map_comparison.png){width=90%}
 
 ## [242 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/description/)
 
@@ -62,7 +62,7 @@ class Solution:
 
 > 给定两个数组 nums1 和 nums2 ，返回 它们的 交集 。输出结果中的每个元素一定是 唯一 的。我们可以 不考虑输出结果的顺序 。
 >
-> ![](/image/349_example1.png){width=50%}
+> ![](/image/349_example1.png){width=60%}
 
 - **set 用 add**
 - **list 用 append**
@@ -254,7 +254,7 @@ class Solution:
 > 
 > 你可以按任意顺序返回答案。
 >
-> /![](/image/1_example.png){width=50%}
+> /![](/image/1_example.png){width=60%}
 
 
 ### 暴力法
