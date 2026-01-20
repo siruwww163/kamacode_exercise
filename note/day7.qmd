@@ -112,7 +112,49 @@ class Solution:
 >
 > ![](/image/15.png){width=60%}
 
+```{python}
+class Solution:
+  def threeSum(self, nums: List[int]) -> List[List[int]]:
+    result = []
+    nums.sort() 
+    
+    # 固定 nums[i],  i 右侧用 left / right 找两数之和
+    for i in range(len(nums)):
+      if nums[i] > 0: # 剪枝优化，nums[i] > 0 直接结束
+        return result
 
+      if i > 0 and nums[i - 1] == nums[i]: # 外层去重：避免相同的第一个数，外层去重只能防住 i 重复，完全防不住 i 后面 left / right 产生的重复组合。
+        continue
+      
+      # 双指针搜索区间是，(i, right]
+      left = i + 1
+      right = len(nums) - 1 
+
+      while right > left: # 只要左右指针没相遇，就一直找。
+        sum_3 = nums[i] + nums[left] + nums[right]
+        if sum_3 < 0:
+          left += 1 # sum_ < 0 → left 右移
+        elif sum_3 > 0:
+          right -= 1 # sum_ > 0 → right 左移
+        else:
+          result.append([nums[i], nums[left], nums[right]]) # sum_ == 0 → 找到答案
+
+          # 这里的while要写在else里面，因为以下所有的去重 / 挪动双指针的操作都是基于我们已经找到第一个三数之和为0的情况下
+
+          # 内层去重：跳过重复的 left 和 right
+          # 例子：[-1, 0, 0, 0, 1]，如果不跳过，(0, 0, 1) 会被加入很多次
+          while right > left and nums[right] == nums[right - 1]:
+            right -= 1
+          while right > left and nums[left] == nums[left + 1]:
+            left += 1
+
+          # 双指针继续移动
+          # 当前组合已经用过, 继续找下一个可能的组合
+          right -= 1
+          left += 1
+
+    return result
+```
 
 
 
