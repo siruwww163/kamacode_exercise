@@ -1,0 +1,338 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "算法训练营笔记",
+    "section": "",
+    "text": "每日任务发布地址：\nhttps://docs.qq.com/doc/DUGtDYWJqUG13ZmdS\n打卡名单：\nhttps://docs.qq.com/sheet/DUHJLVGNDZk5kcHh3?tab=BB08J2\n每日精华（训练营每日精华）\nhttps://www.yuque.com/chengxuyuancarl/cnopdt\n密码：lko4"
+  },
+  {
+    "objectID": "day1.html",
+    "href": "day1.html",
+    "title": "算法训练营Day 1",
+    "section": "",
+    "text": "今天是算法训练营的第一天。先是试图看了数组理论基础，发现完全看不懂。现在就是很迷茫。"
+  },
+  {
+    "objectID": "day1.html#leetcode-704---二分查找",
+    "href": "day1.html#leetcode-704---二分查找",
+    "title": "算法训练营Day 1",
+    "section": "1 LeetCode 704 - 二分查找",
+    "text": "1 LeetCode 704 - 二分查找\n题目描述：\n\nGiven an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums. If target exists, then return its index. Otherwise, return -1. You must write an algorithm with O(log n) runtime complexity.\n给定一个 n 个元素有序的（升序）整型数组 nums 和一个目标值 target ，写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1。\n\n看到这个题目是时候我是有思路但是不知道怎么写，所以今天的重点是重新熟悉怎么把我的思路用代码写出来。之前没有见过左闭右开和左闭右闭这两个词，所以搜索了ChatGPT了解了一下。\n左闭右开：[0, n)。允许取的值是：left ≤ x &lt; right\n左闭右闭：[0, n-1]。允许取的值是：left ≤ x ≤ right\n\n例子：下标：0 1 2 3 4\n数组：[a b c d e]\n左闭右开：区间：[0, 5)\n左闭右闭：区间：[0, 4]\n\n左闭右闭思路：\n\nfrom typing import List\n\nclass Solution(object):\n  def search(self, nums:List[int], target:int) -&gt; int:\n    left, right = 0, len(nums)-1 # [0, n-1]\n\n    while left &lt;= right:\n      middle = (left + right) // 2\n      if nums[middle] &lt; target:\n        left = middle + 1 # 丢掉 mid 以及左边\n      elif nums[middle] &gt; target:\n        right = middle-1 # 丢掉 mid 以及右边\n      else:\n        return middle\n    return -1 # return -1 when there is no corresponding output\n\n左闭右开思路：\n\nclass Solution:\n  def search(self, nums:List[int], target:int) -&gt; int:\n    left, right = 0, len(nums) # 左闭右开 [0, n)\n\n    while left &lt; right:\n      middle = (left + right) // 2\n      if nums[middle] &lt; target:\n        left = middle + 1 # target 在右区间，在[middle + 1, right)中\n      elif nums[middle] &gt; target:\n        right = middle # target 在左区间，在[left, middle)中\n      else:\n        return middle\n    return -1\n\n今天还了解到，class类里面调用函数的时候需要self，但是普通函数不需要self,"
+  },
+  {
+    "objectID": "day1.html#leetcode-27---移除元素",
+    "href": "day1.html#leetcode-27---移除元素",
+    "title": "算法训练营Day 1",
+    "section": "2 LeetCode 27 - 移除元素",
+    "text": "2 LeetCode 27 - 移除元素\n\n题目描述：给你一个数组 nums 和一个值 val，你需要 原地 移除所有数值等于 val 的元素。元素的顺序可能发生改变。然后返回 nums 中与 val 不同的元素的数量。假设 nums 中不等于 val 的元素数量为 k，要通过此题，您需要执行以下操作：更改 nums 数组，使 nums 的前 k 个元素包含不等于 val 的元素。nums 的其余元素和 nums 的大小并不重要。 返回 k。\n\n双指针解法：（fast负责“看”，遍历数组里的每一个元素，slow负责“写”，指向下一个可以放合法元素的位置）\n当 fast 指向的元素是合法的，就把它写到 slow 的位置，然后 slow 往右走\n\n# if nums[fast] != val:\n#   nums[slow] = nums[fast]\n#   slow += 1\n\n\nclass Solution:\n  def removeElement(self, nums:List[int], val:int) -&gt; int:\n    fast = 0\n    slow = 0\n    size = len(nums)\n\n    while fast &lt; size:\n      if nums[fast] != val:\n        nums[slow] = nums[fast] # slow 和 fast的顺序不能写反了\n        slow += 1\n      fast += 1\n    return slow\n\n暴力解法\n\nclass Solution:\n  def removeElement(self, nums:List[int], val:int) -&gt; int:\n    i, l = 0, len(nums)\n\n    while i &lt; l:\n      if nums[i] == val: # 这里要用 == 而不是 =\n        for j in range(i+1, l):\n          nums[j-1] = nums[j] # 用nums[j] 的值替换nums[j-1]的值\n        l -= 1\n        i -= 1\n      i +=1\n    return l"
+  },
+  {
+    "objectID": "day1.html#leetcode-977---有序数组的平方",
+    "href": "day1.html#leetcode-977---有序数组的平方",
+    "title": "算法训练营Day 1",
+    "section": "3 LeetCode 977 - 有序数组的平方",
+    "text": "3 LeetCode 977 - 有序数组的平方\n\n题目描述：给你一个按 非递减顺序 排序的整数数组 nums，返回 每个数字的平方 组成的新数组，要求也按 非递减顺序 排序。\n\n暴力解法：\n\nclass Solution:\n  def sortedSquares(self, nums:List[int]) -&gt; List[int]:\n    for i in range(len(nums)):\n      nums[i] *= nums[i] #注意这里不能写成nums *= nums\n    nums.sort()\n    return nums\n\n双指针法：\n\nclass Solution:\n  def sortedSquares(self, nums:List[int]) -&gt; List[int]: # List[int]要用[], 而不是()\n    l, r, i = 0, len(nums) - 1, len(nums) - 1\n\n    # [float('inf')] 是一个只有 1 个元素的列表[∞], \n    # [float('inf')] * len(nums) 就变成了[∞, ∞, ∞, ..., ∞], 一共 len(nums) 个\n    # res初始化：必须先有一个固定长度的列表，里面的初始值其实无所谓，用 ∞ 只是一个占位符\n    res = [float('inf')] * len(nums)\n\n    while l &lt;= r: # 这里必须用 &lt;=, 不然会丢失一个值\n      if nums[l] ** 2 &lt; nums[r] ** 2:\n        res[i] = nums[r] ** 2\n        r -= 1 # 右指针往左移动\n      else:\n        res[i] = nums[l] ** 2\n        l += 1 # 左指针往右移动\n      i -= 1 # 存放结果的指针需要往前平移一位\n    return res \n\n今天主要是理解双指针的思路，然后尝试自己把代码写出来。很多时候看到example code觉得自己完全看懂了，但是实际自己写的时候不是忘记思路就是会写错很多细节的地方。总而言之今天很有收获。"
+  },
+  {
+    "objectID": "day2.html",
+    "href": "day2.html",
+    "title": "算法训练营Day 2",
+    "section": "",
+    "text": "今天是算法训练营的第二天。激动！"
+  },
+  {
+    "objectID": "day2.html#长度最小的子数组",
+    "href": "day2.html#长度最小的子数组",
+    "title": "算法训练营Day 2",
+    "section": "1 209 长度最小的子数组",
+    "text": "1 209 长度最小的子数组\n\n给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的 连续 子数组，并返回其长度。如果不存在符合条件的子数组，返回 0。\n示例：\n\n输入：s = 7, nums = [2,3,1,2,4,3]\n输出：2\n解释：子数组 [4,3] 是该条件下的长度最小的子数组。\n提示：\n1 &lt;= target &lt;= 10^9\n1 &lt;= nums.length &lt;= 10^5\n1 &lt;= nums[i] &lt;= 10^5\n\n\n在看视频讲解之前只想到了暴力解法（甚至还是双指针版本的但是做出来效果跟暴力解法一模一样的那种。。。），看了视频讲解才发现原来还有固定终止位置，然后移动起始位置，不断地缩小起始位置和终止位置的区间来判断是否有更小的区间能满足题目的要求。for 循环里面的j表示的是终止位置。\n滑动窗口 - 双指针法\n\nclass Solution:\n    def minSubArrayLen(self, target:int, nums:List[int]) -&gt; int:\n        len_nums = len(nums)\n        left = 0\n        right = 0\n        # 这里不能用min_len = 0代替，这样的话min_len的值就被固定成了0，不管再短的子数组长度都不会短于0\n        min_len = float('inf') # 这里用∞作为初始值，表示“还没找到任何合法子数组”。\n        cum_sum = 0\n\n        while right &lt; len_nums: # 这里也可以写成 for right in range(len_nums) 或者right &lt;= len_nums-1\n            cum_sum += nums[right]\n\n            while cum_sum &gt;= target:\n                min_len = min(min_len, right - left + 1)\n                cum_sum -= nums[left]\n                left += 1\n            \n            right += 1\n        return min_len if min_len != float('inf') else 0\n\n暴力法\n\nclass Solution:\n    def minSubArrayLen(self, target:int, nums:List[int]) -&gt; int:\n        len_num = len(nums)\n        min_len = float('inf')\n\n        for i in range(len_num):\n            cum_sum = 0\n            for j in range(i, len_num): # 这里的j是从i开始的，不是1\n                cum_sum += nums[j]\n                if cum_sum &gt;= target:\n                    min_len = min(min_len, j-i+1)\n                    break\n         return min_len if min_len != float('inf') else 0"
+  },
+  {
+    "objectID": "day2.html#螺旋矩阵ii",
+    "href": "day2.html#螺旋矩阵ii",
+    "title": "算法训练营Day 2",
+    "section": "2 59.螺旋矩阵II",
+    "text": "2 59.螺旋矩阵II\n\n给定一个正整数 n，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的正方形矩阵。\n示例: 输入: 3 输出: [ [ 1, 2, 3 ], [ 8, 9, 4 ], [ 7, 6, 5 ] ]\n\n\n# 这道题的思路就是先创一个全部为0的matrix，然后创建x,y轴的起始点，确定loop和中心点。然后开始建四条边，再填充。最后填充中心点matrix[mid][mid]。\nclass Solution(object):\n    def generateMatrix(self, n):\n        \"\"\"\n        :type n: int\n        :rtype: List[List[int]]\n        \"\"\"\n        matrix = [[0] * n for _ in range(n)] # 创建一个全部值为0的matrix\n        layer_count = n//2\n        num = 1\n\n        # 创建四条边\n        for layer in range(layer_count):\n            top = layer\n            bottom = n - 1 - layer\n            left = layer\n            right = n - 1 - layer\n\n            # 填充上边，matrix[top][j]\n            for j in range(left, right): # 这里不能用range(n), 不然的话填到内圈的时候会重复填外圈的东西\n                matrix[top][j] = num\n                num += 1\n\n            # 填充右边 matrix[i][right]\n            for i in range(top, bottom):\n                matrix[i][right] = num\n                num += 1\n\n            # 填充下边 matrix[bottom][j]\n            for j in range(right, left, -1):\n                matrix[bottom][j] = num\n                num += 1\n\n            # 填充左边 matrix[i][left]\n            for i in range(bottom, top, -1):\n                matrix[i][left] = num\n                num += 1\n\n        # 如果n是基数，那么这个matrix是有一个中心点matrix[mid][mid]， 值为n*n，也就是累计的num\n        if n % 2 == 1:\n            mid = n // 2\n            matrix[mid][mid] = num # 这里也可以写成n*n\n\n        return matrix\n\n区间和和开发商土地今天实在没时间完成了，这两天会补起来的。"
+  },
+  {
+    "objectID": "day3.html",
+    "href": "day3.html",
+    "title": "算法训练营Day 3",
+    "section": "",
+    "text": "今天是算法训练营的第三天。今天要学习关于链表的知识。先是看了链表理论基础,说实话看文字讲解和图表看不懂，但是看到python code就那么两行的时候似乎又看懂了。希望通过今天的刷题能掌握关于链表的知识。"
+  },
+  {
+    "objectID": "day3.html#移除链表元素",
+    "href": "day3.html#移除链表元素",
+    "title": "算法训练营Day 3",
+    "section": "1 203 移除链表元素",
+    "text": "1 203 移除链表元素\n\n给你一个链表的头节点 head 和一个整数 val，请你删除链表中所有满足 Node.val == val 的节点，并返回 新的头节点 。\n示例 1： 输入：head = [1,2,6,3,4,5,6], val = 6 输出：[1,2,3,4,5] \n示例 2： 输入：head = [], val = 1 输出：[]\n示例 3： 输入：head = [7,7,7,7], val = 7 输出：[]\n\n这道理有两个解法：虚拟头解法 和 原链表删除法\n\n1.1 虚拟头解法\n\nclass Solution:\n    def removeElements(self, head:Optional[ListNode], val:int) -&gt; Optional[ListNode]:\n        # 初始化\n        dummy = Listnode(0) # dummy 永远不动\n        dummy.next = head\n        current = dummy # current 负责检查它后面的节点, 并且current必须指向dummy\n\n        while current.next: # while current.next是在检查current之后是否还有val，这个链表是否结束\n            if current.next.val == val: # 这个地方记得用 ==，而不是=\n                current.next = current.next.next # 如果发现有val值，用next.next的值来覆盖next的值\n            else:\n                current = current.next\n\n        # 在链表里，next 不是下一个数字，而是 指向下一个节点的指针，而每个节点又继续指向下一个节点，所以从一个节点开始，就能读到整条链表\n        return dummy.next # 这个地方不能直接return current, 因为current是一个val值，而不是一个链表\n\n\n\n1.2 原链表删除法\n\nclass Solution:\n    def removeElements(self, head: ListNode, val: int) -&gt; ListNode:\n        # 删谁，就用谁做 while 条件，检查 head，就只判断 head，别用 head.next 来控制 head\n        # while head and head.next:\n        #     if head.val == val:\n        #         head = head.next\n        # 删除头节点\n        while head and head.val == val:\n            head = head.next\n\n        # 删除中间节点\n        current = head\n        while current and current.next: # 这个地方要加current是因为 current 本身有可能是 None，而我们不能在 None 上访问 .next\n            if current.next.val == val:\n                current.next = current.next.next\n            else:\n                current = current.next\n        \n        return head"
+  },
+  {
+    "objectID": "day3.html#设计链表",
+    "href": "day3.html#设计链表",
+    "title": "算法训练营Day 3",
+    "section": "2 707 设计链表",
+    "text": "2 707 设计链表\n\n你可以选择使用单链表或者双链表，设计并实现自己的链表。\n单链表中的节点应该具备两个属性：val 和 next 。val 是当前节点的值，next 是指向下一个节点的指针/引用。\n如果是双向链表，则还需要属性 prev 以指示链表中的上一个节点。假设链表中的所有节点下标从 0 开始。 在链表类中实现这些功能：\n\nget(index)：获取链表中第 index 个节点的值。如果索引无效，则返回-1。\naddAtHead(val)：在链表的第一个元素之前添加一个值为 val 的节点。插入后，新节点将成为链表的第一个节点。\naddAtTail(val)：将值为 val 的节点追加到链表的最后一个元素。\naddAtIndex(index,val)：在链表中的第 index 个节点之前添加值为 val 的节点。如果 index 等于链表的长度，则该节点将附加到链表的末尾。如果 index 大于链表长度，则不会插入节点。如果index小于0，则在头部插入节点。\ndeleteAtIndex(index)：如果索引 index 有效，则删除链表中的第 index 个节点。\n\n\n\n2.1 单链表\n\n这份代码一共分三层：\n\nListNode: 定义节点长什么样\nMyLinkedList: 定义链表这个对象有什么属性\n链表提供的 5 个操作: get / add / delete\n\n\n\nclass ListNode():\n    def __init__(self, val = 0, next = None): # 因为我们在新创一个链表，而不是在操作一个已经存在的链表，所以这里必须用_init_初始化创建链表对象\n        self.val = val\n        self.next = next\n\nclass MyLinkedList(object):\n\n    def __init__(self):\n        # 这里的这两行是 数据结构层面的长期 dummy\n        self.dummy = ListNode()\n        self.size = 0\n\n        # LeetCode 203的版本是 算法函数里的临时 dummy\n        # dummy = ListNode(0)\n        # dummy.next = head\n        # cur = dummy\n        \n    # 获取链表中第 index 个节点的值。如果索引无效，则返回-1。\n    def get(self, index):\n        \"\"\"\n        :type index: int\n        :rtype: int\n        \"\"\"\n        if index &lt; 0 or index &gt;= self.size: # 这里必须用 &gt;= ， index = self.size是非法的\n            return -1\n\n        current = self.dummy.next\n        for i in range(index):\n            current = current.next\n        return current.val\n\n    # 在链表的第一个元素之前添加一个值为 val 的节点\n    def addAtHead(self, val):\n        \"\"\"\n        :type val: int\n        :rtype: None\n        \"\"\"\n        self.dummy.next = ListNode(val, self.dummy.next)\n        # 这一句拆开写的话就是\n        # new_node = ListNode(val, self.dummy.next)\n        # self.dummy.next = new_node\n\n        self.size += 1 # 链表里多了一个节点，长度加 1，get 要用，index 判断要用\n        \n    # 将值为 val 的节点追加到链表的最后一个元素\n    def addAtTail(self, val):\n        \"\"\"\n        :type val: int\n        :rtype: None\n        \"\"\"\n        current = self.dummy # 这里不能用self.dummy.next，addAtTail要考虑空列表的情况\n        while current.next:\n            current = current.next\n        current.next = ListNode(val)\n        self.size  += 1\n        \n    # 在链表中的第 index 个节点之前添加值为 val  的节点\n    def addAtIndex(self, index, val):\n        \"\"\"\n        :type index: int\n        :type val: int\n        :rtype: None\n        \"\"\"\n        # 先判断会不会越界\n        if index &lt; 0 or index &gt; self.size: \n            # 这里不用&gt;=是因为index = self.size的时候就是尾插的情况\n            return \n\n        current = self.dummy\n        for i in range(index):\n            current = current.next\n\n        current.next = ListNode(val, current.next) \n        # 这里不用current而是用current.next是因为要替换current.next(新加的值)而不是替换current本身的值。\n        # 把这一句拆开等价于\n        # new_node = ListNode(val)\n        # new_node.next = current.next\n        # current.next = new_node\n\n        self.size += 1\n\n    # 如果索引 index 有效，则删除链表中的第 index 个节点。\n    def deleteAtIndex(self, index):\n        \"\"\"\n        :type index: int\n        :rtype: None\n        \"\"\"\n        if index &lt; 0 or index &gt;= self.size:\n            return # 这里不能return -1, return ≈ stop（结束函数）\n\n        current = self.dummy\n        for i in range(index):\n            current = current.next # 这一句只负责移动current，不要在for里面删除节点\n        current.next = current.next.next\n        self.size -= 1\n\n\n\n# Your MyLinkedList object will be instantiated and called as such:\n# obj = MyLinkedList()\n# param_1 = obj.get(index)\n# obj.addAtHead(val)\n# obj.addAtTail(val)\n# obj.addAtIndex(index,val)\n# obj.deleteAtIndex(index)\n\n\n\n2.2 双链表\n\nclass MyLinkedList(object):\n\n    def __init__(self):\n        \n\n    def get(self, index):\n        \"\"\"\n        :type index: int\n        :rtype: int\n        \"\"\"\n        \n\n    def addAtHead(self, val):\n        \"\"\"\n        :type val: int\n        :rtype: None\n        \"\"\"\n        \n\n    def addAtTail(self, val):\n        \"\"\"\n        :type val: int\n        :rtype: None\n        \"\"\"\n        \n\n    def addAtIndex(self, index, val):\n        \"\"\"\n        :type index: int\n        :type val: int\n        :rtype: None\n        \"\"\"\n        \n\n    def deleteAtIndex(self, index):\n        \"\"\"\n        :type index: int\n        :rtype: None\n        \"\"\"\n        \n\n\n# Your MyLinkedList object will be instantiated and called as such:\n# obj = MyLinkedList()\n# param_1 = obj.get(index)\n# obj.addAtHead(val)\n# obj.addAtTail(val)\n# obj.addAtIndex(index,val)\n# obj.deleteAtIndex(index)"
+  },
+  {
+    "objectID": "day3.html#反转链表",
+    "href": "day3.html#反转链表",
+    "title": "算法训练营Day 3",
+    "section": "3 反转链表",
+    "text": "3 反转链表\n\n给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。\n\n\n\n\n3.1 双指针法\n\nclass Solution:\n    def reverseList(self, head: Optional[ListNode]) -&gt; Optional[ListNode]:\n       pre = None\n       cur = head\n\n       while cur: # 反转链表要处理的是 当前节点，不是当前节点的下一个, 所以这里不能用cur.next\n        cur = temp\n        cur.next = pre\n        pre = cur\n        cur = temp\n       return pre\n\n\n\n3.2 递归法\n\nclass Solution:\n    def reverseList(self, head: ListNode) -&gt; ListNode:\n        # 从 head 开始反转\n        # pre 表示已经反转好的那一段的头\n        # 初始时还没有反转任何节点，所以 pre = None\n        return self.reverse(head, None)\n\n    def reverse(self, cur: ListNode, pre: ListNode) -&gt; ListNode:\n        if cur == None:\n            return pre\n        temp = cur.next\n        cur.next  = pre\n\n        # 下一个要处理的是原来的 cur.next，也就是 temp\n        # 当前节点 cur 已经反转好了，成为新的 pre\n        return self.reverse(temo, cur)"
+  },
+  {
+    "objectID": "day4.html",
+    "href": "day4.html",
+    "title": "算法训练营Day 4",
+    "section": "",
+    "text": "给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。\n - 示例1：输入：head = [1,2,3,4] –&gt; 输出：[2,1,4,3]\n\n示例2: 输入：head = [] –&gt; 输出：[]\n示例 3: 输入：head = [1] –&gt; 输出：[1]"
+  },
+  {
+    "objectID": "day4.html#两两交换链表中的节点",
+    "href": "day4.html#两两交换链表中的节点",
+    "title": "算法训练营Day 4",
+    "section": "",
+    "text": "给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。\n - 示例1：输入：head = [1,2,3,4] –&gt; 输出：[2,1,4,3]\n\n示例2: 输入：head = [] –&gt; 输出：[]\n示例 3: 输入：head = [1] –&gt; 输出：[1]"
+  },
+  {
+    "objectID": "note/day4.html",
+    "href": "note/day4.html",
+    "title": "算法训练营Day 4",
+    "section": "",
+    "text": "给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。\n\n\n示例1: 输入：head = [1,2,3,4] –&gt; 输出：[2,1,4,3]\n示例2: 输入：head = [] –&gt; 输出：[]\n示例 3: 输入：head = [1] –&gt; 输出：[1]\n\n\n\n# Definition for singly-linked list.\n# class ListNode(object):\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\nclass Solution(object):\n    def swapPairs(self, head):\n        \"\"\"\n        :type head: Optional[ListNode]\n        :rtype: Optional[ListNode]\n        \"\"\"\n        dummy = ListNode(next = head)\n        cur = dummy\n\n        while cur.next and cur.next.next:\n            temp = cur.next\n            temp1 = cur.next.next\n\n            # 交换之前 current -&gt; 1 -&gt; 2 -&gt; 3\n            # 执行完这一步之后是 current -&gt; 2 -&gt; 3; temp -&gt; 1\n            cur.next = cur.next.next\n            # 此时 current.next 是 2，temp 是 1\n            # current.next.next = temp的目的是让2指向1， 等于2.next = 1\n            cur.next.next = temp\n            # temp.next = temp1 这一步是把后面的链表接回去，1 -&gt; 3 -&gt; 4\n            temp.next = temp1\n            # current.next = 新的这一对的头\n            # current 要挪到 下一个要交换的节点的前面，而不是交换的两个节点之一\n            # 凡是“成对/成组操作链表”的题，current 都站在组前面，不进组\n            cur = cur.next.next\n\n        return dummy.next"
+  },
+  {
+    "objectID": "note/day4.html#两两交换链表中的节点",
+    "href": "note/day4.html#两两交换链表中的节点",
+    "title": "算法训练营Day 4",
+    "section": "",
+    "text": "给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。\n\n\n示例1: 输入：head = [1,2,3,4] –&gt; 输出：[2,1,4,3]\n示例2: 输入：head = [] –&gt; 输出：[]\n示例 3: 输入：head = [1] –&gt; 输出：[1]\n\n\n\n# Definition for singly-linked list.\n# class ListNode(object):\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\nclass Solution(object):\n    def swapPairs(self, head):\n        \"\"\"\n        :type head: Optional[ListNode]\n        :rtype: Optional[ListNode]\n        \"\"\"\n        dummy = ListNode(next = head)\n        cur = dummy\n\n        while cur.next and cur.next.next:\n            temp = cur.next\n            temp1 = cur.next.next\n\n            # 交换之前 current -&gt; 1 -&gt; 2 -&gt; 3\n            # 执行完这一步之后是 current -&gt; 2 -&gt; 3; temp -&gt; 1\n            cur.next = cur.next.next\n            # 此时 current.next 是 2，temp 是 1\n            # current.next.next = temp的目的是让2指向1， 等于2.next = 1\n            cur.next.next = temp\n            # temp.next = temp1 这一步是把后面的链表接回去，1 -&gt; 3 -&gt; 4\n            temp.next = temp1\n            # current.next = 新的这一对的头\n            # current 要挪到 下一个要交换的节点的前面，而不是交换的两个节点之一\n            # 凡是“成对/成组操作链表”的题，current 都站在组前面，不进组\n            cur = cur.next.next\n\n        return dummy.next"
+  },
+  {
+    "objectID": "note/day4.html#删除链表的倒数第n个节点",
+    "href": "note/day4.html#删除链表的倒数第n个节点",
+    "title": "算法训练营Day 4",
+    "section": "2 19.删除链表的倒数第N个节点",
+    "text": "2 19.删除链表的倒数第N个节点\n\n给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。\n\n\n示例1：输入：head = [1,2,3,4,5], n = 2 -&gt; 输出：[1,2,3,5]\n示例 2：输入：head = [1], n = 1 -&gt; 输出：[]\n示例 3：输入：head = [1,2], n = 1 -&gt; 输出：[1]\n\n\n\n# Definition for singly-linked list.\nclass ListNode(object):\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n\nclass Solution(object):\n    def removeNthFromEnd(self, head, n):\n        \"\"\"\n        :type head: Optional[ListNode]\n        :type n: int\n        :rtype: Optional[ListNode]\n        \"\"\"\n        dummy = ListNode(0, head)\n        # 这里也可以写成dummy = ListNode(next = head)\n        slow = fast = dummy\n\n        for i in range(n+1): # 这个地方因为我们要找倒数第n个节点，如果我们让fast先走n布之后再同时移动slow和fast，当fast 到null的时候，slow也就到了倒数第n个节点。但是我们删除这个节点的时候必须要找到这个节点的上一个节点然后用next.next覆盖，所以这里我们要让fast实际走n+1步来让slow找到倒数第n个节点的上一个节点。\n            fast = fast.next\n            # 这里不能写成fast += 1, 这种写法只能用于数值，不能用于节点指针\n\n        while fast: # 循环直到fast到空节点\n            fast = fast.next\n            slow = slow.next\n\n        slow.next = slow.next.next\n        return dummy.next"
+  },
+  {
+    "objectID": "note/day4.html#面试题-02.07-链表相交",
+    "href": "note/day4.html#面试题-02.07-链表相交",
+    "title": "算法训练营Day 4",
+    "section": "3 面试题 02.07 链表相交",
+    "text": "3 面试题 02.07 链表相交\n\n给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表没有交点，返回 null 。图示两个链表在节点 c1 开始相交：\n\n题目数据 保证 整个链式结构中不存在环。\n注意，函数返回结果后，链表必须 保持其原始结构 。\n\n\n\n\n\n# Definition for singly-linked list.\n# class ListNode(object):\n#     def __init__(self, x):\n#         self.val = x\n#         self.next = None\n\nclass Solution(object):\n    def getIntersectionNode(self, headA, headB):\n        \"\"\"\n        :type head1, head1: ListNode\n        :rtype: ListNode\n        \"\"\"\n        # not headA 等价于 headA is None\n        # 如果链表 A 是空的，或者链表 B 是空的，就直接返回 None\n        if not headA or not headB:\n            return None\n\n        # pA 指向链表 A 的头节点\n        # pB 指向链表 B 的头节点\n        # 我们不直接用 headA、headB是因为我们需要在遍历过程中不断移动指针，如果直接用 headA = headA.next，会把原来的头指针弄乱\n        # 所以要保留 headA、headB 不动，用 pA、pB 来“走链表”\n        pA, pB = headA, headB\n\n        # 这里考虑的是节点相同，而不是节点值相同。\n        # 判断相交用的是：pA == pB。不是：pA.val == pB.val\n\n        while pA != pB: # 当两个指针第一次走到那个共享节点时，pA == pB 成立，循环结束，返回这个节点\n\n            pA = pA.next if pA else headB # 指针没走到头就继续往前走，走到头了就换一条链表，从另一条链表的头重新走。\n\n            # 这一句等价于:\n            # if pA is not None:\n            #     pA = pA.next\n            # else:\n            #     pA = headB\n            pB = pB.next if pB else headA # headB和pB不是一个情况，虽然我们前面检查了headA / headB是否为None, 但是pA / pB是我们后面自己又定义的，所以还是要检查是否为None。\n        return pA"
+  },
+  {
+    "objectID": "note/day2.html",
+    "href": "note/day2.html",
+    "title": "算法训练营Day 2",
+    "section": "",
+    "text": "今天是算法训练营的第二天。激动！"
+  },
+  {
+    "objectID": "note/day2.html#长度最小的子数组",
+    "href": "note/day2.html#长度最小的子数组",
+    "title": "算法训练营Day 2",
+    "section": "209 长度最小的子数组",
+    "text": "209 长度最小的子数组\n\n给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的 连续 子数组，并返回其长度。如果不存在符合条件的子数组，返回 0。\n示例：\n\n输入：s = 7, nums = [2,3,1,2,4,3]\n输出：2\n解释：子数组 [4,3] 是该条件下的长度最小的子数组。\n提示：\n1 &lt;= target &lt;= 10^9\n1 &lt;= nums.length &lt;= 10^5\n1 &lt;= nums[i] &lt;= 10^5\n\n\n在看视频讲解之前只想到了暴力解法（甚至还是双指针版本的但是做出来效果跟暴力解法一模一样的那种。。。），看了视频讲解才发现原来还有固定终止位置，然后移动起始位置，不断地缩小起始位置和终止位置的区间来判断是否有更小的区间能满足题目的要求。for 循环里面的j表示的是终止位置。\n滑动窗口 - 双指针法\n\nclass Solution:\n    def minSubArrayLen(self, target:int, nums:List[int]) -&gt; int:\n        len_nums = len(nums)\n        left = 0\n        right = 0\n        # 这里不能用min_len = 0代替，这样的话min_len的值就被固定成了0，不管再短的子数组长度都不会短于0\n        min_len = float('inf') # 这里用∞作为初始值，表示“还没找到任何合法子数组”。\n        cum_sum = 0\n\n        while right &lt; len_nums: # 这里也可以写成 for right in range(len_nums) 或者right &lt;= len_nums-1\n            cum_sum += nums[right]\n\n            while cum_sum &gt;= target:\n                min_len = min(min_len, right - left + 1)\n                cum_sum -= nums[left]\n                left += 1\n            \n            right += 1\n        return min_len if min_len != float('inf') else 0\n\n暴力法\n\nclass Solution:\n    def minSubArrayLen(self, target:int, nums:List[int]) -&gt; int:\n        len_num = len(nums)\n        min_len = float('inf')\n\n        for i in range(len_num):\n            cum_sum = 0\n            for j in range(i, len_num): # 这里的j是从i开始的，不是1\n                cum_sum += nums[j]\n                if cum_sum &gt;= target:\n                    min_len = min(min_len, j-i+1)\n                    break\n         return min_len if min_len != float('inf') else 0"
+  },
+  {
+    "objectID": "note/day2.html#螺旋矩阵ii",
+    "href": "note/day2.html#螺旋矩阵ii",
+    "title": "算法训练营Day 2",
+    "section": "59.螺旋矩阵II",
+    "text": "59.螺旋矩阵II\n\n给定一个正整数 n，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的正方形矩阵。\n示例: 输入: 3 输出: [ [ 1, 2, 3 ], [ 8, 9, 4 ], [ 7, 6, 5 ] ]\n\n\n# 这道题的思路就是先创一个全部为0的matrix，然后创建x,y轴的起始点，确定loop和中心点。然后开始建四条边，再填充。最后填充中心点matrix[mid][mid]。\nclass Solution(object):\n    def generateMatrix(self, n):\n        \"\"\"\n        :type n: int\n        :rtype: List[List[int]]\n        \"\"\"\n        matrix = [[0] * n for _ in range(n)] # 创建一个全部值为0的matrix\n        layer_count = n//2\n        num = 1\n\n        # 创建四条边\n        for layer in range(layer_count):\n            top = layer\n            bottom = n - 1 - layer\n            left = layer\n            right = n - 1 - layer\n\n            # 填充上边，matrix[top][j]\n            for j in range(left, right): # 这里不能用range(n), 不然的话填到内圈的时候会重复填外圈的东西\n                matrix[top][j] = num\n                num += 1\n\n            # 填充右边 matrix[i][right]\n            for i in range(top, bottom):\n                matrix[i][right] = num\n                num += 1\n\n            # 填充下边 matrix[bottom][j]\n            for j in range(right, left, -1):\n                matrix[bottom][j] = num\n                num += 1\n\n            # 填充左边 matrix[i][left]\n            for i in range(bottom, top, -1):\n                matrix[i][left] = num\n                num += 1\n\n        # 如果n是基数，那么这个matrix是有一个中心点matrix[mid][mid]， 值为n*n，也就是累计的num\n        if n % 2 == 1:\n            mid = n // 2\n            matrix[mid][mid] = num # 这里也可以写成n*n\n\n        return matrix"
+  },
+  {
+    "objectID": "note/day2.html#区间和",
+    "href": "note/day2.html#区间和",
+    "title": "算法训练营Day 2",
+    "section": "58 区间和",
+    "text": "58 区间和\n\n\n\n\n\nimport sys # sys用来读不知道长度的输入\ninput = sys.stdin.read\n\ndef main():\n    data = input().split()\n    index = 0\n    n = int(data[index]) # 此时n读的是data[0]的那个数字，也就是整个 数组 vec 的长度\n    index += 1 # 这里我们已经得到n的值了，所以把index挪到list的第一个数字上用来创list\n\n    vec = [] \n    for i in range(n):\n        # 这里 vec.append 必须要把 字符串 转化成 int\n        vec.append(int(data[index + i])) # 这里是创建整个list，只是把数字填进去\n    index += n # 这里我们已经创好了list，所以把index挪到第一个区间上准备求区间和\n\n    p = [0] * n # 创建一个全部值为0的list\n    presum = 0\n    # 这里我们要直接把range(n)的sum算出来，就可以用p[b] - p[a - 1]来算区间和，而不是每次新给一个区间就全部重头开始算\n    for i in range(n):\n        presum += vec[i]\n        p[i] = presum # 每求出来一个presum就直接填进p list\n    \n    results = []\n    while index &lt; len(data):\n        a = int(data[index]) # 记得这里要转化成int，不然a是字符串\n        b = int(data[index + 1]) \n        index += 2 # 这里我们读data的时候是把所有的input都放进一行，不管是n还算是list还是区间，所以我们要自己定义哪一段到哪一段是什么，这里区间是两个数字所以 index +=2\n\n        if a == 0: # 这里要用 a == 0, \n            # 在python里面 “=” 是赋值, a=0 意思是给a赋值0, a == 0 是判断a是否为0, 返回 True / False\n            sum_value = p[b]\n        else:\n            sum_value = p[b] - p[a - 1] # 举例：区间[2, 5]的sum 等于p[5] - p[1]\n\n        results.append(sum_value)\n\n    for result in results:\n        print(result)\n\nif __name__ == \"__main__\": # 这里也要用 ==， 而不是 =\n    main()"
+  },
+  {
+    "objectID": "note/day2.html#开发商购买土地",
+    "href": "note/day2.html#开发商购买土地",
+    "title": "算法训练营Day 2",
+    "section": "44. 开发商购买土地",
+    "text": "44. 开发商购买土地\n\n在一个城市区域内，被划分成了n * m个连续的区块，每个区块都拥有不同的权值，代表着其土地价值。目前，有两家开发公司，A 公司和 B 公司，希望购买这个城市区域的土地。\n现在，需要将这个城市区域的所有区块分配给 A 公司和 B 公司。\n然而，由于城市规划的限制，只允许将区域按横向或纵向划分成两个子区域，而且每个子区域都必须包含一个或多个区块。 为了确保公平竞争，你需要找到一种分配方式，使得 A 公司和 B 公司各自的子区域内的土地总价值之差最小。\n注意：区块不可再分。\n\n\n暴力版本\n\n\"\"\"\n思路说明：\n1. 读入 n×m 的土地价值矩阵，同时统计总和 total\n2. 计算每一行的和 horizontal[i]，每一列的和 vertical[j]\n3. 横向切分：用 horizontal 的前缀和模拟在某一行后切一刀，\n   计算上下两部分价值差，取最小值\n4. 纵向切分：用 vertical 的前缀和模拟在某一列后切一刀，\n   同样更新最小差值\n5. 输出所有切分方案中的最小差\n\"\"\"\nimport sys\ninput = sys.stdin.read\n\ndef main():\n    data = input().split()\n\n    # 读n和m的值\n    idx = 0\n    n = int(data[idx])\n    idx += 1\n    m = int(data[idx])\n    idx += 1 # 记得这里读完 m 之后还要 idx += 1\n\n    # 创建matrix\n    sum = 0\n    vec = []\n    for i in range(n):\n        row = []\n        for j in range(m):\n            num = int(data[idx])\n            idx += 1\n            row.append(num)\n            sum += num\n        vec.append(row)\n\n    # 横向统计， horizontal是横向统计用 i 是因为切出来 i 行，然后计算每一行的horizontal sum\n    horizontal = [0] * n\n    for i in range(n):\n        for j in range(m):\n            horizontal[i] += vec[i][j] \n            # horizontal是一个list, 不能直接用 horizontal += vec[i][j]\n\n    # 纵向统计， \n    vertical = [0] * m\n    for j in range(m):\n        for i in range(n):\n            vertical[j] += vec[i][j]\n\n    # 横向切分\n    result = float('inf')\n    horizontalcut = 0\n    for i in range(n - 1): # 这个地方可以用 n 也可以用 n-1, 用 n - 1更严谨是因为一般不会切到最后一行\n        horizontalcut += horizontal[i]\n        result = min(result, abs(sum - 2 * horizontalcut))\n    \n    # 纵向切分\n    verticalcut = 0\n    for j in range(m - 1): # m - 1 同理，也可以用 m\n        verticalcut += vertical[j]\n        result = min(result, abs(sum - 2 * verticalcut))\n\n    print(result)\n\nif __name__ == \"__main__\":\n    main()\n\n\n\n优化暴力版本\n\n\"\"\"\n这个版本的思路是：\n在遍历矩阵计算每一行（或每一列）累计和的同时，\n在行末 / 列末对应的合法切分位置直接计算两部分的差值，\n避免在后面再单独遍历一次进行比较。\n\"\"\"\nimport sys\ninput = sys.stdin.read\n\ndef main():\n    data = input().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n\n    sum = 0\n    vec = []\n    for i in range(n):\n        row = []\n        for j in range(m):\n            num = int(data[idx]); idx += 1\n            row.append(num)\n            sum += num\n        vec.append(row)\n\n    result = float('inf')\n\n    count = 0\n\n    # 行切分\n    for i in range(n):\n        for j in range(m):\n            count += vec[i][j]\n            if j == m - 1 and i &lt; n-1: # 遍历到行末尾时候开始统计，意思是行切分的时候，用 j == m - 1 检查这一行是否到末尾了，如果到末尾了这时候就开始算 i 行和剩下行的差值\n                result = min(result, abs(sum - 2 * count))\n\n    count = 0\n    # 列切分\n    for j in range(m):\n        for i in range(n):\n            count += vec[i][j]\n            if i == n - 1 and j &lt; m - 1:\n                result = min(result, abs(sum - 2 * count))\n\n    print(result)\n\nif __name__ == \"__main__\":\n    main()"
+  },
+  {
+    "objectID": "note/day4.html#环形链表-ii",
+    "href": "note/day4.html#环形链表-ii",
+    "title": "算法训练营Day 4",
+    "section": "4 142 环形链表 II",
+    "text": "4 142 环形链表 II\n\n给定一个链表的头节点 head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。\n如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。如果 pos 是 -1，则在该链表中没有环。注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。\n不允许修改 链表。\n\n\n\n\n\n# Definition for singly-linked list.\nclass ListNode(object):\n    def __init__(self, x):\n        self.val = x\n        self.next = None\n\nclass Solution(object):\n    def detectCycle(self, head):\n        \"\"\"\n        :type head: ListNode\n        :rtype: ListNode\n        \"\"\"\n        slow = head\n        fast = head\n\n        # 用来判断是否有环\n        while fast and fast.next: # 这一步需要保证：fast 不是 None，fast.next 也不是 None，否则会访问空指针报错。\n            # 同时这也等价于：如果链表走到末尾（无环），fast 会先变成 None 或 fast.next 变成 None，循环结束。\n            slow = slow.next # slow 走 1 步\n            fast = fast.next.next # fast 走 2 步\n\n            if slow == fast: # 相遇判断：发现有环\n                # 把 slow 拉回 head，这一步是为了找 环的入口\n                slow = head\n                \n                # 第二段 while: 同速前进，第一次相遇就是入口\n                while slow != fast:\n                    slow = slow.next\n                    fast = fast.next\n                return slow\n        \n        # 如果没环，return None\n        return None"
+  },
+  {
+    "objectID": "note/day1.html",
+    "href": "note/day1.html",
+    "title": "算法训练营Day 1",
+    "section": "",
+    "text": "今天是算法训练营的第一天。先是试图看了数组理论基础，发现完全看不懂。现在就是很迷茫。"
+  },
+  {
+    "objectID": "note/day1.html#leetcode-704---二分查找",
+    "href": "note/day1.html#leetcode-704---二分查找",
+    "title": "算法训练营Day 1",
+    "section": "1 LeetCode 704 - 二分查找",
+    "text": "1 LeetCode 704 - 二分查找\n题目描述：\n\nGiven an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums. If target exists, then return its index. Otherwise, return -1. You must write an algorithm with O(log n) runtime complexity.\n给定一个 n 个元素有序的（升序）整型数组 nums 和一个目标值 target ，写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1。\n\n看到这个题目是时候我是有思路但是不知道怎么写，所以今天的重点是重新熟悉怎么把我的思路用代码写出来。之前没有见过左闭右开和左闭右闭这两个词，所以搜索了ChatGPT了解了一下。\n左闭右开：[0, n)。允许取的值是：left ≤ x &lt; right\n左闭右闭：[0, n-1]。允许取的值是：left ≤ x ≤ right\n\n例子：下标：0 1 2 3 4\n数组：[a b c d e]\n左闭右开：区间：[0, 5)\n左闭右闭：区间：[0, 4]\n\n左闭右闭思路：\n\nfrom typing import List\n\nclass Solution(object):\n  def search(self, nums:List[int], target:int) -&gt; int:\n    left, right = 0, len(nums)-1 # [0, n-1]\n\n    while left &lt;= right:\n      middle = (left + right) // 2\n      if nums[middle] &lt; target:\n        left = middle + 1 # 丢掉 mid 以及左边\n      elif nums[middle] &gt; target:\n        right = middle-1 # 丢掉 mid 以及右边\n      else:\n        return middle\n    return -1 # return -1 when there is no corresponding output\n\n左闭右开思路：\n\nclass Solution:\n  def search(self, nums:List[int], target:int) -&gt; int:\n    left, right = 0, len(nums) # 左闭右开 [0, n)\n\n    while left &lt; right:\n      middle = (left + right) // 2\n      if nums[middle] &lt; target:\n        left = middle + 1 # target 在右区间，在[middle + 1, right)中\n      elif nums[middle] &gt; target:\n        right = middle # target 在左区间，在[left, middle)中\n      else:\n        return middle\n    return -1\n\n今天还了解到，class类里面调用函数的时候需要self，但是普通函数不需要self,"
+  },
+  {
+    "objectID": "note/day1.html#leetcode-27---移除元素",
+    "href": "note/day1.html#leetcode-27---移除元素",
+    "title": "算法训练营Day 1",
+    "section": "2 LeetCode 27 - 移除元素",
+    "text": "2 LeetCode 27 - 移除元素\n\n题目描述：给你一个数组 nums 和一个值 val，你需要 原地 移除所有数值等于 val 的元素。元素的顺序可能发生改变。然后返回 nums 中与 val 不同的元素的数量。假设 nums 中不等于 val 的元素数量为 k，要通过此题，您需要执行以下操作：更改 nums 数组，使 nums 的前 k 个元素包含不等于 val 的元素。nums 的其余元素和 nums 的大小并不重要。 返回 k。\n\n双指针解法：（fast负责“看”，遍历数组里的每一个元素，slow负责“写”，指向下一个可以放合法元素的位置）\n当 fast 指向的元素是合法的，就把它写到 slow 的位置，然后 slow 往右走\n\n# if nums[fast] != val:\n#   nums[slow] = nums[fast]\n#   slow += 1\n\n\nclass Solution:\n  def removeElement(self, nums:List[int], val:int) -&gt; int:\n    fast = 0\n    slow = 0\n    size = len(nums)\n\n    while fast &lt; size:\n      if nums[fast] != val:\n        nums[slow] = nums[fast] # slow 和 fast的顺序不能写反了\n        slow += 1\n      fast += 1\n    return slow\n\n暴力解法\n\nclass Solution:\n  def removeElement(self, nums:List[int], val:int) -&gt; int:\n    i, l = 0, len(nums)\n\n    while i &lt; l:\n      if nums[i] == val: # 这里要用 == 而不是 =\n        for j in range(i+1, l):\n          nums[j-1] = nums[j] # 用nums[j] 的值替换nums[j-1]的值\n        l -= 1\n        i -= 1\n      i +=1\n    return l"
+  },
+  {
+    "objectID": "note/day1.html#leetcode-977---有序数组的平方",
+    "href": "note/day1.html#leetcode-977---有序数组的平方",
+    "title": "算法训练营Day 1",
+    "section": "3 LeetCode 977 - 有序数组的平方",
+    "text": "3 LeetCode 977 - 有序数组的平方\n\n题目描述：给你一个按 非递减顺序 排序的整数数组 nums，返回 每个数字的平方 组成的新数组，要求也按 非递减顺序 排序。\n\n暴力解法：\n\nclass Solution:\n  def sortedSquares(self, nums:List[int]) -&gt; List[int]:\n    for i in range(len(nums)):\n      nums[i] *= nums[i] #注意这里不能写成nums *= nums\n    nums.sort()\n    return nums\n\n双指针法：\n\nclass Solution:\n  def sortedSquares(self, nums:List[int]) -&gt; List[int]: # List[int]要用[], 而不是()\n    l, r, i = 0, len(nums) - 1, len(nums) - 1\n\n    # [float('inf')] 是一个只有 1 个元素的列表[∞], \n    # [float('inf')] * len(nums) 就变成了[∞, ∞, ∞, ..., ∞], 一共 len(nums) 个\n    # res初始化：必须先有一个固定长度的列表，里面的初始值其实无所谓，用 ∞ 只是一个占位符\n    res = [float('inf')] * len(nums)\n\n    while l &lt;= r: # 这里必须用 &lt;=, 不然会丢失一个值\n      if nums[l] ** 2 &lt; nums[r] ** 2:\n        res[i] = nums[r] ** 2\n        r -= 1 # 右指针往左移动\n      else:\n        res[i] = nums[l] ** 2\n        l += 1 # 左指针往右移动\n      i -= 1 # 存放结果的指针需要往前平移一位\n    return res \n\n今天主要是理解双指针的思路，然后尝试自己把代码写出来。很多时候看到example code觉得自己完全看懂了，但是实际自己写的时候不是忘记思路就是会写错很多细节的地方。总而言之今天很有收获。"
+  },
+  {
+    "objectID": "note/day3.html",
+    "href": "note/day3.html",
+    "title": "算法训练营Day 3",
+    "section": "",
+    "text": "今天是算法训练营的第三天。今天要学习关于链表的知识。先是看了链表理论基础,说实话看文字讲解和图表看不懂，但是看到python code就那么两行的时候似乎又看懂了。希望通过今天的刷题能掌握关于链表的知识。"
+  },
+  {
+    "objectID": "note/day3.html#移除链表元素",
+    "href": "note/day3.html#移除链表元素",
+    "title": "算法训练营Day 3",
+    "section": "203 移除链表元素",
+    "text": "203 移除链表元素\n\n给你一个链表的头节点 head 和一个整数 val，请你删除链表中所有满足 Node.val == val 的节点，并返回 新的头节点 。\n示例 1： 输入：head = [1,2,6,3,4,5,6], val = 6 输出：[1,2,3,4,5] \n示例 2： 输入：head = [], val = 1 输出：[]\n示例 3： 输入：head = [7,7,7,7], val = 7 输出：[]\n\n这道理有两个解法：虚拟头解法 和 原链表删除法\n\n虚拟头解法\n\nclass Solution:\n    def removeElements(self, head:Optional[ListNode], val:int) -&gt; Optional[ListNode]:\n        # 初始化\n        dummy = Listnode(0) # dummy 永远不动\n        dummy.next = head\n        current = dummy # current 负责检查它后面的节点, 并且current必须指向dummy\n\n        while current.next: # while current.next是在检查current之后是否还有val，这个链表是否结束\n            if current.next.val == val: # 这个地方记得用 ==，而不是=\n                current.next = current.next.next # 如果发现有val值，用next.next的值来覆盖next的值\n            else:\n                current = current.next\n\n        # 在链表里，next 不是下一个数字，而是 指向下一个节点的指针，而每个节点又继续指向下一个节点，所以从一个节点开始，就能读到整条链表\n        return dummy.next # 这个地方不能直接return current, 因为current是一个val值，而不是一个链表\n\n\n\n原链表删除法\n\nclass Solution:\n    def removeElements(self, head: ListNode, val: int) -&gt; ListNode:\n        # 删谁，就用谁做 while 条件，检查 head，就只判断 head，别用 head.next 来控制 head\n        # while head and head.next:\n        #     if head.val == val:\n        #         head = head.next\n        # 删除头节点\n        while head and head.val == val:\n            head = head.next\n\n        # 删除中间节点\n        current = head\n        while current and current.next: # 这个地方要加current是因为 current 本身有可能是 None，而我们不能在 None 上访问 .next\n            if current.next.val == val:\n                current.next = current.next.next\n            else:\n                current = current.next\n        \n        return head"
+  },
+  {
+    "objectID": "note/day3.html#设计链表",
+    "href": "note/day3.html#设计链表",
+    "title": "算法训练营Day 3",
+    "section": "707 设计链表",
+    "text": "707 设计链表\n\n你可以选择使用单链表或者双链表，设计并实现自己的链表。\n单链表中的节点应该具备两个属性：val 和 next 。val 是当前节点的值，next 是指向下一个节点的指针/引用。\n如果是双向链表，则还需要属性 prev 以指示链表中的上一个节点。假设链表中的所有节点下标从 0 开始。 在链表类中实现这些功能：\n\nget(index)：获取链表中第 index 个节点的值。如果索引无效，则返回-1。\naddAtHead(val)：在链表的第一个元素之前添加一个值为 val 的节点。插入后，新节点将成为链表的第一个节点。\naddAtTail(val)：将值为 val 的节点追加到链表的最后一个元素。\naddAtIndex(index,val)：在链表中的第 index 个节点之前添加值为 val 的节点。如果 index 等于链表的长度，则该节点将附加到链表的末尾。如果 index 大于链表长度，则不会插入节点。如果index小于0，则在头部插入节点。\ndeleteAtIndex(index)：如果索引 index 有效，则删除链表中的第 index 个节点。\n\n\n\n单链表\n\n这份代码一共分三层：\n\nListNode: 定义节点长什么样\nMyLinkedList: 定义链表这个对象有什么属性\n链表提供的 5 个操作: get / add / delete\n\n\n\nclass ListNode():\n    def __init__(self, val = 0, next = None): # 因为我们在新创一个链表，而不是在操作一个已经存在的链表，所以这里必须用_init_初始化创建链表对象\n        self.val = val\n        self.next = next\n\nclass MyLinkedList(object):\n\n    def __init__(self):\n        # 这里的这两行是 数据结构层面的长期 dummy\n        self.dummy = ListNode()\n        self.size = 0\n\n        # LeetCode 203的版本是 算法函数里的临时 dummy\n        # dummy = ListNode(0)\n        # dummy.next = head\n        # cur = dummy\n        \n    # 获取链表中第 index 个节点的值。如果索引无效，则返回-1。\n    def get(self, index):\n        \"\"\"\n        :type index: int\n        :rtype: int\n        \"\"\"\n        if index &lt; 0 or index &gt;= self.size: # 这里必须用 &gt;= ， index = self.size是非法的\n            return -1\n\n        current = self.dummy.next\n        for i in range(index):\n            current = current.next\n        return current.val\n\n    # 在链表的第一个元素之前添加一个值为 val 的节点\n    def addAtHead(self, val):\n        \"\"\"\n        :type val: int\n        :rtype: None\n        \"\"\"\n        self.dummy.next = ListNode(val, self.dummy.next)\n        # 这一句拆开写的话就是\n        # new_node = ListNode(val, self.dummy.next)\n        # self.dummy.next = new_node\n\n        self.size += 1 # 链表里多了一个节点，长度加 1，get 要用，index 判断要用\n        \n    # 将值为 val 的节点追加到链表的最后一个元素\n    def addAtTail(self, val):\n        \"\"\"\n        :type val: int\n        :rtype: None\n        \"\"\"\n        current = self.dummy # 这里不能用self.dummy.next，addAtTail要考虑空列表的情况\n        while current.next:\n            current = current.next\n        current.next = ListNode(val)\n        self.size  += 1\n        \n    # 在链表中的第 index 个节点之前添加值为 val  的节点\n    def addAtIndex(self, index, val):\n        \"\"\"\n        :type index: int\n        :type val: int\n        :rtype: None\n        \"\"\"\n        # 先判断会不会越界\n        if index &lt; 0 or index &gt; self.size: \n            # 这里不用&gt;=是因为index = self.size的时候就是尾插的情况\n            return \n\n        current = self.dummy\n        for i in range(index):\n            current = current.next\n\n        current.next = ListNode(val, current.next) \n        # 这里不用current而是用current.next是因为要替换current.next(新加的值)而不是替换current本身的值。\n        # 把这一句拆开等价于\n        # new_node = ListNode(val)\n        # new_node.next = current.next\n        # current.next = new_node\n\n        self.size += 1\n\n    # 如果索引 index 有效，则删除链表中的第 index 个节点。\n    def deleteAtIndex(self, index):\n        \"\"\"\n        :type index: int\n        :rtype: None\n        \"\"\"\n        if index &lt; 0 or index &gt;= self.size:\n            return # 这里不能return -1, return ≈ stop（结束函数）\n\n        current = self.dummy\n        for i in range(index):\n            current = current.next # 这一句只负责移动current，不要在for里面删除节点\n        current.next = current.next.next\n        self.size -= 1\n\n\n\n# Your MyLinkedList object will be instantiated and called as such:\n# obj = MyLinkedList()\n# param_1 = obj.get(index)\n# obj.addAtHead(val)\n# obj.addAtTail(val)\n# obj.addAtIndex(index,val)\n# obj.deleteAtIndex(index)\n\n\n\n双链表\n\nclass MyLinkedList(object):\n\n    def __init__(self):\n        \n\n    def get(self, index):\n        \"\"\"\n        :type index: int\n        :rtype: int\n        \"\"\"\n        \n\n    def addAtHead(self, val):\n        \"\"\"\n        :type val: int\n        :rtype: None\n        \"\"\"\n        \n\n    def addAtTail(self, val):\n        \"\"\"\n        :type val: int\n        :rtype: None\n        \"\"\"\n        \n\n    def addAtIndex(self, index, val):\n        \"\"\"\n        :type index: int\n        :type val: int\n        :rtype: None\n        \"\"\"\n        \n\n    def deleteAtIndex(self, index):\n        \"\"\"\n        :type index: int\n        :rtype: None\n        \"\"\"\n        \n\n\n# Your MyLinkedList object will be instantiated and called as such:\n# obj = MyLinkedList()\n# param_1 = obj.get(index)\n# obj.addAtHead(val)\n# obj.addAtTail(val)\n# obj.addAtIndex(index,val)\n# obj.deleteAtIndex(index)"
+  },
+  {
+    "objectID": "note/day3.html#反转链表",
+    "href": "note/day3.html#反转链表",
+    "title": "算法训练营Day 3",
+    "section": "反转链表",
+    "text": "反转链表\n\n给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。\n\n\n\n\n双指针法\n\nclass Solution:\n    def reverseList(self, head: Optional[ListNode]) -&gt; Optional[ListNode]:\n       pre = None\n       cur = head\n\n       while cur: # 反转链表要处理的是 当前节点，不是当前节点的下一个, 所以这里不能用cur.next\n        cur = temp\n        cur.next = pre\n        pre = cur\n        cur = temp\n       return pre\n\n\n\n递归法\n\nclass Solution:\n    def reverseList(self, head: ListNode) -&gt; ListNode:\n        # 从 head 开始反转\n        # pre 表示已经反转好的那一段的头\n        # 初始时还没有反转任何节点，所以 pre = None\n        return self.reverse(head, None)\n\n    def reverse(self, cur: ListNode, pre: ListNode) -&gt; ListNode:\n        if cur == None:\n            return pre\n        temp = cur.next\n        cur.next  = pre\n\n        # 下一个要处理的是原来的 cur.next，也就是 temp\n        # 当前节点 cur 已经反转好了，成为新的 pre\n        return self.reverse(temo, cur)"
+  },
+  {
+    "objectID": "note/day7.html",
+    "href": "note/day7.html",
+    "title": "算法训练营Day 7",
+    "section": "",
+    "text": "给你四个整数数组 nums1、nums2、nums3 和 nums4 ，数组长度都是 n ，请你计算有多少个元组 (i, j, k, l) 能满足：\n\n0 &lt;= i, j, k, l &lt; n\nnums1[i] + nums2[j] + nums3[k] + nums4[l] == 0\n\n示例 1：\n\n输入：nums1 = [1,2], nums2 = [-2,-1], nums3 = [-1,2], nums4 = [0,2]\n输出：2\n\n解释：两个元组如下：\n\n\n(0, 0, 0, 1) -&gt; nums1[0] + nums2[0] + nums3[0] + nums4[1] = 1 + (-2) + (-1) + 2 = 0\n\n\n(1, 1, 0, 0) -&gt; nums1[1] + nums2[1] + nums3[0] + nums4[0] = 2 + (-1) + (-1) + 0 = 0\n\n\n示例 2：\n\n输入：nums1 = [0], nums2 = [0], nums3 = [0], nums4 = [0]\n输出：1"
+  },
+  {
+    "objectID": "note/day7.html#四数相加",
+    "href": "note/day7.html#四数相加",
+    "title": "算法训练营Day 7",
+    "section": "",
+    "text": "给你四个整数数组 nums1、nums2、nums3 和 nums4 ，数组长度都是 n ，请你计算有多少个元组 (i, j, k, l) 能满足：\n\n0 &lt;= i, j, k, l &lt; n\nnums1[i] + nums2[j] + nums3[k] + nums4[l] == 0\n\n示例 1：\n\n输入：nums1 = [1,2], nums2 = [-2,-1], nums3 = [-1,2], nums4 = [0,2]\n输出：2\n\n解释：两个元组如下：\n\n\n(0, 0, 0, 1) -&gt; nums1[0] + nums2[0] + nums3[0] + nums4[1] = 1 + (-2) + (-1) + 2 = 0\n\n\n(1, 1, 0, 0) -&gt; nums1[1] + nums2[1] + nums3[0] + nums4[0] = 2 + (-1) + (-1) + 0 = 0\n\n\n示例 2：\n\n输入：nums1 = [0], nums2 = [0], nums3 = [0], nums4 = [0]\n输出：1"
+  },
+  {
+    "objectID": "note/day6.html",
+    "href": "note/day6.html",
+    "title": "算法训练营Day 6",
+    "section": "",
+    "text": "今天是第三章 哈希表"
+  },
+  {
+    "objectID": "note/day6.html#有效的字母异位词",
+    "href": "note/day6.html#有效的字母异位词",
+    "title": "算法训练营Day 6",
+    "section": "242 有效的字母异位词",
+    "text": "242 有效的字母异位词\n\n给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的字母异位词。\n示例 1: 输入: s = “anagram”, t = “nagaram” 输出: true\n示例 2: 输入: s = “rat”, t = “car” 输出: false\n说明: 你可以假设字符串只包含小写字母\n\n\nPython写法1：ASCII\n\nclass Solution:\n    def isAnagram(self, s, t):\n        \"\"\"\n        :type s: str\n        :type t: str\n        :rtype: bool\n        \"\"\"\n        record = [0] * 26 # a-z有26个字母\n        for i in s:\n            record[ord(i) - ord('a')] += 1 # 这里题目保证了input只有 a-z 的字母输入, 才可以这样写\n\n        for i in t:\n            record[ord(i) - ord('a')] -= 1 # 如果有的字母s里面没有但是t里面有，那那个index对应的值就不为0，那么后面就可以用 if record[i] != 0 来检查是否有不一样的值\n\n        for i in range(26):\n            if record[i] != 0:\n                return False\n            \n        return True # 这一句跟上面的for并排是因为要检查完26个index发现没有false之后才返回true\n\n\n\nPython 写法2：Counter\n\nfrom collections import Counter\n\nclass Solution:\n    def isAnagram(self, s: str, t: str) -&gt; bool:\n        a_count = Counter(s)\n        b_count = Counter(t)\n\n        return a_count == b_count"
+  },
+  {
+    "objectID": "note/day6.html#两个数组的交集",
+    "href": "note/day6.html#两个数组的交集",
+    "title": "算法训练营Day 6",
+    "section": "349 两个数组的交集",
+    "text": "349 两个数组的交集\n\n给定两个数组 nums1 和 nums2 ，返回 它们的 交集 。输出结果中的每个元素一定是 唯一 的。我们可以 不考虑输出结果的顺序 。\n\n\n\nset 用 add\nlist 用 append\n\n\n版本1：字典和集合\n\n# 题目里面说元素唯一，set的一个特性就是 不允许重复key\n# set：只存 key\n# map：存 key + value\n\nclass Solution(object):\n    def intersection(self, nums1, nums2):\n        \"\"\"\n        :type nums1: List[int]\n        :type nums2: List[int]\n        :rtype: List[int]\n        \"\"\"\n        table = {}\n        for num in nums1:\n            table[num] = table.get(num, 0) + 1 # 这里table.get要用圆括号() 而不是[]\n\n        # 这是第二种写法\n\n        # table = set(nums1)\n        # res = set()\n\n        # for num in nums2:\n            # if num in table:\n            #     res.add(num)\n            #     table.remove(num)\n        # return list(res)\n\n        res = set()\n        for num in nums2:\n            if num in table:\n                res.add(num) # set 用 add\n                del table[num]\n\n        return list(res) # 这个地方必须用list转成List，不然res输出是个set\n\n\n\n版本2：集合\n\nclass Solution:\n    def intersection(self, nums1: List[int], nums2: List[int]) -&gt; List[int]:\n        return list(set(nums1) & set(nums2))\n\n\n\n版本3：数组\n\n# 本题后面 力扣改了 题目描述 和 后台测试数据，增添了 数值范围：\n# 1 &lt;= nums1.length, nums2.length &lt;= 1000\n# 0 &lt;= nums1[i], nums2[i] &lt;= 1000\n# 所以就可以 使用数组来做哈希表了， 因为数组都是 1000以内的\n\nclass Solution(object):\n    def intersection(self, nums1, nums2):\n        \"\"\"\n        :type nums1: List[int]\n        :type nums2: List[int]\n        :rtype: List[int]\n        \"\"\"\n        count1 = [0] * 1001\n        count2 = [0] * 1001\n        result = []\n\n        for i in range(len(nums1)):\n            count1[nums1[i]] += 1 # 这个地方没有在数每个数字出现了几次，而是把val转成index，只要这个数次出现了一次，就在这个对应的index上 += 1\n\n        for j in range(len(nums2)):\n            count2[nums2[j]] += 1\n\n        for k in range(1001):\n            if count1[k] * count2[k] &gt; 0:\n                result.append[k]\n\n        return result"
+  },
+  {
+    "objectID": "note/day6.html#快乐数",
+    "href": "note/day6.html#快乐数",
+    "title": "算法训练营Day 6",
+    "section": "202 快乐数",
+    "text": "202 快乐数\n\n编写一个算法来判断一个数 n 是不是快乐数。\n「快乐数」 定义为：\n对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和。\n然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。\n如果这个过程 结果为 1，那么这个数就是快乐数。\n如果 n 是 快乐数 就返回 true ；不是，则返回 false 。\n\n\n\n使用集合\n\nclass Solution:\n    def isHappy(self, n: int) -&gt; bool:\n        record = set() # 因为这题我们只是想判断是否有重复值，不需要排序，不关心出现过几次\n\n        while n != 1:\n            if n in record:\n                return False\n\n            record.add(n) # set用add\n\n            next_num = 0\n            while n &gt; 0:\n                digit = n % 10 # 取小数位\n                next_num += digit * digit # 这个地方要用 +=，而不是 =，这里要把 每一位的平方累加起来，而不是只保留 最后一位数字的平方\n                n //= 10 # 删除小数位\n\n            n = next_num\n\n        return True\n\n\n\n使用集合 (不同的 while 条件)\n\nclass Solution:\n   def isHappy(self, n: int) -&gt; bool:\n    record = set()\n\n    while n not in record:\n        record.add(n)\n\n        new_sum = 0\n        n_str = str(n)\n        for i in range(len(n_str)):\n            new_sum += int(n_str[i]) ** 2\n        if new_sum == 1:\n            return True\n        else: n = new_sum\n\n    return False\n\n\n\n使用数组+精简 （#为集合+精简）\n\nclass Solution:\n   def isHappy(self, n: int) -&gt; bool:\n    record = []\n    # record = set()\n\n    while n != 1:\n        n = sum(int(i) ** 2 for i in str(n))\n        if n in record:\n            return False\n        record.append(n)\n        # record.add(n)\n    return True\n\n\nclass Solution:\n    def get_sum(self, n):\n        total = 0\n        while n:\n            n, r = divmod(n, 10)\n            total += r * r\n        return total\n\n    def isHappy(self, n: int) -&gt; bool:\n        slow = n\n        fast = self.get_sum(n)\n\n        while fast != 1 and slow != fast:\n            slow = self.get_sum(n)\n            fast = self.get_sum(self.get_sum(fast)) # 这里fast一次走两步，所以要写两遍self.get_sum， 只写一遍的话fast就和slow的速度一样了\n        \n        return fast == 1 # == 是bool，返回为True / False， 而不是赋值给fast等于1"
+  },
+  {
+    "objectID": "note/day6.html#两数之和",
+    "href": "note/day6.html#两数之和",
+    "title": "算法训练营Day 6",
+    "section": "1 两数之和",
+    "text": "1 两数之和\n\n给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target 的那 两个 整数，并返回它们的数组下标。\n你可以假设每种输入只会对应一个答案，并且你不能使用两次相同的元素。\n你可以按任意顺序返回答案。\n/\n\n\n暴力法\n\nclass Solution(object):\n    def twoSum(self, nums, target):\n        \"\"\"\n        :type nums: List[int]\n        :type target: int\n        :rtype: List[int]\n        \"\"\"\n        for i in range(len(nums)):\n            for j in range(i + 1, len(nums)):\n                if nums[i] + nums[j] == target:\n                    return [i, j]\n\n\n\n使用字典，不使用enumerate\n\n# 这个解法的思路就是用target减去已经有的值判断这个差值 record里面有没有，有的话说明找到了两数之和，没有的话就继续直到nums循环完成\n\nclass Solution:\n    def twoSum(self, nums: List[int], target: int) -&gt; List[int]:\n        record = {} # record是读一个i存一个数字，而不是一次性读完，所以最少要读到 i=1才能判断两数之和\n\n        for i in range(len(nums)):\n            if target - nums[i] in record:\n                return [record[target - nums[i]], i]\n            record[nums[i]] = i # 如果只读了 i = 0 的话现在record里面只有一个数字，没法做两数之和，所以要把读的数字存进record然后读下一个\n\n        return []\n\n\n\n使用字典，使用enumerate\n\nclass Solution:\n    def twoSum(self, nums: List[int], target: int) -&gt; List[int]:\n        record = {}\n\n        # enumerate 等价于：\n        # index = 0\n        # for value in nums:\n            # 使用 index 和 value\n            # index += 1\n\n        # for index, value in enumerate(nums):这一行已经自动初始化并更新了 index 和 value, 所以这里我们不需要再手动初始化index, value\n        for index, value in enumerate(nums):\n            if target - value in record: # 遍历当前元素，并在map中寻找是否有匹配的key\n                return [record[target - value], index]\n            record[value] = index\n\n        return []"
+  },
+  {
+    "objectID": "note/day7.html#赎金信",
+    "href": "note/day7.html#赎金信",
+    "title": "算法训练营Day 7",
+    "section": "383 赎金信",
+    "text": "383 赎金信\n\n给你两个字符串：ransomNote 和 magazine ，判断 ransomNote 能不能由 magazine 里面的字符构成。\n如果可以，返回 true ；否则返回 false 。\nmagazine 中的每个字符只能在 ransomNote 中使用一次。\n/\n\n\n使用数组\n\nclass Solution:\n    def canConstruct(self, ransomNote: str, magazine: str) -&gt; bool:\n      ransom_count = [0] * 26\n      magazine_count = [0] * 26\n      for j in ransomNote:\n        ransom_count[ord(j) - ord('a')] += 1\n      for j in magazine:\n        magazine_count[ord(j) - ord('a')] += 1\n\n      return all(ransom_count[i] &lt;= magazine_count[i] for i in range(26)) # ransom里面这个字母用到的次数小于magazinez， ransomNote 才能由 magazine 里面的字符构成\n      # all() 返回bool值， 只要有一个是 False → 整体 False，全部是 True → 整体 True\n\n\n\n使用Counter\n\nfrom collections import Counter\n\nclass Solution:\n    def canConstruct(self, ransomNote: str, magazine: str) -&gt; bool:\n      # 如果还有剩余需求：\n      # not (...)\n      # Counter(...) != {}\n      # not Counter(...) == False\n\n      # 如果完全抵消：\n      # Counter(...) == {}\n      # not Counter(...) == True\n      return not Counter(ransomNote) - Counter(magazine)\n\n\n\n使用字典\n\nclass Solution:\n    def canConstruct(self, ransomNote: str, magazine: str) -&gt; bool:\n\n      # 建立库存表\n      count = {}\n      # counts[c] 表示字母 c 在 magazine 里还剩多少个\n      for c in magazine:\n        count[c] = count.get(c, 0) + 1 # get(c, 0) 保证第一次出现不会 KeyError\n\n      # 用 ransomNote 消耗库存\n      for c in ransomNote:\n        # 两种失败情况\n        # c not in count：magazine 里从来没有这个字母\n        # count[c] = 0： 有这个字母，但已经被用光了\n        if c not in count or count[c] == 0:\n          return False\n        count[c] -= 1 # 消耗一个字符\n      return True"
+  },
+  {
+    "objectID": "note/day7.html#三数之和",
+    "href": "note/day7.html#三数之和",
+    "title": "算法训练营Day 7",
+    "section": "15 三数之和",
+    "text": "15 三数之和\n\n给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0 。请你返回所有和为 0 且不重复的三元组。\n注意：答案中不可以包含重复的三元组。\n\n\n\nclass Solution:\n  def threeSum(self, nums: List[int]) -&gt; List[List[int]]:\n    result = []\n    nums.sort() \n    \n    # 固定 nums[i],  i 右侧用 left / right 找两数之和\n    for i in range(len(nums)):\n      if nums[i] &gt; 0: # 剪枝优化，nums[i] &gt; 0 直接结束\n        return result\n\n      if i &gt; 0 and nums[i - 1] == nums[i]: # 外层去重：避免相同的第一个数，外层去重只能防住 i 重复，完全防不住 i 后面 left / right 产生的重复组合。\n        continue\n      \n      # 双指针搜索区间是，(i, right]\n      left = i + 1\n      right = len(nums) - 1 \n\n      while right &gt; left: # 只要左右指针没相遇，就一直找。\n        sum_3 = nums[i] + nums[left] + nums[right]\n        if sum_3 &lt; 0:\n          left += 1 # sum_ &lt; 0 → left 右移\n        elif sum_3 &gt; 0:\n          right -= 1 # sum_ &gt; 0 → right 左移\n        else:\n          result.append([nums[i], nums[left], nums[right]]) # sum_ == 0 → 找到答案\n\n          # 这里的while要写在else里面，因为以下所有的去重 / 挪动双指针的操作都是基于我们已经找到第一个三数之和为0的情况下\n\n          # 内层去重：跳过重复的 left 和 right\n          # 例子：[-1, 0, 0, 0, 1]，如果不跳过，(0, 0, 1) 会被加入很多次\n          while right &gt; left and nums[right] == nums[right - 1]:\n            right -= 1\n          while right &gt; left and nums[left] == nums[left + 1]:\n            left += 1\n\n          # 双指针继续移动\n          # 当前组合已经用过, 继续找下一个可能的组合\n          right -= 1\n          left += 1\n\n    return result"
+  },
+  {
+    "objectID": "note/day7.html#四数之和",
+    "href": "note/day7.html#四数之和",
+    "title": "算法训练营Day 7",
+    "section": "18 四数之和",
+    "text": "18 四数之和\n\n给你一个由 n 个整数组成的数组 nums ，和一个目标值 target 。请你找出并返回满足下述全部条件且不重复的四元组 [nums[a], nums[b], nums[c], nums[d]] （若两个四元组元素一一对应，则认为两个四元组重复）：\n0 &lt;= a, b, c, d &lt; n\na、b、c 和 d 互不相同\nnums[a] + nums[b] + nums[c] + nums[d] == target\n你可以按 任意顺序 返回答案 。"
+  },
+  {
+    "objectID": "note/day9.html",
+    "href": "note/day9.html",
+    "title": "算法训练营Day 9",
+    "section": "",
+    "text": "给你一个字符串 s ，请你反转字符串中 单词 的顺序。\n单词 是由非空格字符组成的字符串。s 中使用至少一个空格将字符串中的 单词 分隔开。\n返回 单词 顺序颠倒且 单词 之间用单个空格连接的结果字符串。\n注意：输入字符串 s中可能会存在前导空格、尾随空格或者单词间的多个空格。返回的结果字符串中，单词间应当仅用单个空格分隔，且不包含任何额外的空格。\n示例 1：\n\n输入：s = “the sky is blue”\n输出：“blue is sky the”\n\n示例 2：\n\n输入：s = ” hello world ”\n输出：“world hello”\n解释：反转后的字符串中不能存在前导空格和尾随空格。\n\n示例 3：\n\n输入：s = “a good example”\n输出：“example good a”\n\n解释：如果两个单词间有多余的空格，反转后的字符串需要将单词间的空格减少到仅有一个。\n\n\n\n\nclass Solution:\n    def reverseWords(self, s: str) -&gt; str:\n        # s[::-1] 创建新字符串，然后让s重新绑定\n        s = s[::-1] # 先把整个s翻转\n\n        s = ' '.join(word[::-1] for word in s.split())\n\n        return s\n\n\n\n\n\nclass Solution:\n    def reverseWords(self, s: str) -&gt; str:\n        words = s.split()\n\n        left, right = 0, len(words) - 1 # 这里right的长度是 len(words), 而不是 len(s)\n\n        while right &gt; left:\n            words[left], words[right] = words[right], words[left]\n            left += 1\n            right -= 1\n\n        return ' '.join(words)\n\n\n\n\n\nclass Solution:\n    def reverseWords(self, s: str) -&gt; str:\n        words = s.split()\n        words = words[::-1]\n        return ' '.join(words)\n\n\n\n\n\n\nclass Solution:\n    def reverseWords(self, s: str) -&gt; str:\n        words = []\n        word = ''\n        s += ' ' # 帮助处理最后一个字词\n\n        for char in s:\n            if char == ' ': # 遇到空格就说明前面的可能是一个单词\n                if word != '': # 确认是单词，把它加入到一个数组中\n                    words.append(word)\n                    word = '' # 清空当前单词\n                continue\n            \n            word += char # 收集单词的字母\n        \n        words.reverse()\n        return ' '.join(words)"
+  },
+  {
+    "objectID": "note/day9.html#翻转字符串里的单词",
+    "href": "note/day9.html#翻转字符串里的单词",
+    "title": "算法训练营Day 9",
+    "section": "",
+    "text": "给你一个字符串 s ，请你反转字符串中 单词 的顺序。\n单词 是由非空格字符组成的字符串。s 中使用至少一个空格将字符串中的 单词 分隔开。\n返回 单词 顺序颠倒且 单词 之间用单个空格连接的结果字符串。\n注意：输入字符串 s中可能会存在前导空格、尾随空格或者单词间的多个空格。返回的结果字符串中，单词间应当仅用单个空格分隔，且不包含任何额外的空格。\n示例 1：\n\n输入：s = “the sky is blue”\n输出：“blue is sky the”\n\n示例 2：\n\n输入：s = ” hello world ”\n输出：“world hello”\n解释：反转后的字符串中不能存在前导空格和尾随空格。\n\n示例 3：\n\n输入：s = “a good example”\n输出：“example good a”\n\n解释：如果两个单词间有多余的空格，反转后的字符串需要将单词间的空格减少到仅有一个。\n\n\n\n\nclass Solution:\n    def reverseWords(self, s: str) -&gt; str:\n        # s[::-1] 创建新字符串，然后让s重新绑定\n        s = s[::-1] # 先把整个s翻转\n\n        s = ' '.join(word[::-1] for word in s.split())\n\n        return s\n\n\n\n\n\nclass Solution:\n    def reverseWords(self, s: str) -&gt; str:\n        words = s.split()\n\n        left, right = 0, len(words) - 1 # 这里right的长度是 len(words), 而不是 len(s)\n\n        while right &gt; left:\n            words[left], words[right] = words[right], words[left]\n            left += 1\n            right -= 1\n\n        return ' '.join(words)\n\n\n\n\n\nclass Solution:\n    def reverseWords(self, s: str) -&gt; str:\n        words = s.split()\n        words = words[::-1]\n        return ' '.join(words)\n\n\n\n\n\n\nclass Solution:\n    def reverseWords(self, s: str) -&gt; str:\n        words = []\n        word = ''\n        s += ' ' # 帮助处理最后一个字词\n\n        for char in s:\n            if char == ' ': # 遇到空格就说明前面的可能是一个单词\n                if word != '': # 确认是单词，把它加入到一个数组中\n                    words.append(word)\n                    word = '' # 清空当前单词\n                continue\n            \n            word += char # 收集单词的字母\n        \n        words.reverse()\n        return ' '.join(words)"
+  },
+  {
+    "objectID": "note/day8.html",
+    "href": "note/day8.html",
+    "title": "算法训练营Day 8",
+    "section": "",
+    "text": "今天是 字符串"
+  },
+  {
+    "objectID": "note/day8.html#反转字符串",
+    "href": "note/day8.html#反转字符串",
+    "title": "算法训练营Day 8",
+    "section": "344 反转字符串",
+    "text": "344 反转字符串\n\n编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 s 的形式给出。\n不要给另外的数组分配额外的空间，你必须原地修改输入数组、使用 O(1) 的额外空间解决这一问题。\n示例 1：\n\n输入：s = [“h”,“e”,“l”,“l”,“o”]\n输出：[“o”,“l”,“l”,“e”,“h”]\n\n示例 2：\n\n输入：s = [“H”,“a”,“n”,“n”,“a”,“h”]\n输出：[“h”,“a”,“n”,“n”,“a”,“H”]\n\n\n\n双指针法\n\n# 这题题目里面说了 必须原地修改输入数组， Do not return anything, modify s in-place instead\n# 不要给另外的数组分配额外的空间，所以我们直接修改 s\nclass Solution:\n    def reverseString(self, s: List[str]) -&gt; None:\n        left, right = 0, len(s) - 1\n\n        while left &lt; right:\n            s[left], s[right] = s[right], s[left]\n            left += 1\n            right -= 1\n\n###使用range\n\nclass Solution:\n    def reverseString(self, s: List[str]) -&gt; None:\n        n = len(s)\n        for i in range(n // 2):\n            s[i], s[n - i - 1] = s[n - i - 1], s[i]\n\n\n\n使用reversed\n\nclass Solution:\n    def reverseString(self, s: List[str]) -&gt; None:\n        s[:] = reversed(s)\n\n        # 第二种解法\n        # s[:] = s[::-1] 使用切片\n\n        # 第三种解法\n        # s = s.reverse()\n        # xxx 但是不能写成 s = reversed(s) # 它返回的是一个反向迭代器，而不是list，相当于修改了s，就不满足题意了"
+  },
+  {
+    "objectID": "note/day8.html#反转字符串-ii",
+    "href": "note/day8.html#反转字符串-ii",
+    "title": "算法训练营Day 8",
+    "section": "541 反转字符串 II",
+    "text": "541 反转字符串 II\n\n给定一个字符串 s 和一个整数 k，从字符串开头算起，每计数至 2k 个字符，就反转这 2k 字符中的前 k 个字符。\n如果剩余字符少于 k 个，则将剩余字符全部反转。\n如果剩余字符小于 2k 但大于或等于 k 个，则反转前 k 个字符，其余字符保持原样。\n示例 1：\n\n输入：s = “abcdefg”, k = 2\n输出：“bacdfeg”\n\n示例 2：\n\n输入：s = “abcd”, k = 2\n输出：“bacd”\n\n\n\nclass Solution(object):\n    def reverseStr(self, s, k):\n        \"\"\"\n        :type s: str\n        :type k: int\n        :rtype: str\n        \"\"\"\n        # rtype: str 说明 返回值类型必须是字符串\n        s = list(s) # 字符串转成列表，方便原地修改\n\n        for i in range(0, len(s), 2 * k): # 每次跳 2k 个字符\n            # 翻转区间 [i, i+k)\n            s[i : i + k] = reversed(s[i : i + k])\n\n        return ''.join(s) # 题目要求 返回字符串，而不是list"
+  },
+  {
+    "objectID": "note/day8.html#kamacode-54-替换数字",
+    "href": "note/day8.html#kamacode-54-替换数字",
+    "title": "算法训练营Day 8",
+    "section": "Kamacode 54 替换数字",
+    "text": "Kamacode 54 替换数字\n\n给定一个字符串 s，它包含小写字母和数字字符，请编写一个函数，将字符串中的字母字符保持不变，而将每个数字字符替换为number。 例如，对于输入字符串 “a1b2c3”，函数应该将其转换为 “anumberbnumbercnumber”。\n\n输入描述：输入一个字符串 s,s 仅包含小写字母和数字字符。\n输出描述：打印一个新的字符串，其中每个数字字符都被替换为了number\n输入示例：a1b2c3\n输出示例：anumberbnumbercnumber\n\n数据范围：\n1 &lt;= s.length &lt; 10000。\n\n\n直接替换\n\nclass Solution:\n    def replaceDigits(self, s:str) -&gt; str:\n        # 在python里面 字符串不能直接修改\n        # 所以我们要 新建一个容器，一边遍历原字符串，一边把结果拼进去\n        result = []\n\n        for c in s:\n            if '0' &lt;= c &lt;= '9':\n                result.append(\"number\")\n            else:\n                result.append(c)\n\n        return ''.join(result) # 在python里面 '' 和 \"\"没有区别\n\nif __name__ == \"__main__\":\n    s = input().strip()\n    sol = Solution() # Solution 记得加 ()\n    print(sol.replaceDigits(s))\n\n\n\n双指针法\n\n# 这个解法的思路是：先统计字符串中数字的个数，从而计算出替换后字符串的最终长度，然后一次性分配好结果数组，再使用两个指针分别从原字符串和结果数组的末尾向前移动，遇到数字就在结果数组中从后往前填入 `\"number\"`，遇到字母则直接复制，最终将结果数组拼接成字符串返回。\nclass Solution:\n    def replaceDigits(self, s:str) -&gt; str:\n        count = sum(1 for char in s if char.isdigit()) # 先数出来一共有多少个digit\n        expand_len = len(s) + count * 5 # 每一个digit被替换成'number'的时候都会多占5个格子\n        res = [''] * expand_len\n\n        old_index = len(s) - 1\n        new_index = expand_len - 1\n\n        while old_index &gt;= 0:\n            if s[old_index].isdigit():\n                # Python 切片是「左闭右开」，所以右边的index要 + 1\n                res[new_index -5 : new_index + 1] = \"number\" \n                new_index -= 6\n            else:\n                res[new_index] = s[old_index]\n                new_index -= 1\n            old_index -= 1\n\n        return ''.join(res)\n\nif __name__ == \"__main__\":\n    sol = Solution()\n\n    while True:\n        try:\n            s = input()\n            print(sol.replaceDigits(s))\n        except EOFError:\n            break"
+  }
+]
