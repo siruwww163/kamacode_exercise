@@ -33,8 +33,37 @@ format:
 > 
 > - 输出：1
 
-```{python}
+本题解题步骤：
 
+- 首先定义 一个unordered_map，key放a和b两数之和，value 放a和b两数之和出现的次数。
+  
+- 遍历大A和大B数组，统计两个数组元素之和，和出现的次数，放到map中。
+
+- 定义int变量count，用来统计 a+b+c+d = 0 出现的次数。
+
+- 再遍历大C和大D数组，找到如果 0-(c+d) 在map中出现过的话，就用count把map中key对应的value也就是出现次数统计出来。
+
+- 最后返回统计值 count 就可以了
+
+```{python}
+class Solution(object):
+    def fourSumCount(self, nums1, nums2, nums3, nums4):
+      result = dict()
+      for n1 in nums1:
+        for n2 in nums2:
+          if n1 + n2 in result:
+            result[n1 + n2] += 1
+          else:
+            result[n1 + n2] = 1
+
+      count = 0
+      for n3 in nums3:
+        for n4 in nums4:
+          key = - n3 - n4
+          if key in result:
+            # 这里不是在找能不能配对，而是在找有多少对配对的
+            count += result[key] # 这里不能用 count += 1因为题目没保证 有distinct的一对 n1 + n2
+      return count
 ```
 
 ## [383 赎金信](https://leetcode.cn/problems/ransom-note/description/)
@@ -171,3 +200,7 @@ class Solution:
 > 你可以按 任意顺序 返回答案 。
 >
 > ![](/image/18.png){width=60%}
+
+```{python}
+
+```
