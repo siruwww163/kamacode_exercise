@@ -6,3 +6,68 @@ format:
   html:
     embed-resources: true
 ---
+
+逆波兰式是一种表达式书写方式，运算符写在操作数后面，它也被称为 后缀表达式（Postfix Expression）。
+
+![](/image/150RPN.png){width = 60%}
+
+逆波兰式的计算规则：
+
+![](/image/150rpn_cal.png){width= 60%}
+
+## [150. 逆波兰表达式求值](https://leetcode.cn/problems/evaluate-reverse-polish-notation/description/)
+
+> 给你一个字符串数组 tokens ，表示一个根据 逆波兰表示法 表示的算术表达式。
+> 
+> 请你计算该表达式。返回一个表示表达式值的整数。
+> 
+> 注意：
+> 
+> - 有效的算符为 '+'、'-'、'*' 和 '/' 。
+> 
+> - 每个操作数（运算对象）都可以是一个整数或者另一个表达式。
+> 
+> - 两个整数之间的除法总是 向零截断 。
+> 
+> - 表达式中不含除零运算。
+> 
+> - 输入是一个根据逆波兰表示法表示的算术表达式。
+> 
+> - 答案及所有中间计算结果可以用 32 位 整数表示。
+>
+> ![](/image/150example.png){width = 70%}
+
+```{python}
+from operator import add, sub, mul
+
+# / 会产生浮点数，不适合整数除法
+# // 是整数运算，但对负数是向下取整
+# 所以负数除法要用 abs(x)//abs(y) 再手动加符号
+def div(x, y):
+    return int(x / y) if x * y > 0 else -(abs(x) // abs(y))
+
+class Solution(object):
+    op_map = {'+': add, '-': sub, '*': mul, '/': div} # 这里的div就是上面我们自己定义的def div
+
+    def evalRPN(self, tokens):
+        stack = []
+
+        for token in tokens:
+            if token in self.op_map:
+                op2 = stack.pop()
+                op1 = stack.pop()
+                stack.append(self.op_map[token](op1, op2))
+            else:
+                stack.append(int(token)) # 这里要写成int(token), 
+        return stack.pop()
+
+```
+
+## [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/description/)
+
+> 给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
+> 
+> 返回 滑动窗口中的最大值 。
+>
+> ![](/image/239example.png)
+
