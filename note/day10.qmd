@@ -451,7 +451,9 @@ class Solution:
         return ''.join(res[0:slow])
 
         # res = [有效结果 | 垃圾区]
-        #                  ↑
-       #                 slow
+        #             ↑
+       #            slow
 
 ```
+
+done
