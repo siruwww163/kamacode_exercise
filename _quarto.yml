@@ -8,7 +8,7 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - text: "Note"
+      - text: "Note 1 - 10"
         menu:
           - href: note/day1.qmd
             text: Day 1
@@ -28,6 +28,10 @@ website:
             text: Day 9
           - href: note/day10.qmd
             text: Day 10
+      - text: "Note 11 - 20"
+        menu:
+          - href: note/day11.qmd
+            text: Day 11
 
 format:
   html:
