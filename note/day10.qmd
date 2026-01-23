@@ -1,0 +1,105 @@
+---
+title: "算法训练营Day 10"
+author: "Siru Wu"
+date: today
+format: 
+  html:
+    embed-resources: true
+---
+
+## 栈的一些基本知识：
+
+- 栈只允许在同一端进行操作，这一端叫 栈顶（top）。
+
+- 常见操作有：
+
+- **入栈（push）**：把元素放到栈顶
+
+- **出栈（pop）**：把栈顶元素拿走
+
+- **查看栈顶（peek / top）**：看一下栈顶是谁，但不拿走
+
+- **判空（isEmpty）**：栈是不是空的
+
+## [232.用栈实现队列](https://leetcode.cn/problems/implement-queue-using-stacks/description/)
+
+> 请你仅使用两个栈实现先入先出队列。队列应当支持一般队列支持的所有操作（push、pop、peek、empty）：
+> 
+> 实现 MyQueue 类：
+> 
+> - void push(int x) 将元素 x 推到队列的末尾
+> 
+> - int pop() 从队列的开头移除并返回元素
+> 
+> - int peek() 返回队列开头的元素
+> 
+> - boolean empty() 如果队列为空，返回 true ；否则，返回 false
+说明：
+> 
+> 你 **只能** 使用标准的栈操作 —— 也就是只有 push to top, peek/pop from top, size, 和 is empty 操作是合法的。
+> 
+> 你所使用的语言也许不支持栈。你可以使用 list 或者 deque（双端队列）来模拟一个栈，只要是标准的栈操作即可。
+>
+> ![](/image/232example.png)
+
+```{python}
+# 队列这种数据结构不是“只能用一次”。
+# 题目里的 MyQueue 是一个对象，我们会对它反复调用 push / pop / peek，所以当然会出现第二次、第三次 pop。
+# 因此我们要有一个 if self.stack_out 来防止 已经排好队的元素被重复倒一次
+class MyQueue(object):
+
+    def __init__(self):
+        self.stack_in = []
+        self.stack_out = []
+
+    def push(self, x):
+        """
+        :type x: int
+        :rtype: None
+        """
+        self.stack_in.append(x)
+
+    def pop(self):
+        """
+        :rtype: int
+        """
+        if self.empty():
+            return None
+
+        # 这个地方是用来 防止已经排好队的元素被重复倒一次
+        if self.stack_out: # 如果 stack_out 不为空
+            return self.stack_out.pop()
+        else:
+            for i in range(len(self.stack_in)):
+                self.stack_out.append(self.stack_in.pop())
+            return self.stack_out.pop()
+        
+
+    def peek(self):
+        """
+        :rtype: int
+        """
+        if self.empty():
+            return None
+        self._move()
+        return self.stack_out[-1]   # 只看，不弹出
+
+        # 底下这个写法有点隐患
+        # 如果队列是空的，这里的 pop() 会返回 None，然后又把 None append 进 stack_out，队列就被污染了
+        # ans = self.pop()
+        # self.stack_out.append(ans)
+        # return ans
+
+    def empty(self):
+        """
+        :rtype: bool
+        """
+        return not (self.stack_in or self.stack_out)  # not + () 判断这两个stack里面是否有空值
+
+# Your MyQueue object will be instantiated and called as such:
+# obj = MyQueue()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.peek()
+# param_4 = obj.empty()
+```
