@@ -71,3 +71,75 @@ class Solution(object):
 >
 > ![](/image/239example.png)
 
+### 使用自定义的单调队列类
+
+```{python}
+from collections import deque
+
+
+class MyQueue: #单调队列（从大到小
+    def __init__(self):
+        self.queue = deque() #这里需要使用deque实现单调队列，直接使用list会超时
+    
+    #每次弹出的时候，比较当前要弹出的数值是否等于队列出口元素的数值，如果相等则弹出。
+    #同时pop之前判断队列当前是否为空。
+    def pop(self, value):
+        if self.queue and value == self.queue[0]:
+            self.queue.popleft()#list.pop()时间复杂度为O(n),这里需要使用collections.deque()
+            
+    #如果push的数值大于入口元素的数值，那么就将队列后端的数值弹出，直到push的数值小于等于队列入口元素的数值为止。
+    #这样就保持了队列里的数值是单调从大到小的了。
+    def push(self, value):
+        while self.queue and value > self.queue[-1]:
+            self.queue.pop()
+        self.queue.append(value)
+        
+    #查询当前队列里的最大值 直接返回队列前端也就是front就可以了。
+    def front(self):
+        return self.queue[0]
+    
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        que = MyQueue()
+        result = []
+        for i in range(k): #先将前k的元素放进队列
+            que.push(nums[i])
+        result.append(que.front()) #result 记录前k的元素的最大值
+        for i in range(k, len(nums)):
+            que.pop(nums[i - k]) #滑动窗口移除最前面元素
+            que.push(nums[i]) #滑动窗口前加入最后面的元素
+            result.append(que.front()) #记录对应的最大值
+        return result
+```
+
+### 直接用单调队列
+
+```{python}
+from collections import deque
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        max_list = []
+        # kept_nums的取值是 下一个数更大的话，直接pop清空 前面的数字，如果下一个数没有当前数字大的话就append，这就保证kept_nums[-1]一定是当前窗口最大值
+        kept_nums = deque()
+
+        for i in range(len(nums)):
+            update_kept_nums(kept_nums, nums[i]) # 右侧新元素加入
+
+            # 当 i > k的时候，说明当前窗口长度超过了k值（实际的窗口长度），所以我们需要把最左边的那个值删掉
+            # 虽然在我们眼里滑动窗口向右移动左边的值就不在窗口范围内了，但是在代码中我们要写这个if来告诉计算机我们挪动了，不需要超出范围的值了
+            if i >= k and kept_nums[0] == nums[i - k]: 
+                kept_nums.popleft() # 删除超过窗口的最左边的值
+                # 例如k = 3, 然后我们加入了第4个数，那么当前kept_nums[0]这个数 == nums[i - k]的话就删掉它
+
+            if i >= k - 1: #当 
+                # 加入 k = 3, 那么当i = 3的时候第一个窗口就形成了，从 i = 2 (也就是 k - 1)开始往后滑动的每一个窗口我们都要记录max并且append
+                max_list.append(kept_nums[0])
+
+        return max_list
+
+def update_kept_nums(kept_nums, num): # num 是新加入的元素
+    while kept_nums and num > kept_nums[-1]: # 当kept_nums存在，并且新加入的数字大于当前kept_nums的最大值的时候，直接pop 清空 当前kept_nums的所有内容，然后把新的数字加入kept_nums
+        kept_nums.pop()
+
+    kept_nums.append(num)
+```
