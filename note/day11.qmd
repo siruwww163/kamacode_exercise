@@ -9,11 +9,11 @@ format:
 
 逆波兰式是一种表达式书写方式，运算符写在操作数后面，它也被称为 后缀表达式（Postfix Expression）。
 
-![](/image/150RPN.png){width = 60%}
+![](/image/150RPN.png){width = 50%}
 
 逆波兰式的计算规则：
 
-![](/image/150rpn_cal.png){width= 60%}
+![](/image/150rpn_cal.png){width= 50%}
 
 ## [150. 逆波兰表达式求值](https://leetcode.cn/problems/evaluate-reverse-polish-notation/description/)
 
@@ -35,7 +35,7 @@ format:
 > 
 > - 答案及所有中间计算结果可以用 32 位 整数表示。
 >
-> ![](/image/150example.png){width = 70%}
+> ![](/image/150example.png){width = 50%}
 
 ```{python}
 from operator import add, sub, mul
@@ -142,4 +142,97 @@ def update_kept_nums(kept_nums, num): # num 是新加入的元素
         kept_nums.pop()
 
     kept_nums.append(num)
+```
+
+## [347 前k个高频元素](https://leetcode.cn/problems/top-k-frequent-elements/description/)
+
+> 给你一个整数数组 nums 和一个整数 k ，请你返回其中出现频率前 k 高的元素。你可以按 任意顺序 返回答案。
+> 
+> **示例 1：**
+> 
+> 输入：nums = [1,1,1,2,2,3], k = 2    输出：[1,2]
+> 
+> **示例 2：**
+> 
+> 输入：nums = [1], k = 1     输出：[1]
+> 
+> **示例 3：**
+> 
+> 输入：nums = [1,2,1,2,1,2,3,1,3,2], k = 2   输出：[1,2]
+
+
+### 小顶堆（min heap）和 大顶堆（max heap）
+
+> **小顶堆（min heap）**
+> 
+> - 堆顶元素是最小的
+> 
+> - 每个父节点 ≤ 它的左右子节点
+> 
+> - 最小值永远在最上面
+
+> **大顶堆（max heap）**
+> 
+> - 堆顶元素是最大的
+> 
+> - 每个父节点 ≥ 它的左右子节点
+> 
+> - 最大值永远在最上面
+
+![](/image/347hasppush.png){width=90%}
+
+### Counter
+
+```{python}
+import heapq
+from collections import Counter
+
+class Solution:
+    def topKFrequent(self, nums, k):
+        # 1. 统计每个数字出现的次数
+        count = Counter(nums)
+
+        # 2. 用小顶堆，堆里放 (频率, 数字)
+        # Python 的 heapq 是 按第一个元素排序, 我们要比的是 频率, 所以频率必须放前面
+        heap = []
+
+        for num, freq in count.items():
+            heapq.heappush(heap, (freq, num))
+            # 如果堆大小超过 k，就弹出频率最小的
+            if len(heap) > k:
+                heapq.heappop(heap)
+
+        # 3. 从堆中取结果
+        return [num for freq, num in heap]
+
+```
+
+### 解法二
+
+```{python}
+#时间复杂度：O(nlogk)
+#空间复杂度：O(n)
+import heapq
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        #要统计元素出现频率
+        map_ = {} #nums[i]:对应出现的次数
+        for i in range(len(nums)):
+            map_[nums[i]] = map_.get(nums[i], 0) + 1
+        
+        #对频率排序
+        #定义一个小顶堆，大小为k
+        pri_que = [] #小顶堆
+        
+        #用固定大小为k的小顶堆，扫描所有频率的数值
+        for key, freq in map_.items():
+            heapq.heappush(pri_que, (freq, key))
+            if len(pri_que) > k: #如果堆的大小大于了K，则队列弹出，保证堆的大小一直为k
+                heapq.heappop(pri_que)
+        
+        #找出前K个高频元素，因为小顶堆先弹出的是最小的，所以倒序来输出到数组
+        result = [0] * k
+        for i in range(k-1, -1, -1):
+            result[i] = heapq.heappop(pri_que)[1]
+        return result
 ```
