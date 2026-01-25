@@ -202,5 +202,95 @@ class Solution:
 > ![](/image/18.png){width=60%}
 
 ```{python}
+class Solution:
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        # 先对数组排序
+        # 排序的目的：
+        # 1. 方便使用双指针
+        # 2. 方便后面做剪枝
+        # 3. 方便对结果进行去重
+        nums.sort()
+
+        n = len(nums)
+        result = []  # 用来存放最终所有不重复的四元组结果
+
+        # 第一层循环：固定第一个数 nums[i]
+        for i in range(n):
+
+            # 剪枝（可省）
+            # 当前 nums[i] 已经是正数
+            # target 也是正数
+            # 并且 nums[i] 已经大于 target
+            # 由于数组已经排序，后面的数只会更大
+            # 四个正数相加一定 > target
+            # 所以后面不可能再有解，直接结束循环
+            if nums[i] > target and nums[i] > 0 and target > 0:
+                break
+
+            # 去重 i
+            # 如果当前 nums[i] 和上一个 nums[i-1] 一样
+            # 说明以这个数为第一个数的所有组合已经算过了
+            # 直接跳过，避免产生重复结果
+            if i > 0 and nums[i] == nums[i - 1]:
+                continue
+
+            # 第二层循环：固定第二个数 nums[j]
+            for j in range(i + 1, n):
+
+                # 剪枝（可省）
+                # 如果 nums[i] + nums[j] 已经大于 target
+                # 并且 target 是正数
+                # 后面两个数只会更大，不可能再凑出 target
+                if nums[i] + nums[j] > target and target > 0:
+                    break
+
+                # 去重 j
+                # j > i + 1 保证是同一层中出现的重复
+                # 避免出现相同的第二个数导致重复结果
+                if j > i + 1 and nums[j] == nums[j - 1]:
+                    continue
+
+                # 使用双指针查找剩下的两个数
+                # left 从 j 的右边开始
+                # right 从数组末尾开始
+                left, right = j + 1, n - 1
+
+                # 当左右指针没有相遇时，不断查找
+                while left < right:
+                    # 当前四个数的和
+                    s = nums[i] + nums[j] + nums[left] + nums[right]
+
+                    # 情况 1：刚好等于 target，找到一个合法解
+                    if s == target:
+                        result.append([nums[i], nums[j], nums[left], nums[right]])
+
+                        # 去重 left
+                        # 如果下一个 left 的值和当前一样
+                        # 会产生重复的四元组，必须跳过
+                        while left < right and nums[left] == nums[left + 1]:
+                            left += 1
+
+                        # 去重 right
+                        # 同理，跳过重复的右指针值
+                        while left < right and nums[right] == nums[right - 1]:
+                            right -= 1
+
+                        # 当前组合已经处理完
+                        # 同时移动左右指针，继续寻找下一个可能组合
+                        left += 1
+                        right -= 1
+
+                    # 情况 2：当前和小于 target
+                    # 由于数组有序，想让和变大，只能移动 left
+                    elif s < target:
+                        left += 1
+
+                    # 情况 3：当前和大于 target
+                    # 想让和变小，只能移动 right
+                    else:
+                        right -= 1
+
+        # 返回所有不重复的四元组结果
+        return result
 
 ```
