@@ -15,7 +15,7 @@ format:
 
 > 给定一个二叉树的根节点 root ，返回 它的 中序 遍历 。
 >
-> ![](/image/144.png){width = 40%}
+> ![](/image/144.png){width=40%}
 
 ```{python}
 # 前序遍历-递归-LC144_二叉树的前序遍历
@@ -183,7 +183,7 @@ class Solution:
 
 ### 利用长度法
 
-![](/image/102BFS_Logic.png){width = 50%}
+![](/image/102BFS_Logic.png){width=50%}
 
 ```{python}
 # Definition for a binary tree node.
