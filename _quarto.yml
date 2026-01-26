@@ -32,6 +32,8 @@ website:
         menu:
           - href: note/day11.qmd
             text: Day 11
+          - href: note/day13.qmd
+            text: Day 13
 
 format:
   html:
