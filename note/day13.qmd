@@ -1,0 +1,247 @@
+---
+title: "算法训练营Day 13"
+author: "Siru Wu"
+date: today
+format: 
+  html:
+    embed-resources: true
+---
+
+![](/image/dfs.png)
+
+## 递归遍历
+
+### [144 前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/description/)
+
+> 给定一个二叉树的根节点 root ，返回 它的 中序 遍历 。
+>
+> ![](/image/144.png){width = 40%}
+
+```{python}
+# 前序遍历-递归-LC144_二叉树的前序遍历
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> List[int]:
+        res = []
+
+        def dfs(node):
+            if node is None:
+                return
+
+            res.append(node.val) #这里要写node.val, 不仅仅是node, node 是一个 TreeNode 对象，里面有 val/left/right
+            dfs(node.left)
+            dfs(node.right)
+        dfs(root)
+        return res
+```
+
+### [94 中序遍历](https://leetcode.cn/problems/binary-tree-inorder-traversal/description/)
+
+```{python}
+# 中序遍历的话 res.append(node.val) 放在中间
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> List[int]:
+        res = []
+
+        def dfs(node):
+            if node is None:
+                return
+
+            dfs(node.left)
+            res.append(node.val)
+            dfs(node.right)
+        dfs(root)
+        return res
+```
+
+### [145 后序遍历](https://leetcode.cn/problems/binary-tree-postorder-traversal/description/)
+
+```{python}
+# 后序遍历的话 res.append(node.val) 放在最后
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def postorderTraversal(self, root):
+        """
+        :type root: Optional[TreeNode]
+        :rtype: List[int]
+        """
+        res = []
+
+        def dfs(node):
+            if node is None:
+                return
+
+            dfs(node.left)
+            dfs(node.right)
+            res.append(node.val)
+        dfs(root)
+        return res     
+```
+
+## 迭代遍历 
+
+### [144 前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/description/)
+
+```{python}
+# 先把根节点压栈，每次弹一个节点，立刻访问它，再把它的右孩子压栈，再把它的左孩子压栈
+# 右先压 是 因为栈是后进先出，要让左先出来
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+
+        stack = [root]
+        result = []
+
+        while stack:
+            node = stack.pop()
+            result.append(node.val) # 记得这里也是node.val, 一定要有 val ！！！
+            if node.right:
+                stack.append(node.right)
+            if node.left:
+                stack.append(node.left)
+            return result
+
+
+```
+
+
+### [94 中序遍历](https://leetcode.cn/problems/binary-tree-inorder-traversal/description/)
+
+```{python}
+# stack 里必须存「节点对象」cur，
+# res 里必须存「节点的值」cur.val。
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> List[int]:
+        stack = []
+        result = []
+        cur = root
+
+        while stack or cur:
+            while cur:
+                stack.append(cur) # stack 里必须存「节点对象」cur
+                cur = cur.left
+
+            cur = stack.pop()
+            result.append(cur.val) # res 里必须存「节点的值」cur.val
+            cur = cur.right
+
+        return result
+```
+
+### [145 后序遍历](https://leetcode.cn/problems/binary-tree-postorder-traversal/description/)
+
+```{python}
+# 这里可以跟前序遍历公用一套逻辑
+# 前序遍历 （中左右） -> 如果让左孩子先入栈， 右孩子后入栈 ，那result的顺序就是 (右左中) -> reverse的话就是 后序遍历 （左右中）
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> List[int]:
+         if not root:
+            return []
+
+        stack = [root]
+        result = []
+
+        while stack:
+            node = stack.pop()
+            result.append(node.val) 
+
+            if node.left:
+                stack.append(node.left)
+            if node.right:
+                stack.append(node.right)
+        return result[::-1]
+
+```
+
+## 统一迭代法
+
+### [144 前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/description/)
+
+
+
+### [94 中序遍历](https://leetcode.cn/problems/binary-tree-inorder-traversal/description/)
+
+
+
+### [145 后序遍历](https://leetcode.cn/problems/binary-tree-postorder-traversal/description/)
+
+
+
+## 层序遍历法 [102.二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/description/)
+
+### 利用长度法
+
+![](/image/102BFS_Logic.png){width = 50%}
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if not root:
+            return []
+
+        res = []
+        quene = deque([root])
+
+        while quene:
+            level = []
+            size = len(quene)
+
+            for _ in range(size):
+                cur = quene.popleft()
+                level.append(cur.val)
+
+                if cur.left:
+                    quene.append(cur.left)
+                if cur.right:
+                    quene.append(cur.right)
+            res.append(level)
+        return res
+```
+
+### 递归法
+
+```{python}
+#递归法
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if not root:
+            return []
+
+        levels = []
+        def traverse(node, level):
+            if not node:
+                return
+
+            if len(levels) == level:
+                levels.append([])
+
+            levels[level].append(node.val)
+            traverse(node.left, level + 1)
+            traverse(node.right, level + 1)
+        traverse(root, 0)
+        return levels
+```
