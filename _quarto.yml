@@ -34,6 +34,8 @@ website:
             text: Day 11
           - href: note/day13.qmd
             text: Day 13
+          - href: note/day14.qmd
+            text: Day 14
 
 format:
   html:

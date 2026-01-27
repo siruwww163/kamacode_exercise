@@ -1,0 +1,237 @@
+---
+title: "算法训练营Day 14"
+author: "Siru Wu"
+date: today
+format: 
+  html:
+    embed-resources: true
+---
+
+## [226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/description/)
+
+> 给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。
+>
+> ![](/image/226example.png)
+
+### 递归法
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+      if not root:
+        return
+
+      # 前序遍历
+      root.left, root.right = root.right, root.left
+      self.invertTree(root.left)
+      self.invertTree(root.right)
+
+      # 中序遍历
+      # self.invertTree(root.left)
+      # root.left, root.right = root.right, root.left
+      # self.invertTree(root.right)
+
+      # 后序遍历
+      # self.invertTree(root.left)
+      # self.invertTree(root.right)
+      # root.left, root.right = root.right, root.left
+
+      return root
+```
+
+### 迭代法
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        if not root:
+            return None 
+        stack = [root]
+
+        while stack:
+          node = stack.pop()
+          if node.right:
+            stack.append(node.right)
+          if node.left:
+            stack.append(node.left)
+          node.left, node.right = node.right = node.left
+
+        return root
+```
+
+## [101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/description/)
+
+> 给你一个二叉树的根节点 root ， 检查它是否轴对称。
+>
+> ![](/image/101example.png)
+
+![](/image/101condition.png)
+
+### 递归法
+
+
+```{python}
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        # 这里的compare函数就是我们下面自己定义的def compare
+        return self.compare(root.left, root.right) # 这里要写root.left, root.right
+        
+    def compare(self, left, right):
+        #首先排除空节点的情况
+        if left == None and right != None: return False # 左为空 右不为空 False
+        elif left != None and right == None: return False # 左不为空 右为空 False
+        elif left == None and right == None: return True # 左右都为空 True
+        #排除了空节点，再排除数值不相同的情况
+        elif left.val != right.val: return False # 左右都不为空，比较值，值不一样 False
+        
+        #此时就是：左右节点都不为空，且数值相同的情况
+        #此时才做递归，做下一层的判断
+        outside = self.compare(left.left, right.right) #左子树：左、 右子树：右
+        inside = self.compare(left.right, right.left) #左子树：右、 右子树：左
+        isSame = outside and inside #左子树：中、 右子树：中 （逻辑处理）
+        return isSame
+```
+
+## [104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/description/)
+
+> 给定一个二叉树 root ，返回其最大深度。
+> 
+> 二叉树的 最大深度 是指从根节点到最远叶子节点的最长路径上的节点数。
+>
+> ![](/image/104example.png)
+
+### 递归法
+
+```{python}
+class Solution:
+    def maxdepth(self, root: treenode) -> int:
+      if not root:
+        return 0 # 这里要写return 0， 不能只写return
+
+      return 1 + max(self.maxdepth(root.left), self.maxdepth(root.right))
+
+      # 展开来写就是：
+      # left = self.maxdepth(root.left)
+      # right = self.maxdepth(root.right)
+      # return 1 + max(left, right)
+```
+
+### 迭代法
+
+```{python}
+from collections import deque
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+
+        depth = 0
+        queue = deque([root])
+
+        while queue:
+          depth += 1
+          for _ in range(len(queue)):
+            node = queue.popleft()
+            if node.left:
+              queue.append(node.left)
+            if node.right:
+              queue.append(node.right)
+        return depth
+```
+
+## [111. 二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/description/)
+
+> 给定一个二叉树，找出其最小深度。
+> 
+> 最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
+> 
+> 说明：叶子节点是指没有子节点的节点。
+>
+> ![](/image/111example.png)
+
+### 递归法
+
+```{python}
+# 判题系统只会调用 minDepth 函数， getDepth是自己定义的
+class Solution:
+    def getDepth(self, node):
+        if node is None:
+            return 0
+        leftDepth = self.getDepth(node.left)  # 左
+        rightDepth = self.getDepth(node.right)  # 右
+        
+        # 当一个左子树为空，右不为空，这时并不是最低点
+        if node.left is None and node.right is not None:
+            return 1 + rightDepth
+        
+        # 当一个右子树为空，左不为空，这时并不是最低点
+        if node.left is not None and node.right is None:
+            return 1 + leftDepth
+        
+        result = 1 + min(leftDepth, rightDepth)
+        return result
+
+    def minDepth(self, root):
+        return self.getDepth(root)
+```
+
+### 迭代法
+
+- 最大深度：必须把整棵树都遍历完，走到最后一层才知道有多深，所以通常最后 return depth（或者一直更新答案）。
+
+- 最小深度：只要你在 BFS 的过程中，第一次遇到叶子节点（左右孩子都为空），那一层的 depth 就是最小深度，可以立刻返回。
+
+```{python}
+from collections import deque
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def minDepth(self, root: TreeNode) -> int:
+      if not root:
+            return 0
+      
+      depth = 0
+      queue = deque([root])
+
+      while queue:
+        depth += 1
+        for _ in range(len(queue)):
+          node = queue.popleft()
+
+          # 第一次遇到叶子节点（左右孩子都为空），那一层的 depth 就是最小深度，可以立刻返回。
+          if not node.left and not node.right:
+            return depth
+
+          if node.left:
+            queue.append(node.left)
+
+          if node.right:
+            queue.append(node.right)
+      return depth
+```
