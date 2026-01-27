@@ -11,7 +11,7 @@ format:
 
 > 给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。
 >
-> ![](/image/226example.png)
+> ![](/image/226example.png){width=50%}
 
 ### 递归法
 
@@ -75,7 +75,7 @@ class Solution:
 
 > 给你一个二叉树的根节点 root ， 检查它是否轴对称。
 >
-> ![](/image/101example.png)
+> ![](/image/101example.png){width=50%}
 
 ![](/image/101condition.png)
 
@@ -112,7 +112,7 @@ class Solution:
 > 
 > 二叉树的 最大深度 是指从根节点到最远叶子节点的最长路径上的节点数。
 >
-> ![](/image/104example.png)
+> ![](/image/104example.png){width=50%}
 
 ### 递归法
 
@@ -168,7 +168,7 @@ class Solution:
 > 
 > 说明：叶子节点是指没有子节点的节点。
 >
-> ![](/image/111example.png)
+> ![](/image/111example.png){width=50%}
 
 ### 递归法
 
