@@ -1,0 +1,197 @@
+---
+title: "算法训练营Day 15"
+author: "Siru Wu"
+date: today
+format: 
+  html:
+    embed-resources: true
+---
+
+## [110.平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/description/)
+
+**平衡二叉树的定义：**
+
+- 对于任意一个节点
+- 左子树高度 − 右子树高度 的绝对值 ≤ 1
+- 并且 **左右子树本身也必须是平衡的**
+
+> 给定一个二叉树，判断它是否是 平衡二叉树  
+>
+> ![](/image/110example.png){width=50%}
+
+### 递归法
+
+对这一段code的理解：
+
+在二叉树里：
+
+      A
+     / \
+    B   C
+
+A 是 父节点，B、C 是 子节点，这是一个数据结构关系
+
+代码的执行流程是这样的：
+
+get_height(A)
+ ├─ 调用 get_height(B)
+ │    ├─ 调用 get_height(None)
+ │    ├─ 调用 get_height(None)
+ │    └─ 执行 B 的 middle → return
+ └─ 回到 get_height(A)
+      ├─ 得到 left_height
+      ├─ 调用 get_height(C)
+      └─ 执行 A 的 middle
+
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isBalanced(self, root: Optional[TreeNode]) -> bool:
+        if self.get_height(root) != -1:
+            return True
+        else:
+            return False
+
+    def get_height(self, root):
+        if not root:
+            return 0
+
+        # 左
+        if (left_height := self.get_height(root.left)) == -1:
+            return -1
+
+        # 右
+        if (right_height := self.get_height(root.right)) == -1:
+            return -1
+
+        # 中
+        if abs(left_height - right_height) > 1:
+            return -1
+        else:
+            return 1 + max(left_height, right_height)
+
+```
+
+## [257. 二叉树的所有路径](https://leetcode.cn/problems/binary-tree-paths/description/)
+
+> 给你一个二叉树的根节点 root ，按 任意顺序 ，返回所有从根节点到叶子节点的路径。
+> 
+> 叶子节点 是指没有子节点的节点。
+>
+> ![](/image/257example.png){width=50%}
+
+```{python}
+# 回溯一定要配对, 进递归前 append, 出递归后 pop
+class Solution:
+  def traversal(self, cur, path, result):
+    path.append(cur.val) # 这里要写cur.val
+    if not cur.left and not cur.right:
+      spath = '->'.join(map(str, path))
+      result.append(spath)
+      return
+
+    if cur.left:
+      self.traversal(cur.left, path, result)
+      # 因为 path 是共享的, 所以必须回退一步，恢复到「没走左子树之前」的状态，这一步叫 回溯
+      path.pop()
+
+    if cur.right:
+      self.traversal(cur.right, path, result)
+      path.pop()
+
+  def binaryTreePaths(self, root: Optional[TreeNode]) -> List[str]:
+    result = []
+    path = []
+    if not root:
+      return result
+    self.traversal(root, path, result)
+    return result
+```
+
+## [404.左叶子之和](https://leetcode.cn/problems/sum-of-left-leaves/description/)
+
+> 给定二叉树的根节点 root ，返回所有左叶子之和。
+>
+> ![](/image/404example.png){width=50%}
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def sumOfLeftLeaves(self, root):
+      if root is None:
+        return 0
+      if root.left is Non and root.right is None:
+        return 0
+
+      leftVal = self.sumOfLeftLeaves(root.left)
+      rightVal = self.sumOfLeftLeaves(root.right)
+      if root.left and root.left.left is None and root.left.right is None:
+        leftVal = root.left.val
+
+      sum_val = leftVal + rightVal
+      return sum_val
+
+```
+
+## [222. 完全二叉树的节点个数](https://leetcode.cn/problems/count-complete-tree-nodes/description/)
+
+> 给你一棵 完全二叉树 的根节点 root ，求出该树的节点个数。
+> 
+> 完全二叉树 的定义如下：在完全二叉树中，除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层的节点都集中在该层最左边的若干位置。若最底层为第 h 层（从第 0 层开始），则该层包含 1~ 2h 个节点。
+>
+> ![](/image/222example.png){width=50%}
+
+### 普通二叉树 迭代法
+
+```{python}
+class Solution:
+    def countNodes(self, root: TreeNode) -> int:
+      return self.getNodeNum(root)
+
+    def getNodeNum(self, cur):
+      if not cur:
+        return 0
+      
+      leftNum = self.getNodeNum(cur.left)
+      rightNum = self.getNodeNum(cur.right)
+      totalNum = 1 + leftNum + rightNum
+      return totalNum
+
+```
+
+### 完全二叉树 迭代法
+
+```{python}
+class Solution:
+    def countNodes(self, root: TreeNode) -> int:
+      if not root:
+        return 0
+      left = root.left
+      right = root.right
+      left_length = 0
+      right_length = 0
+  
+      while left:
+        left = left.left
+        left_length += 1
+      while right:
+        right = right.right
+        right_length += 1
+
+      # 这个if在判断这个完全二叉树是不是满二叉树
+      if left_length == right_length:
+        return (2 ** (left_length + 1)) - 1
+        
+      return self.countNodes(root.left) + self.countNodes(root.right) + 1
+```
