@@ -1,0 +1,97 @@
+---
+title: "算法训练营Day 16"
+author: "Siru Wu"
+date: today
+format: 
+  html:
+    embed-resources: true
+---
+
+## [513. 找树左下角的值](https://leetcode.cn/problems/find-bottom-left-tree-value/description/)
+
+> 给定一个二叉树的 根节点 root，请找出该二叉树的 最底层 最左边 节点的值。
+> 
+> 假设二叉树中至少有一个节点。
+>
+> ![](/image/513example.png){width=50%}
+
+### 递归法
+
+```{python}
+class Solution:
+    def findBottomLeftValue(self, root: Treenode) -> int:
+        self.max_depth = float('-inf') # 这个地方要用 负的 inf，如果用正的inf那么max_depth永远不会更新
+
+        # 这一句的意思是：现在还没有任何答案，等 DFS 过程中再决定，它是一个占位状态
+        self.result = None # 这里result要写成None而不是0， 0表示已经有值了，但是None表示还没赋值
+
+        self.traversal(root, 0) # 这个要写在self.result = None的后面，如果写在它前面，那么一调用traversal result又会更新成None
+
+        return self.result
+
+    def traversal(self, node, depth):
+        if not node.left and not node.right:
+            if depth > self.max_depth:
+                self.max_depth = depth
+                self.result = node.val
+            return
+
+        # 在递归里面这里只能用if 不能用while， 因为递归就是在自动往下跑，如果用while就是在同一层不停地跑
+        if node.left:
+            # 这一行是精简版
+            # 精简版实际没有跑到下一层，它只是在当前层计算了下一层的值然后传回来
+            self.traversal(node.left, depth+1)
+
+            # 这是第二种写法
+            # depth += 1
+            # self.traversal(node.left, depth)
+            # depth -= 1
+
+        if node.right:
+            depth += 1
+            self.traversal(node.right, depth)
+            depth -= 1
+            # self.traversal(node.right, depth+1)
+```
+
+### 迭代法
+
+```{python}
+from collections import deque
+
+class Solution:
+    def findBottomLeftValue(self, root: TreeNode) -> int:
+        if root is None:
+            return 0
+
+        queue = deque([root])
+        result = 0
+        while queue:
+            size = len(queue)
+            for i in range(size): # 这里不能直接写 range(len(queue))，因为queue 在 for 循环内部一直在变，popleft() 会减少长度，append() 会增加长度，所以我们要先 先固定当前层大小
+                node = queue.popleft()
+
+                if i == 0: # 在 BFS 中，同一层节点入队顺序是：左 → 右，所以 i == 0 一定是这一层的最左节点
+                    result = node.val
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+
+        return result
+```
+
+## [112. 路径总和](https://leetcode.cn/problems/path-sum/description/)
+
+> 给你二叉树的根节点 root 和一个表示目标和的整数 targetSum 。判断该树中是否存在 根节点到叶子节点 的路径，这条路径上所有节点值相加等于目标和 targetSum 。如果存在，返回 true ；否则，返回 false 。
+> 
+> 叶子节点 是指没有子节点的节点。
+>
+> ![](/image/112example1.png){width=50%}
+>
+> ![](/image/112example2.png){width=50%}
+
+```{python}
+
+
+```
