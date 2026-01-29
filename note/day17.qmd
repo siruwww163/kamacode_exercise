@@ -1,0 +1,134 @@
+---
+title: "算法训练营Day 17"
+author: "Siru Wu"
+date: today
+format: 
+  html:
+    embed-resources: true
+---
+
+## [654. 最大二叉树](https://leetcode.cn/problems/maximum-binary-tree/description/)
+
+> 给定一个不重复的整数数组 nums 。 最大二叉树 可以用下面的算法从 nums 递归地构建:
+> 
+> - 创建一个根节点，其值为 nums 中的最大值。
+> 
+> - 递归地在最大值 左边 的 子数组前缀上 构建左子树。
+> 
+> - 递归地在最大值 右边 的 子数组后缀上 构建右子树。
+> 
+> - 返回 nums 构建的 最大二叉树 。
+>
+> ![](/image/654example1.png){width=50%}
+>
+> ![](/image/654example2.png){width=50%}
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def constructMaximumBinaryTree(self, nums: List[int]) -> Optional[TreeNode]:
+        if not nums: # 一定记得先判断是否是空的
+            return None
+        root_val = max(nums)
+        root = TreeNode(root_val)
+
+        seperator_idx = nums.index(root_val)
+
+        left = nums[:seperator_idx]
+        right = nums[seperator_idx + 1:]
+
+        root.left = self.constructMaximumBinaryTree(left)
+        root.right = self.constructMaximumBinaryTree(right)
+
+        return root
+```
+
+这是进入二叉树以来第一道我能直接秒的题目哈哈哈哈哈哈，太开心了。这么多天了写二叉树写的怀疑人生。
+
+## [617. 合并二叉树](https://leetcode.cn/problems/merge-two-binary-trees/description/)
+
+> 给你两棵二叉树： root1 和 root2 。
+> 
+> 想象一下，当你将其中一棵覆盖到另一棵之上时，两棵树上的一些节点将会重叠（而另一些不会）。你需要将这两棵树合并成一棵新二叉树。合并的规则是：如果两个节点重叠，那么将这两个节点的值相加作为合并后节点的新值；否则，不为 null 的节点将直接作为新二叉树的节点。
+> 
+> 返回合并后的二叉树。
+> 
+> 注意: 合并过程必须从两个树的根节点开始。
+
+### 递归法
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def mergeTrees(self, root1: Optional[TreeNode], root2: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root1:
+            return root2
+        if not root2:
+            return root1
+
+        root1.val += root2.val
+        root1.left = self.mergeTrees(root1.left, root2.left)
+        root1.right = self.mergeTrees(root1.right, root2.right)
+        return root1
+```
+
+### BFS 迭代法
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def mergeTrees(self, root1: Optional[TreeNode], root2: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root1:
+            return root2
+        if not root2:
+            return root1
+
+        queue = deque()
+        queue.append(root1)
+        queue.append(root2)
+
+        while queue:
+            node1 = queue.popleft()
+            node2 = queue.popleft()
+            if node1.left and node2.left:
+                queue.append(node1.left)
+                queue.append(node2.left)
+            if node1.right and node2.right:
+                queue.append(node1.right)
+                queue.append(node2.right)
+
+            node1.val += node2.val
+            if not node1.left and node2.left:
+                node1.left = node2.left
+            if not node1.right and node2.right:
+                node1.right = node2.right
+        return root1
+```
+
+## [700.二叉搜索树中的搜索](https://leetcode.cn/problems/search-in-a-binary-search-tree/description/)
+
+> 给定二叉搜索树（BST）的根节点 root 和一个整数值 val。
+> 
+> 你需要在 BST 中找到节点值等于 val 的节点。 返回以该节点为根的子树。 如果节点不存在，则返回 null 。
+>
+> ![](/image/700example.png){width=50%}
+
+```{python}
+
+
+```
