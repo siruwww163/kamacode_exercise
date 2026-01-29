@@ -91,6 +91,136 @@ class Solution:
 >
 > ![](/image/112example2.png){width=50%}
 
+### 递归法
+
+```{python}
+class Solution:
+    def traversal(self, cur: TreeNode, count: int) -> bool:
+        if not cur.left and not cur.right and count == 0:
+            return True
+        if not cur.left and not cur.right:
+            return False
+
+        if cur.left:
+            count -= cur.left.val
+            if self.traversal(cur.left, count):
+                return True
+            count += cur.left.val
+
+        if cur.right:
+            count -= cur.right.val
+            if self.traversal(cur.right, count):
+                return True
+            count += cur.right.val
+
+        return False
+
+    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:
+        if not root:
+            return False
+        return self.traversal(root, targetSum - root.val)
+
+```
+
+### 递归法，精简版
+
+```{python}
+class Solution:
+    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:
+        if not root:
+            return False
+        if not root.left and not root.right and targetSum == root.val:
+            return self.hasPathSum(root.left, targetSum - root.val) or self.hasPathSum(root.right, targetSum - root.val)
+```
+
+### 迭代法
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:
+        if not root:
+            return False
+        # 此时栈里要放的是pair<节点指针，路径数值>
+        st = [(root, root.val)]
+        while st:
+            node, path_sum = st.pop()
+            # 如果该节点是叶子节点了，同时该节点的路径数值等于sum，那么就返回true
+            if not node.left and not node.right and path_sum == targetSum:
+                return True
+            # 右节点，压进去一个节点的时候，将该节点的路径数值也记录下来
+            if node.right:
+                st.append((node.right, path_sum + node.right.val))
+            # 左节点，压进去一个节点的时候，将该节点的路径数值也记录下来
+            if node.left:
+                st.append((node.left, path_sum + node.left.val))
+        return False
+
+```
+
+## [113. 路径总和 II](https://leetcode.cn/problems/path-sum-ii/description/)
+
+> 给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。
+> 
+> 叶子节点 是指没有子节点的节点。
+>
+> ![](/image/113example1.png){width=50%}
+>
+> ![](/image/113example2.png){width=50%}
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def __init__(self):
+        self.result = []
+        self.path = []
+
+    def traversal(self, cur, count):
+        if not cur.left and not cur.right and count == 0: # 遇到了叶子节点且找到了和为sum的路径
+            self.result.append(self.path[:])
+            return
+
+        if not cur.left and not cur.right: # 遇到叶子节点而没有找到合适的边，直接返回
+            return
+
+        if cur.left: # 左 （空节点不遍历）
+            self.path.append(cur.left.val)
+            count -= cur.left.val
+            self.traversal(cur.left, count) # 递归
+            count += cur.left.val # 回溯
+            self.path.pop() # 回溯
+
+        if cur.right: #  右 （空节点不遍历）
+            self.path.append(cur.right.val) 
+            count -= cur.right.val
+            self.traversal(cur.right, count) # 递归
+            count += cur.right.val # 回溯
+            self.path.pop() # 回溯
+
+        return
+
+    def pathSum(self, root: Optional[TreeNode], targetSum: int) -> List[List[int]]:
+        self.result.clear()
+        self.path.clear()
+        if not root:
+            return self.result
+        self.path.append(root.val) # 把根节点放进路径
+        self.traversal(root, targetSum - root.val)
+        return self.result 
+```
+
+### 迭代法
+
 ```{python}
 
 
