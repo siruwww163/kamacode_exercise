@@ -128,7 +128,143 @@ class Solution:
 >
 > ![](/image/700example.png){width=50%}
 
-```{python}
+**BST 的定义保证：**
 
+- 左子树所有值 < root.val
+
+- 右子树所有值 > root.val
+
+### 递归法
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def searchBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+        if not root or root.val == val:
+            return root
+
+        if root.val > val: # BST保证如果val小于root.val的话，它一定在左子树上
+            return self.searchBST(root.left, val)
+
+        if root.val < val:
+            return self.searchBST(root.right, val)
+
+```
+
+### 迭代法
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def searchBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+        while root:
+            if root.val > val:
+                root = root.left
+            elif root.val < val:
+                root = root.right
+            else:
+                return root
+```
+
+## [98.验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/description/)
+
+> 给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。
+> 
+> 有效 二叉搜索树定义如下：
+> 
+> 节点的左子树只包含 严格小于 当前节点的数。
+> 
+> 节点的右子树只包含 严格大于 当前节点的数。
+> 
+> 所有左子树和右子树自身必须也是二叉搜索树。
+>
+> ![](/image/98example.png){width=50%}
+
+### 递归法（版本一）利用中序递增性质，转换成数组
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def __init__(self):
+        self.vec = []
+
+    def traversal(self, root):
+        if not root:
+            return
+
+        # 中序遍历
+        self.traversal(root.left)
+        self.vec.append(root.val) # 这里append的是root.val, 而不是root
+        self.traversal(root.right)
+
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        self.vec = []
+        self.traversal(root)
+        for i in range(1, len(self.vec)): # 这里要写self.vec而不是vec
+            # 检查数组是不是 单调递增
+            if self.vec[i] <= self.vec[i - 1]:
+                return False
+        return True
+```
+
+### 递归法（版本二）设定极小值，进行比较
+
+```{python}
+class Solution:
+    def __init__(self):
+        self.maxVal = float('-inf')
+
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        if not root:
+            return True
+
+        # 这一段是按照 left -> mid -> right写的，就规定了跑的是中序遍历
+        left = self.isValidBST(root.left)
+
+        if self.maxVal < root.val:
+            self.maxVal = root.val
+        else:
+            return False
+
+        right = self.isValidBST(root.right)
+
+        # left和right都返回的是bool值
+        return left and right
+```
+
+### 
+
+```{python}
+class Solution:
+    def __init__(self):
+        self.pre = None
+
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        if not root:
+            return True
+
+        left  = self.isValidBST(root.left)
+
+        if self.pre is not None and self.pre.val >= root.val:
+            return False
+            self.pre = root
+        
+        right = self.isValidBST(root.right)
+        return left and right
 
 ```
