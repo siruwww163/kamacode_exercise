@@ -1,0 +1,96 @@
+---
+title: "算法训练营Day 18"
+author: "Siru Wu"
+date: today
+format: 
+  html:
+    embed-resources: true
+---
+
+## [530. 二叉搜索树的最小绝对差](https://leetcode.cn/problems/minimum-absolute-difference-in-bst/description/)
+
+> 给你一个二叉搜索树的根节点 root ，返回 树中任意两不同节点值之间的最小差值 。
+> 
+> 差值是一个正数，其数值等于两值之差的绝对值。
+>
+> ![](/image/530example1.png){width=50%}
+>
+> ![](/image/530example2.png){width=50%}
+
+### 递归法利用中序递增，结合数组
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def __init__(self):
+        self.vec = []
+
+    def traversal(self, root):
+        if root is None:
+            return
+        self.traversal(root.left)
+        self.vec.append(root.val)  # 将二叉搜索树转换为有序数组
+        self.traversal(root.right)
+
+    def getMinimumDifference(self, root):
+        self.vec = []
+        self.traversal(root)
+        if len(self.vec) < 2:
+            return 0
+        result = float('inf')
+        for i in range(1, len(self.vec)):
+            # 统计有序数组的最小差值
+            result = min(result, self.vec[i] - self.vec[i - 1])
+        return result
+```
+
+### 递归法（版本二）利用中序递增，找到该树最小值
+
+```{python}
+class Solution:
+    def __init__(self):
+        self.result = float('inf')
+        self.pre = None
+
+    def traversal(self, cur):
+        if not cur:
+            return
+
+        self.traversal(cur.left)
+        if self.pre is not None:
+            self.result = min(self.result, cur.val - self.pre.val)
+        self.pre = cur
+        self.traversal(cur.right)
+
+    def getMinimumDifference(self, root):
+        self.traversal(root)
+        return self.result
+```
+
+### 迭代法
+
+```{python}
+class Solution:
+    def getMinimumDifference(self, root):
+        stack = []
+        cur = root
+        pre = None
+        result = float('inf')
+
+        while cur is not None or len(stack) > 0:
+            if cur is not None:
+                stack.append(cur)  # 将访问的节点放进栈
+                cur = cur.left  # 左
+            else:
+                cur = stack.pop()
+                if pre is not None:  # 中
+                    result = min(result, cur.val - pre.val)
+                pre = cur
+                cur = cur.right  # 右
+
+        return result
+```
