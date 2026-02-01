@@ -103,13 +103,15 @@ class Solution:
 > 
 > 假定 BST 满足如下定义：
 > 
-> 结点左子树中所含节点的值 小于等于 当前节点的值
+> - 结点左子树中所含节点的值 小于等于 当前节点的值
 > 
-> 结点右子树中所含节点的值 大于等于 当前节点的值
+> - 结点右子树中所含节点的值 大于等于 当前节点的值
 > 
-> 左子树和右子树都是二叉搜索树
+> - 左子树和右子树都是二叉搜索树
 >
 > ![](/image/501example.png){width=50%}
+
+**BST 的中序遍历结果是一个非递减序列，也就是说，相同的值一定是连在一起出现的。**
 
 ```{python}
 class Solution:
@@ -127,7 +129,7 @@ class Solution:
         # 中
         if self.pre is None:  # 第一个节点
             self.count = 1
-        elif self.pre.val == cur.val:  # 与前一个节点数值相同
+        elif self.pre.val == cur.val:  # 与前一个节点数值相同，这里比的是val，要记得写val
             self.count += 1
         else:  # 与前一个节点数值不同
             self.count = 1
@@ -151,5 +153,43 @@ class Solution:
 
         self.searchBST(root)
         return self.result
-
 ```
+
+## [236. 二叉树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/description/)
+
+> 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+> 
+> 百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+>
+> ![](/image/236example1.png){width=50%}
+>
+> ![](/image/236example2.png){width=50%}
+
+### 递归法 （版本一）
+
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if root == q or root == p or not root:
+            return root
+
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+
+        if left is not None and right is not None:
+            return root
+
+        if left is None and right is not None:
+            return right
+        elif left is not None and right is None:
+            return left
+        else:
+            return None
+````
