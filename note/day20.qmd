@@ -17,8 +17,67 @@ format:
 >
 > ![](/image/235example.png){width=50%}
 
-```{python}
+### 递归法
 
+```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def traversal(self, cur, q, p):
+        if not cur:
+            return cur
+
+        if cur.val > q.val and cur.val > p.val: # 一起在左边
+            left = self.traversal(cur.left, p, q)
+            if left is not None:
+                return left
+
+        if cur.val < q.val and cur.val < p.val: # 一起在右边
+            right = self.traversal(cur.right, p, q)
+            if right is not None:
+                return right
+
+        # 情况 1：p 在左，q 在右
+        # 情况 2：q 在左，p 在右
+        # 情况 3：cur 本身就是 p 或 q
+        return cur
+
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        return self.traversal(root, p, q)
+```
+
+### 递归法（版本二）精简
+
+```{python}
+class Solution:
+    def lowestCommonAncestor(self, root, p, q):
+      if root.val > q.val and root.val > p.val:
+        return self.lowestCommonAncestor(root.left, p, q)
+      elif root.val < q.val and root.val < p.val:
+        return self.lowestCommonAncestor(root.right, p, q)
+      else:
+        return root
+    
+```
+
+### 迭代法
+
+```{python}
+class Solution:
+    def lowestCommonAncestor(self, root, p, q):
+      while root:
+        if root.val > p.val and root.val > q.val:
+          root = root.left
+        elif root.val < p.val and root.val < q.val:
+          root = root.right
+        else:
+          return root
+      return None # 迭代版本必须写return None
 ```
 
 
@@ -33,7 +92,30 @@ format:
 > ![](/image/701example2.png){width=50%}
 
 ```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def insertIntoBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+        if root is None or root.val == val:
+            return TreeNode(val)
 
+        elif root.val > val:
+            if root.left is None:
+                root.left = TreeNode(val)
+            else:
+                self.insertIntoBST(root.left, val)
+
+        elif root.val < val:
+            if root.right is None:
+                root.right = TreeNode(val)
+            else:
+                self.insertIntoBST(root.right, val)
+
+        return root
 
 ```
 
@@ -52,7 +134,101 @@ format:
 >
 > ![](/image/450example2.png){width=50%}
 
+思路：
+
+> 在 BST 中删除 key
+> 用递归先找到它
+> 找到后按节点孩子情况分 3 类处理
+> 最后把更新后的子树一路 return 回去
+
+---
+
+1️⃣ 先递归找到要删除的节点
+
+1. 如果当前 `root` 是空
+
+   * 说明没找到
+   * 直接返回 None
+
+2. 如果 `key < root.val`
+
+   * 根据 BST 规则，只可能在左子树
+   * 去左子树递归删除
+   * 把返回结果重新接回 `root.left`
+
+3. 如果 `key > root.val`
+
+   * 只可能在右子树
+   * 去右子树递归删除
+   * 把返回结果重新接回 `root.right`
+
+> 这一阶段只是“定位 key”，不做真正删除
+
+---
+
+2️⃣ 找到 key 后，按节点情况分类删除
+
+当 `root.val == key`，真正开始删，分三种情况：
+
+1. **没有孩子（叶子节点）**
+
+   * 直接删掉
+   * 返回 None
+
+2. **只有一个孩子**
+
+   * 用那个孩子顶替当前节点
+   * 返回 `root.left` 或 `root.right`
+
+3. **左右孩子都有**
+
+   * 用右子树整体顶替当前节点
+   * 在右子树中找到最小节点
+   * 把原来的左子树接到这个最小节点的左边
+   * 返回新的根（`root.right`）
+
+> 这一阶段是“真正删除 + 保证 BST 不乱”
+
+---
+
+3️⃣ 删除完成后，把结果往上返回
+
+1. 每一层递归都会 return 一个“更新后的子树根”
+2. 父节点用这个返回值，重新接好左或右子树
+3. 最终最外层 return 的，就是删除后的整棵树根
+
+
+
 ```{python}
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def deleteNode(self, root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
+        if root is None:
+            return root
 
-
+        if root.val == key:
+            if root.left is None and root.right is None:
+                return None
+            elif root.left is None:
+                return root.right
+            elif root.right is None:
+                return root.left
+            else: # 移除root
+                cur = root.right
+                while cur.left is not None:
+                    cur = cur.left
+                cur.left = root.left
+                return root.right
+        
+        # 还没找到 key，继续往下递归
+        if root.val > key: # key 比当前节点小
+            root.left = self.deleteNode(root.left, key)
+        if root.val < key:
+            root.right = self.deleteNode(root.right, key)
+        return root
 ```
