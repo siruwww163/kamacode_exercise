@@ -50,6 +50,8 @@ website:
         menu:
           - href: note/day21.qmd
             text: Day 21
+          - href: note/day22.qmd
+            text: Day 22
 
 format:
   html:
