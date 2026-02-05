@@ -50,8 +50,6 @@ class Solution:
         result = []
         self.backtracking(n, k, 1, [], result)
         return result
-        
-
 ```
 
 ## [216.组合总和III](https://leetcode.cn/problems/combination-sum-iii/description/)
@@ -67,8 +65,27 @@ class Solution:
 > ![](/image/216example.png){width=50%}
 
 ```{python}
+class Solution:
+    def backtracking(self, targetSum, k, curSum, startIndex, path, result):
+        if curSum > targetSum:
+            return
 
+        if len(path) == k:
+            if curSum == targetSum:
+                result.append(path[:])
+            return
 
+        for i in range(startIndex, 9 - (k - len(path)) + 2):
+            curSum += i
+            path.append(i)
+            self.backtracking(targetSum, k, curSum, i + 1, path, result)
+            curSum -= i
+            path.pop()
+
+    def combinationSum3(self, k: int, n: int) -> List[List[int]]:
+        result = []
+        self.backtracking(n, k, 0, 1, [], result)
+        return result
 ```
 
 
@@ -83,6 +100,42 @@ class Solution:
 > ![](/image/17example1.png){width=50%}
 
 ```{python}
+class Solution:
+    def __init__(self):
+        self.letterMap = [
+            "",     # 0
+            "",     # 1
+            "abc",  # 2
+            "def",  # 3
+            "ghi",  # 4
+            "jkl",  # 5
+            "mno",  # 6
+            "pqrs", # 7
+            "tuv",  # 8
+            "wxyz"  # 9
+        ]
+        self.result = []
+        self.s = ""
 
+    def backtracking(self, digits, index): # 这里index指的是digits的第几位
+        # self.s是用来存当前未完成的结果，就是每个字母可以和谁配
+        # self.result是用来存已经搜索好的结果
+        if index == len(digits):
+            self.result.append(self.s)
+            return
 
+        digit = int(digits[index]) # 找digits里面每一个index对应的是哪个val
+        letters = self.letterMap[digit] # 找这个val对应的letters
+
+        for i in range(len(letters)):
+            self.s += letters[i]
+            self.backtracking(digits, index + 1)
+            self.s = self.s[:-1]
+
+    def letterCombinations(self, digits: str) -> List[str]:
+        if len(digits)  == 0:
+            return self.result
+
+        self.backtracking(digits, 0)
+        return self.result
 ```
