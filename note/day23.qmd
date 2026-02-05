@@ -95,6 +95,20 @@ class Solution:
 > - 输出：[["a"]]
 
 ```{python}
+class Solution:
+    def backtracking(self, s, startIndex, path, result):
+        if startIndex == len(s):
+            result.append(path[:])
+            return result
 
+        for i in range(startIndex, len(s)):
+            if s[startIndex : i + 1] == s[startIndex : i + 1][::-1]: # 若反序和正序相同，意味着这是回文串
+                path.append(s[startIndex : i + 1])
+                self.backtracking(s, i + 1, path, result)
+                path.pop()
 
+    def partition(self, s: str) -> List[List[str]]:
+        result = []
+        self.backtracking(s, 0, [], result)
+        return result
 ```
