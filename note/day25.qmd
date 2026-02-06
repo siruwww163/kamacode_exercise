@@ -26,8 +26,30 @@ format:
 > - 输出：[[4,4]]
 
 ```{python}
+class Solution:
+  def findSubsequences(self, nums: List[int]) -> List[List[int]]:
+    result = []
+    self.backtracking(nums, 0, [], result)
+    return result
 
+  def backtracking(self, nums, startIndex, path, result):
+    if len(path) > 1:
+      result.append(path[:])
+      # 这个地方不能return，len(path) > 1 就 return 会把更长的答案全砍掉
+      # 正确做法是：len(path) >= 2 时把它加入结果，但 不要 return，继续往下搜
 
+    used = set()
+    for i in range(startIndex, len(nums)):
+      # 这个地方判断两种情况：
+      # 1. nums这个数字是否已经用过了，如果它已经存在于used set里面，就跳过它用来去重
+      # 2. 如果path存在，并且nums的下一个数字小于前一个数字，那么它就不符合递增规律，跳过它
+      if nums[i] in used or (path and nums[i] < path[-1]): 
+        continue
+
+      used.add(nums[i]) # set只能用add，不能用append
+      path.append(nums[i])
+      self.backtracking(nums, i + 1, path, result)
+      path.pop()
 ```
 
 ## [46.全排列](https://leetcode.cn/problems/permutations/description/)
