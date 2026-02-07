@@ -75,8 +75,26 @@ class Solution:
 > - 输出：[[1]]
 
 ```{python}
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        result = []
+        self.backtracking(nums, [], [False] * len(nums), result) # 这个地方要写[False] * len(nums)，不然会out of index
+        return result
 
+    def backtracking(self, nums, path, used, result):
+        if len(path) == len(nums):
+            result.append(path[:])
+            return
 
+        for i in range(len(nums)):
+            if used[i]:
+                continue
+
+            used[i] = True
+            path.append(nums[i])
+            self.backtracking(nums, path, used, result)
+            path.pop()
+            used[i] = False
 ```
 
 ## [47.全排列 II](https://leetcode.cn/problems/permutations-ii/description/)
@@ -88,6 +106,28 @@ class Solution:
 > ![](/image/47example.png){width=50%}
 
 ```{python}
+class Solution:
+    def permuteUnique(self, nums: List[int]) -> List[List[int]]:
+        result = []
+        self.backtracking(nums, [], [False] * len(nums), result)
+        return result
+        
+    def backtracking(self, nums, path, used, result):
+        if len(path) == len(nums):
+            result.append(path[:])
+            result
 
+        for i in range(len(nums)):
+            if used[i]:
+                continue
+            
+            # 要记得写这一步用来去重，一定要有i > 0和not used [i - 1]
+            if i > 0 and nums[i] == nums[i - 1] and not used[i - 1]: 
+                continue
 
+            used[i] = True
+            path.append(nums[i])
+            self.backtracking(nums, path, used, result)
+            path.pop()
+            used[i] = False
 ```
