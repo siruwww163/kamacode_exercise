@@ -1,14 +1,5 @@
 ---
-title: "算法训练营Day 33"
-author: "Siru Wu"
-date: today
-format: 
-  html:
-    embed-resources: true
----
-
----
-title: "算法训练营Day 31"
+title: "算法训练营Day 36"
 author: "Siru Wu"
 date: today
 format: 
