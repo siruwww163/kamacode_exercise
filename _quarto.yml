@@ -70,6 +70,16 @@ website:
         menu:
         - href: note/day31.qmd
             text: Day 31
+        - href: note/day32.qmd
+            text: Day 32
+        - href: note/day33.qmd
+            text: Day 33
+        - href: note/day34.qmd
+            text: Day 34
+        - href: note/day35.qmd
+            text: Day 35
+        - href: note/day36.qmd
+            text: Day 36
 
 format:
   html:
