@@ -62,8 +62,44 @@ class Solution:
 > 
 > - 解释: 你不需要移除任何区间，因为它们已经是无重叠的了。
 
-```{python}
+### 版本一
 
+```{python}
+class Solution:
+    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+        if not intervals:
+            return 0
+        
+        intervals.sort(key=lambda x: x[0])  # 按照左边界升序排序
+        count = 0  # 记录重叠区间数量
+        
+        for i in range(1, len(intervals)):
+            if intervals[i][0] < intervals[i - 1][1]:  # 存在重叠区间
+                intervals[i][1] = min(intervals[i - 1][1], intervals[i][1])  # 更新重叠区间的右边界
+                count += 1
+        
+        return count
+```
+
+### 版本二：修改重叠区域气球的code
+
+```{python}
+class Solution:
+    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+        if not intervals:
+            return 0
+        
+        intervals.sort(key=lambda x: x[0])  # 按照左边界升序排序
+        
+        result = 1  # 不重叠区间数量，初始化为1，因为至少有一个不重叠的区间
+        
+        for i in range(1, len(intervals)):
+            if intervals[i][0] >= intervals[i - 1][1]:  # 没有重叠
+                result += 1
+            else:  # 重叠情况
+                intervals[i][1] = min(intervals[i - 1][1], intervals[i][1])  # 更新重叠区间的右边界
+        
+        return len(intervals) - result
 ```
 
 ## [763.划分字母区间](https://leetcode.cn/problems/partition-labels/description/)
@@ -95,5 +131,20 @@ class Solution:
 > - 输出：[10]
 
 ```{python}
+class Solution:
+    def partitionLabels(self, s: str) -> List[int]:
+        last_occurrence = {}  # 存储每个字符最后出现的位置
+        for i, ch in enumerate(s): # ch表示字母，i表示字母出现的位置
+            last_occurrence[ch] = i # 更新每个 ch（字母）最后出现的 i (位置)
 
+        result = []
+        start = 0
+        end = 0
+        for i, ch in enumerate(s):
+            end = max(end, last_occurrence[ch])  # 找到当前字符出现的最远位置
+            if i == end:  # 如果当前位置是最远位置，表示可以分割出一个区间
+                result.append(end - start + 1) # 因为题目要求我们返回每一段的长度，不是返回分段字符串，所以这里我们只用记录每一段的len
+                start = i + 1
+
+        return result
 ```
