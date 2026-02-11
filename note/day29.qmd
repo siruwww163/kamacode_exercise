@@ -19,8 +19,49 @@ format:
 >
 > ![](/image/134example2.png){width=50%}
 
-```{python}
+### 暴力法（会超时）
 
+这里是index = (i + 1) % len(cost) 模拟 环形前进 的实例解释：
+
+![](/image/134circle_explanation.png){width = 60%}
+
+```{python}
+class Solution:
+    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
+        for i in range(len(cost)):
+            rest = gas[i] - cost[i]  # 记录剩余油量
+            index = (i + 1) % len(cost)  # 下一个加油站的索引
+
+            while rest > 0 and index != i:  # 模拟以i为起点行驶一圈, 如果index == i, 说明车又回到了起点 i，已经跑了一整圈，可以停了
+                rest += gas[index] - cost[index]  # 更新剩余油量
+                index = (index + 1) % len(cost)  # 更新下一个加油站的索引
+
+            if rest >= 0 and index == i:  # 如果以i为起点跑一圈，剩余油量>=0，并且回到起始位置
+                return i  # 返回起始位置i
+
+        return -1  # 所有起始位置都无法环绕一圈，返回-1
+```
+
+### 贪心算法
+
+```{python}
+class Solution:
+    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
+        curSum = 0  # 当前累计的剩余油量
+        totalSum = 0  # 总剩余油量
+        start = 0  # 起始位置
+        
+        for i in range(len(gas)):
+            curSum += gas[i] - cost[i]
+            totalSum += gas[i] - cost[i]
+            
+            if curSum < 0:  # 当前累计剩余油量curSum小于0
+                start = i + 1  # 起始位置更新为i+1
+                curSum = 0  # curSum重新从0开始累计
+        
+        if totalSum < 0:
+            return -1  # 总剩余油量totalSum小于0，说明无法环绕一圈
+        return start
 ```
 
 ## [135. 分发糖果](https://leetcode.cn/problems/candy/description/)
@@ -54,7 +95,22 @@ format:
 > - 第三个孩子只得到 1 颗糖果，这满足题面中的两个条件。
 
 ```{python}
-
+class Solution:
+    def candy(self, ratings: List[int]) -> int:
+        n = len(ratings)
+        candies = [1] * n
+        
+        # Forward pass: handle cases where right rating is higher than left
+        for i in range(1, n):
+            if ratings[i] > ratings[i - 1]:
+                candies[i] = candies[i - 1] + 1
+        
+        # Backward pass: handle cases where left rating is higher than right
+        for i in range(n - 2, -1, -1):
+            if ratings[i] > ratings[i + 1]:
+                candies[i] = max(candies[i], candies[i + 1] + 1)
+        
+        return sum(candies)
 ```
 
 ## [860.柠檬水找零](https://leetcode.cn/problems/lemonade-change/description/)
@@ -70,7 +126,39 @@ format:
 > ![](/image/860example.png){width=50%}
 
 ```{python}
-
+class Solution:
+    def lemonadeChange(self, bills: List[int]) -> bool:
+        five = 0
+        ten = 0
+        twenty = 0
+        
+        for bill in bills:
+            # 情况一：收到5美元
+            if bill == 5:
+                five += 1
+            
+            # 情况二：收到10美元
+            if bill == 10:
+                if five <= 0:
+                    return False
+                ten += 1
+                five -= 1
+            
+            # 情况三：收到20美元
+            if bill == 20:
+                # 先尝试使用10美元和5美元找零
+                if five > 0 and ten > 0:
+                    five -= 1
+                    ten -= 1
+                    #twenty += 1
+                # 如果无法使用10美元找零，则尝试使用三张5美元找零
+                elif five >= 3:
+                    five -= 3
+                    #twenty += 1
+                else:
+                    return False
+        
+        return True
 ```
 
 ## [406.根据身高重建队列](https://leetcode.cn/problems/queue-reconstruction-by-height/description/)
@@ -81,6 +169,20 @@ format:
 >
 > ![](/image/406example.png){width=50%}
 
-```{python}
+inser(p[1], p) example:
+![](/image/406insert_example.png){width=70%}
 
+```{python}
+class Solution:
+    def reconstructQueue(self, people: List[List[int]]) -> List[List[int]]:
+    	# 先按照h维度的身高顺序从高到低排序。确定第一个维度
+        # lambda返回的是一个元组：当-x[0](维度h）相同时，再根据x[1]（维度k）从小到大排序
+        people.sort(key=lambda x: (-x[0], x[1]))
+        que = []
+	
+	# 根据每个元素的第二个维度k，贪心算法，进行插入
+        # people已经排序过了：同一高度时k值小的排前面。
+        for p in people:
+            que.insert(p[1], p)
+        return que
 ```
