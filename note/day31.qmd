@@ -36,7 +36,20 @@ format:
 > - 解释：区间 [1,4] 和 [4,7] 可被视为重叠区间。
 
 ```{python}
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+      result = []
+      if not intervals:
+        return result
 
+      intervals.sort(key=lambda x:x[0])
+      result.append(intervals[0]) # 因为intervals已经排序了，第一个区间直接放进去，因为没得比较
+      for i in range(1, len(intervals)): # 这里的i就从 i = 1开始处理了，也就是我们要比i = 1的左边界 intervals[i][0] 和result里面已经有的区间的右边界 result[-1][1]
+        if result[-1][1] >= intervals[i][0]:
+          result[-1][1] = max(result[-1][1], intervals[i][1]) # 更新右边界
+        else:
+          result.append(intervals[i])
+      return result
 ```
 
 ## [738.单调递增的数字](https://leetcode.cn/problems/monotone-increasing-digits/description/)
@@ -63,11 +76,45 @@ format:
 > 
 > - 输出: 299
 
-```{python}
+### 暴力法（超时）
 
+```{python}
+class Solution:
+    def checkNum(self, num):
+      max_digit = 10 
+      for i in range(num):
+        digit = num % 10 # 找个位数的数字
+        if max_digit > digit: # max_digit是最后一位的数字，如果这个数想单调递增那么后面一位的数字要大于前一位，所以要max_digit > digit
+          max_digit = digit # 更新max_digit,后面就是倒数第二位的数字跟最后一位数字比较大小
+        else:
+          return False
+        num // 10 # 移除已经比较过的末位数字，num//10之后开始比较新的末位数字（倒数第二位，倒数第三位...）
+      return True
+
+  def monotoneIncreasingDigits(self, N):
+    for i in range(N, 0, -1): # range(start, stop, step) 从 start 开始, 每次走 step, 一直走到 到达 stop 之前停止,这里的意思就是 从N开始每次减 1，一直到大于 0 为止，不包含 0
+      if self.checkNum(i):
+        return i
+    return 0
 ```
 
-## [968.监控二叉树](https://leetcode.cn/problems/binary-tree-cameras/description/)
+### 贪心
+
+```{python}
+class Solution:
+    def monotoneIncreasingDigits(self, n: int) -> int:
+        strNum = list(str(n)) # 先把数字变成字符串列表，因为字符串不能改某一位
+
+        for i in range(len(strNum) - 1, 0, -1): # 从右往左遍历
+            if strNum[i - 1] > strNum[i]: # 找到破坏递增的地方，左边数字 > 右边数字
+                strNum[i - 1] = str(int(strNum[i - 1]) - 1) # 把左边减 1
+                for j in range(i, len(strNum)): # 把i后面的数字全部变成9，因为我们想让结果尽可能大，例如把 ’322‘ -> '329'
+                    strNum[j] = '9'
+
+        return int(''.join(strNum))
+```
+
+## [968.监控二叉树](https://leetcode.cn/problems/binary-tree-cameras/description/) (目前先跳过)
 
 > 给定一个二叉树，我们在树的节点上安装摄像头。
 > 
