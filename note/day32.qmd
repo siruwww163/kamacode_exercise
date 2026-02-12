@@ -1,5 +1,5 @@
 ---
-title: "算法训练营Day 32"
+title: "算法训练营Day 32 - Dynamic Programming"
 author: "Siru Wu"
 date: today
 format: 
@@ -7,7 +7,15 @@ format:
     embed-resources: true
 ---
 
-今天开始动态规划！
+今天开始动态规划（Dynamic Programming），简称DP！
+
+对于动态规划问题，将拆解为如下五步曲，这五步都搞清楚了，才能说把动态规划真的掌握了！
+
+1. 确定dp数组（dp table）以及下标的含义
+2. 确定递推公式
+3. dp数组如何初始化
+4. 确定遍历顺序
+5. 举例推导dp数组
 
 ## [509. 斐波那契数](https://leetcode.cn/problems/fibonacci-number/description/)
 
@@ -44,8 +52,20 @@ format:
 > - 解释：F(4) = F(3) + F(2) = 2 + 1 = 3
 
 ```{python}
+class Solution:
+    def fib(self, n: int) -> int:
+        if n == 0:
+            return 0
 
+        dp = [0] * (n + 1)
 
+        dp[0] = 0
+        dp[1] = 1
+
+        for i in range(2, n + 1): # 我们前面已经定义了dp[0]和dp[1]，所以for range里面要从2开始到n + 1,也就是dp[n]的位置
+            dp[i] = dp[i - 1] + dp[i - 2]
+
+        return dp[n]
 ```
 
 ## [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/description/)
