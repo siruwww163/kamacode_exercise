@@ -17,8 +17,35 @@ format:
 >
 > ![](/image/62example.png){width=50%}
 
-```{python}
+### 递归法（超时）
 
+```{python}
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        if m == 1 and n == 1:
+            return 1
+
+        return self.uniquePaths(m - 1, n) + self.uniquePaths(m, n - 1)
+```
+
+### 动态规划（版本一）
+
+```{python}
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        # 外层 range(m) → 创建 m 行
+        # 内层 [0] * n → 每一行有 n 列
+        dp = [[0] * n for _ in range(m)]  
+
+        for i in range(m): # m控制行
+            dp[i][0] = 1
+        for j in range(n):
+            dp[0][j] = 1
+
+        for i in range(1, m): # 这个地方的起始点是1不是0, 我们已经定义了dp[0][j]和dp[i][0]
+            for j in range(1, n):
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+        return dp[m - 1][n - 1] # 终点格子的坐标是 (m - 1), (n - 1)
 ```
 
 ## [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/description/)
