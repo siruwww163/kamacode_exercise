@@ -1,5 +1,5 @@
 ---
-title: "算法训练营Day 35"
+title: "算法训练营Day 34 - 动态规划 part03"
 author: "Siru Wu"
 date: today
 format: 
@@ -16,7 +16,7 @@ format:
 > 
 > 小明的行李空间为 N，问小明应该如何抉择，才能携带最大价值的研究材料，每种研究材料只能选择一次，并且只有选与不选两种选择，不能进行切割。
 >
-> ![](/image/kama46.png){width=50%}
+> ![](/image/kama46.png){width=80%}
 
 ```{python}
 n, bagweight = map(int, input().split())

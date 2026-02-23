@@ -1,5 +1,5 @@
 ---
-title: "算法训练营Day 36"
+title: "算法训练营Day 35 - 动态规划 part04"
 author: "Siru Wu"
 date: today
 format: 
@@ -22,7 +22,21 @@ format:
 > ![](/image/1049example.png){width=50%}
 
 ```{python}
+class Solution:
+    def lastStoneWeightII(self, stones: List[int]) -> int:
+        total_sum = sum(stones)
+        target = total_sum // 2
 
+        dp = [0] * (target + 1)
+
+        for stone in stones:
+            for j in range(target, stone -1, -1):
+                dp[j] = max(dp[j], dp[j - stone] + stone)
+
+        return total_sum - 2 * dp[-1] 
+        # S2 - S1
+        # = total_sum - S1 - S1
+        # = total_sum - 2*S1
 ```
 
 ## [494.目标和](https://leetcode.cn/problems/target-sum/description/)
