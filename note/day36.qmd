@@ -71,8 +71,15 @@ class Solution:
 > ![](/image/377.png){width=50%}
 
 ```{python}
-
-
+class Solution:
+    def combinationSum4(self, nums: List[int], target: int) -> int:
+        dp = [0] * (target + 1)
+        dp[0] = 1
+        for i in range(1, target + 1): # # i 是当前要凑的“总和” ,谁是“容量那一维”，谁就是“当前凑的和”
+            for j in range(len(nums)): # # j 是遍历数组 nums 的下标
+                if i - nums[j] >= 0:
+                    dp[i] += dp[i - nums[j]]
+        return dp[target]
 ```
 
 ## [70. 爬楼梯（进阶版）](https://kamacoder.com/problempage.php?pid=1067)
@@ -80,6 +87,17 @@ class Solution:
 ![](/image/kama57.png){width=80%}
 
 ```{python}
+def climbing_stairs(n,m):
+    dp = [0]*(n+1) # 背包总容量
+    dp[0] = 1 
+    # 排列题，注意循环顺序，背包在外物品在内
+    for j in range(1,n+1):
+        for i in range(1,m+1):
+            if j>=i:
+                dp[j] += dp[j-i] # 这里i就是重量而非index
+    return dp[n]
 
-
+if __name__ == '__main__':
+    n,m = list(map(int,input().split(' ')))
+    print(climbing_stairs(n,m))
 ```
