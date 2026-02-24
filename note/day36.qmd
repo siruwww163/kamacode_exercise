@@ -12,8 +12,29 @@ format:
 ![](/image/kamacode52.png){width=80%}
 
 ```{python}
+def knapsack(n, bag_weight, weight, value):
+    dp = [[0] * (bag_weight + 1) for _ in range(n)]
 
+    for j in range(weight[0], bag_weight + 1):
+        dp[0][j] = dp[0][j - weight[0]] + value[0]
 
+    for i in range(1, n):
+        for j in range(bag_weight + 1):
+            if j < weight[i]:
+                dp[i][j] = dp[i - 1][j]
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - weight[i]] + value[i])
+    return dp[n - 1][bag_weight]
+
+n, bag_weight = map(int,input().split())
+weight = []
+value = []
+for _ in range(n):
+    w, v = map(int, input().split())
+    weight.append(w)
+    value.append(v)
+
+print(knapsack(n, bag_weight, weight, value))
 ```
 
 ## [518.零钱兑换II](https://leetcode.cn/problems/coin-change-ii/description/)
@@ -29,8 +50,16 @@ format:
 > ![](/image/518.png){width=50%}
 
 ```{python}
-
-
+class Solution:
+    def change(self, amount: int, coins: List[int]) -> int:
+        dp = [0]*(amount + 1)
+        dp[0] = 1
+        # 遍历物品
+        for i in range(len(coins)):
+            # 遍历背包
+            for j in range(coins[i], amount + 1): # j < coin 的时候，这个硬币放不进去，不需要计算，所以循环直接从 coin 开始。
+                dp[j] += dp[j - coins[i]]
+        return dp[amount]
 ```
 
 ## [377. 组合总和 Ⅳ](https://leetcode.cn/problems/combination-sum-iv/description/)
