@@ -9,7 +9,7 @@ format:
 
 ## [卡码网 52 - 携带研究材料](https://kamacoder.com/problempage.php?pid=1052)
 
-![](/image/kamacode52.png){width=80%}
+![](/image/kamacode52.png){width=100%}
 
 ```{python}
 def knapsack(n, bag_weight, weight, value):
@@ -84,7 +84,7 @@ class Solution:
 
 ## [70. 爬楼梯（进阶版）](https://kamacoder.com/problempage.php?pid=1067)
 
-![](/image/kama57.png){width=80%}
+![](/image/kama57.png){width=100%}
 
 ```{python}
 def climbing_stairs(n,m):
