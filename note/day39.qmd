@@ -31,8 +31,45 @@ format:
 > 
 > 解释：在这种情况下, 没有交易完成, 所以最大利润为 0。
 
-```{python}
+### 贪心算法
 
+```{python}
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        low = float('inf')
+        result = 0
+        for i in range(len(prices)):
+            low = min(low, prices[i])
+            result = max(result, prices[i] - low)
+        return result
+```
+
+### DP
+
+```{python}
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        length = len(prices)
+        if length == 0:
+            return 0
+        dp = [[0] * 2 for _ in range(length)]
+        # dp[i][0]  第 i 天 持有股票 时的最大收益
+        # dp[i][1]  第 i 天 不持有股票 时的最大收益
+        dp[0][0] = -prices[0] # 如果持有股票 → 一定是买了 → 利润 = -prices[0]
+        dp[0][1] = 0 # 如果不持有股票 → 什么都没做 → 利润 = 0
+        for i in range(1, length):
+
+            # 第 i 天持有股票，有两种可能：
+            # 1. dp[i-1][0]：昨天就持有，今天什么都不做（dp[i - 1][0]一定是<= 0 ）
+            # 2. -prices[i]：今天买入 | dp[i-1][1] 一定等于 0
+            # dp[i-1][1] - prices[i] = 0 - prices[i] = -prices[i]
+            dp[i][0] = max(dp[i - 1][0], -prices[i]) 
+
+            # 第 i 天不持有股票：
+            # 1. dp[i-1][1]：昨天就没持有 → 什么都不做
+            # 2. prices[i] + dp[i-1][0]：今天卖出
+            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] + prices[i])
+        return dp[-1][1] # 最后一天：持有股票没有意义，必须卖掉才能算利润，也可以写成           dp[length-1][1]
 ```
 
 ## [122.买卖股票的最佳时机II](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/description/)
@@ -46,7 +83,18 @@ format:
 > ![](/image/122example.png){width=60%}
 
 ```{python}
-
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        length = len(prices)
+        if length == 0:
+            return 0
+        dp = [[0] * 2 for _ in range(length)]
+        dp[0][0] = -prices[0]
+        dp[0][1] = 0
+        for i in range(1, length):
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] - prices[i]) #注意这里是和121. 买卖股票的最佳时机唯一不同的地方
+            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] + prices[i])
+        return dp[-1][1]
 ```
 
 ## [123.买卖股票的最佳时机III](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/description/)
@@ -60,6 +108,23 @@ format:
 > ![](/image/123.png){width=60%}
 
 ```{python}
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        # dp[1]	第一次买入后
+        # dp[2]	第一次卖出后
+        # dp[3]	第二次买入后
+        # dp[4]	第二次卖出后
+        if len(prices) == 0:
+            return 0
+
+        dp = [0] * 5
+        dp[1] = dp[3] = -prices[0]
+        for i in range(1, len(prices)):
+            dp[1] = max(dp[1], dp[0] - prices[i])
+            dp[2] = max(dp[2], dp[1] + prices[i])
+            dp[3] = max(dp[3], dp[2] - prices[i])
+            dp[4] = max(dp[4], dp[3] + prices[i])
+        return dp[4]
 
 ```
 
