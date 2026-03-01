@@ -90,8 +90,8 @@ website:
             text: Day 40
       - text: "Note 41 - 50"
         menu:
-          - href: note/day41.qmd
-            text: Day 41
+          - href: note/day42.qmd
+            text: Day 42
 
 format:
   html:

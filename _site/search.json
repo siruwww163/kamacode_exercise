@@ -445,7 +445,7 @@
     "href": "note/day21.html#把二叉搜索树转换为累加树",
     "title": "算法训练营Day 21",
     "section": "538.把二叉搜索树转换为累加树",
-    "text": "538.把二叉搜索树转换为累加树\n\n给出二叉 搜索 树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点 node 的新值等于原树中大于或等于 node.val 的值之和。\n提醒一下，二叉搜索树满足下列约束条件：\n\n节点的左子树仅包含键 小于 节点键的节点。\n节点的右子树仅包含键 大于 节点键的节点。\n左右子树也必须是二叉搜索树。\n\n注意：本题和 1038: https://leetcode.cn/problems/binary-search-tree-to-greater-sum-tree/ 相同"
+    "text": "538.把二叉搜索树转换为累加树\n\n给出二叉 搜索 树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点 node 的新值等于原树中大于或等于 node.val 的值之和。\n提醒一下，二叉搜索树满足下列约束条件：\n\n节点的左子树仅包含键 小于 节点键的节点。\n节点的右子树仅包含键 大于 节点键的节点。\n左右子树也必须是二叉搜索树。\n\n注意：本题和 1038: https://leetcode.cn/problems/binary-search-tree-to-greater-sum-tree/ 相同\n\n\n\n\n# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\nclass Solution:\n    def convertBST(self, root: Optional[TreeNode]) -&gt; Optional[TreeNode]:\n        self.pre = 0\n        self.traversal(root)\n        return root\n\n    def traversal(self, cur):\n        if not cur:\n            return\n        self.traversal(cur.right)\n        cur.val += self.pre # 题目要求改的是当前节点的值，不是 pre 本身\n        # 当前节点已经变成「累加后的值」，它要作为「更小节点」的累加基础\n        self.pre = cur.val # 所以 pre 必须更新成 当前的新值\n        self.traversal(cur.left)"
   },
   {
     "objectID": "note/day20.html",
@@ -670,5 +670,558 @@
     "title": "算法训练营Day 18",
     "section": "236. 二叉树的最近公共祖先",
     "text": "236. 二叉树的最近公共祖先\n\n给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。\n百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”\n\n\n\n\n递归法 （版本一）"
+  },
+  {
+    "objectID": "note/day42.html",
+    "href": "note/day42.html",
+    "title": "算法训练营Day 42 - DP 10",
+    "section": "",
+    "text": "range 是否需要 len + 1，取决于：你的 dp[i] 或 dp[i][j] 是不是在表示“前 i 个元素”\n1. 如果是“前 i 个元素”，就通常需要 +1\n2. 如果是“以第 i 个元素结尾”，通常不需要 +1"
+  },
+  {
+    "objectID": "note/day42.html#最长递增子序列",
+    "href": "note/day42.html#最长递增子序列",
+    "title": "算法训练营Day 42 - DP 10",
+    "section": "300. 最长递增子序列",
+    "text": "300. 最长递增子序列\n\n给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。\n子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。\n示例 1：\n\n输入：nums = [10,9,2,5,3,7,101,18]\n输出：4\n解释：最长递增子序列是 [2,3,7,101]，因此长度为 4 。\n\n示例 2：\n\n输入：nums = [0,1,0,3,2,3]\n输出：4\n\n示例 3：\n\n输入：nums = [7,7,7,7,7,7,7]\n输出：1\n\n\n\nclass Solution:\n    def lengthOfLIS(self, nums: List[int]) -&gt; int:\n        if len(nums) &lt;= 1:\n            return len(nums)\n\n        dp = [1] * len(nums)\n        result = 1\n        for i in range(1, len(nums)):\n            for j in range(0, i):\n                if nums[i] &gt; nums[j]:\n                    # dp[j] 以 nums[j] 结尾的最长递增子序列的长度\n                    dp[i] = max(dp[i], dp[j] + 1) # dp[j] + 1是把nums[i]也算进去了\n                result = max(dp[i], result) #取长的子序列\n        return result"
+  },
+  {
+    "objectID": "note/day42.html#最长连续递增序列",
+    "href": "note/day42.html#最长连续递增序列",
+    "title": "算法训练营Day 42 - DP 10",
+    "section": "674. 最长连续递增序列",
+    "text": "674. 最长连续递增序列\n\n给定一个未经排序的整数数组，找到最长且 连续递增的子序列，并返回该序列的长度。\n连续递增的子序列 可以由两个下标 l 和 r（l &lt; r）确定，如果对于每个 l &lt;= i &lt; r，都有 nums[i] &lt; nums[i + 1] ，那么子序列 [nums[l], nums[l + 1], …, nums[r - 1], nums[r]] 就是连续递增子序列。\n示例 1：\n\n输入：nums = [1,3,5,4,7]\n输出：3\n解释：最长连续递增序列是 [1,3,5], 长度为3。\n尽管 [1,3,5,7] 也是升序的子序列, 但它不是连续的，因为 5 和 7 在原数组里被 4 隔开。\n\n示例 2：\n\n输入：nums = [2,2,2,2,2]\n输出：1\n解释：最长连续递增序列是 [2], 长度为1。\n\n\n\nclass Solution:\n    def findLengthOfLCIS(self, nums: List[int]) -&gt; int:\n        if len(nums) == 0:\n            return 0\n        result = 1\n        dp = [1] * len(nums)\n        for i in range(len(nums)-1):\n            if nums[i+1] &gt; nums[i]: #连续记录\n                dp[i+1] = dp[i] + 1\n            result = max(result, dp[i+1])\n        return result"
+  },
+  {
+    "objectID": "note/day42.html#最长重复子数组",
+    "href": "note/day42.html#最长重复子数组",
+    "title": "算法训练营Day 42 - DP 10",
+    "section": "718. 最长重复子数组",
+    "text": "718. 最长重复子数组\n\n给两个整数数组 nums1 和 nums2 ，返回 两个数组中 公共的 、长度最长的子数组的长度 。\n示例 1：\n\n输入：nums1 = [1,2,3,2,1], nums2 = [3,2,1,4,7]\n输出：3\n解释：长度最长的公共子数组是 [3,2,1] 。\n\n示例 2：\n\n输入：nums1 = [0,0,0,0,0], nums2 = [0,0,0,0,0]\n输出：5\n\n\n\nclass Solution:\n    def findLength(self, nums1: List[int], nums2: List[int]) -&gt; int:\n        # 创建一个二维数组 dp，用于存储最长公共子数组的长度\n        dp = [[0] * (len(nums2) + 1) for _ in range(len(nums1) + 1)]\n        # 记录最长公共子数组的长度\n        result = 0\n\n        # 遍历数组 nums1\n        for i in range(1, len(nums1) + 1):\n            # 遍历数组 nums2\n            for j in range(1, len(nums2) + 1):\n                # 如果 nums1[i-1] 和 nums2[j-1] 相等\n                if nums1[i - 1] == nums2[j - 1]:\n                    # 在当前位置上的最长公共子数组长度为前一个位置上的长度加一\n                    dp[i][j] = dp[i - 1][j - 1] + 1\n                # 更新最长公共子数组的长度\n                if dp[i][j] &gt; result:\n                    result = dp[i][j]\n\n        # 返回最长公共子数组的长度\n        return result"
+  },
+  {
+    "objectID": "note/day40.html",
+    "href": "note/day40.html",
+    "title": "算法训练营Day 40 - DP",
+    "section": "",
+    "text": "给你一个整数数组 prices 和一个整数 k ，其中 prices[i] 是某支给定的股票在第 i 天的价格。\n设计一个算法来计算你所能获取的最大利润。你最多可以完成 k 笔交易。也就是说，你最多可以买 k 次，卖 k 次。\n注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。\n示例 1：\n输入：k = 2, prices = [2,4,1]\n输出：2\n解释：在第 1 天 (股票价格 = 2) 的时候买入，在第 2 天 (股票价格 = 4) 的时候卖出，这笔交易所能获得利润 = 4-2 = 2 。\n示例 2：\n输入：k = 2, prices = [3,2,6,5,0,3]\n输出：7\n解释：在第 2 天 (股票价格 = 2) 的时候买入，在第 3 天 (股票价格 = 6) 的时候卖出, 这笔交易所能获得利润 = 6-2 = 4 。随后，在第 5 天 (股票价格 = 0) 的时候买入，在第 6 天 (股票价格 = 3) 的时候卖出, 这笔交易所能获得利润 = 3-0 = 3 。\n\n\n\nclass Solution:\n    def maxProfit(self, k: int, prices: List[int]) -&gt; int:\n        if len(prices) == 0:\n            return 0\n        # 每一次交易包括：买入（持有股票）K + 卖出（不持有股票）K,加上第一天什么都没做的状态 0, 一共有2 * k + 1个状态\n        dp = [[0] * (2*k + 1) for _ in range(len(prices))]\n        for j in range(1, 2 * k, 2): # 奇数位置全是 买入位置\n            dp[0][j] = -prices[0]\n        for i in range(1, len(prices)):\n            for j in range(0, 2 * k - 1, 2): # 因为我们要用到 j+2，所以 j 不能走到太后面\n                # 买入 = max(昨天已经买了,昨天卖出后今天买)\n                dp[i][j + 1] = max(dp[i - 1][j + 1], dp[i - 1][j] - prices[i]) # 买入状态转移\n                # 卖出 = max(昨天已经卖了,昨天买入今天卖)\n                dp[i][j + 2] = max(dp[i - 1][j + 2], dp[i - 1][j + 1] + prices[i]) #卖出状态转移\n        return dp[-1][2 * k] # 最大利润一定是在：第 k 次卖出之后，也就是状态 2k"
+  },
+  {
+    "objectID": "note/day40.html#买卖股票的最佳时机iv",
+    "href": "note/day40.html#买卖股票的最佳时机iv",
+    "title": "算法训练营Day 40 - DP",
+    "section": "",
+    "text": "给你一个整数数组 prices 和一个整数 k ，其中 prices[i] 是某支给定的股票在第 i 天的价格。\n设计一个算法来计算你所能获取的最大利润。你最多可以完成 k 笔交易。也就是说，你最多可以买 k 次，卖 k 次。\n注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。\n示例 1：\n输入：k = 2, prices = [2,4,1]\n输出：2\n解释：在第 1 天 (股票价格 = 2) 的时候买入，在第 2 天 (股票价格 = 4) 的时候卖出，这笔交易所能获得利润 = 4-2 = 2 。\n示例 2：\n输入：k = 2, prices = [3,2,6,5,0,3]\n输出：7\n解释：在第 2 天 (股票价格 = 2) 的时候买入，在第 3 天 (股票价格 = 6) 的时候卖出, 这笔交易所能获得利润 = 6-2 = 4 。随后，在第 5 天 (股票价格 = 0) 的时候买入，在第 6 天 (股票价格 = 3) 的时候卖出, 这笔交易所能获得利润 = 3-0 = 3 。\n\n\n\nclass Solution:\n    def maxProfit(self, k: int, prices: List[int]) -&gt; int:\n        if len(prices) == 0:\n            return 0\n        # 每一次交易包括：买入（持有股票）K + 卖出（不持有股票）K,加上第一天什么都没做的状态 0, 一共有2 * k + 1个状态\n        dp = [[0] * (2*k + 1) for _ in range(len(prices))]\n        for j in range(1, 2 * k, 2): # 奇数位置全是 买入位置\n            dp[0][j] = -prices[0]\n        for i in range(1, len(prices)):\n            for j in range(0, 2 * k - 1, 2): # 因为我们要用到 j+2，所以 j 不能走到太后面\n                # 买入 = max(昨天已经买了,昨天卖出后今天买)\n                dp[i][j + 1] = max(dp[i - 1][j + 1], dp[i - 1][j] - prices[i]) # 买入状态转移\n                # 卖出 = max(昨天已经卖了,昨天买入今天卖)\n                dp[i][j + 2] = max(dp[i - 1][j + 2], dp[i - 1][j + 1] + prices[i]) #卖出状态转移\n        return dp[-1][2 * k] # 最大利润一定是在：第 k 次卖出之后，也就是状态 2k"
+  },
+  {
+    "objectID": "note/day40.html#最佳买卖股票时机含冷冻期",
+    "href": "note/day40.html#最佳买卖股票时机含冷冻期",
+    "title": "算法训练营Day 40 - DP",
+    "section": "309.最佳买卖股票时机含冷冻期",
+    "text": "309.最佳买卖股票时机含冷冻期\n\n给定一个整数数组prices，其中第 prices[i] 表示第 i 天的股票价格 。​\n设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:\n卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。\n示例 1:\n输入: prices = [1,2,3,0,2]\n输出: 3\n解释: 对应的交易状态为: [买入, 卖出, 冷冻期, 买入, 卖出]\n示例 2:\n输入: prices = [1]\n输出: 0\n\n\nclass Solution:\n    def maxProfit(self, prices: List[int]) -&gt; int:\n        n = len(prices)\n        if n == 0:\n            return 0\n\n        # 状态一：持有股票状态 \n        # 状态二：保持卖出股票的状态\n        # 状态三：今天卖出股票\n        # 状态四：今天为冷冻期状态\n\n        dp = [[0] * 4 for _ in range(n)] # # 创建动态规划数组，4个状态分别表示持有股票、不持有股票且处于冷冻期、不持有股票且不处于冷冻期、不持有股票且当天卖出后处于冷冻期\n\n        dp[0][0] = -prices[0] # # 初始状态：第一天持有股票的最大利润为买入股票的价格\n\n        # 1. 达到买入股票状态（状态一）即：dp[i][0]，有两个具体操作\n        # 1-1: 操作一：前一天就是持有股票状态（状态一） \n        # 1-2: 操作二：今天买入了，有两种情况\n        # 1-2-1: 前一天是冷冻期（状态四）\n        # 1-2-2: 前一天是保持卖出股票的状态\n\n        # 2. 达到保持卖出股票状态（状态二）即：dp[i][1]，有两个具体操作：\n        # 2-1: 操作一：前一天就是状态二\n        # 2-2: 操作二：前一天是冷冻期（状态四）\n\n        # 3. 达到今天就卖出股票状态（状态三），即：dp[i][2] ，只有一个操作\n        # 3-1: 昨天一定是持有股票状态（状态一），今天卖出\n\n        # 4. 达到冷冻期状态（状态四），即：dp[i][3]，只有一个操作\n        # 4-1: 昨天卖出了股票（状态三）\n        for i in range(1, n):\n\n            # 当前持有股票的最大利润等于前一天持有股票的最大利润或者前一天不持有股票且不处于冷冻期的最大利润减去当前股票的价格\n            dp[i][0] = max(dp[i - 1][0], max(dp[i - 1][3], dp[i - 1][1]) - prices[i])\n\n            # 当前不持有股票且处于冷冻期的最大利润等于前一天持有股票的最大利润加上当前股票的价格\n            dp[i][1] = max(dp[i - 1][1], dp[i - 1][3])\n\n            # 当前不持有股票且不处于冷冻期的最大利润等于前一天不持有股票的最大利润或者前一天处于冷冻期的最大利润\n            dp[i][2] = dp[i - 1][0] + prices[i]\n\n            # # 当前不持有股票且当天卖出后处于冷冻期的最大利润等于前一天不持有股票且不处于冷冻期的最大利润\n            dp[i][3] = dp[i - 1][2]\n\n        return max(dp[n - 1][3], dp[n - 1][2], dp[n - 1][1]) # 返回最后一天不持有股票的最大利润"
+  },
+  {
+    "objectID": "note/day40.html#买卖股票的最佳时机含手续费",
+    "href": "note/day40.html#买卖股票的最佳时机含手续费",
+    "title": "算法训练营Day 40 - DP",
+    "section": "714.买卖股票的最佳时机含手续费",
+    "text": "714.买卖股票的最佳时机含手续费\n\n给定一个整数数组 prices，其中 prices[i]表示第 i 天的股票价格 ；整数 fee 代表了交易股票的手续费用。\n你可以无限次地完成交易，但是你每笔交易都需要付手续费。如果你已经购买了一个股票，在卖出它之前你就不能再继续购买股票了。\n返回获得利润的最大值。\n注意：这里的一笔交易指买入持有并卖出股票的整个过程，每笔交易你只需要为支付一次手续费。\n示例 1：\n输入：prices = [1, 3, 2, 8, 4, 9], fee = 2\n输出：8\n解释：能够达到的最大利润:\n在此处买入 prices[0] = 1\n在此处卖出 prices[3] = 8\n在此处买入 prices[4] = 4\n在此处卖出 prices[5] = 9\n总利润: ((8 - 1) - 2) + ((9 - 4) - 2) = 8\n示例 2：\n输入：prices = [1,3,7,5,10,3], fee = 3\n输出：6\n\n\nclass Solution:\n    def maxProfit(self, prices: List[int], fee: int) -&gt; int:\n        dp = [[0] * 2 for _ in range(len(prices))]\n        dp[0][0] = -prices[0]\n        for i in range(1, len(prices)):\n            # dp[i][0] 表示第i天持有股票所得最多现金\n            #  dp[i][1] 表示第i天不持有股票所得最多现金\n            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] - prices[i])\n            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] + prices[i] - fee)\n        return max(dp[-1][0], dp[-1][1])"
+  },
+  {
+    "objectID": "note/day38.html",
+    "href": "note/day38.html",
+    "title": "算法训练营Day 38 - part07",
+    "section": "",
+    "text": "你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。\n给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。\n示例 1：\n输入：[1,2,3,1]\n输出：4\n解释：偷窃 1 号房屋 (金额 = 1) ，然后偷窃 3 号房屋 (金额 = 3)。偷窃到的最高金额 = 1 + 3 = 4 。\n示例 2：\n\n\n输入：[2,7,9,3,1]\n输出：12\n解释：偷窃 1 号房屋 (金额 = 2), 偷窃 3 号房屋 (金额 = 9)，接着偷窃 5 号房屋 (金额 = 1)。偷窃到的最高金额 = 2 + 9 + 1 = 12 。\n\n\nclass Solution:\n    def rob(self, nums: List[int]) -&gt; int:\n        if not nums:\n            return 0\n\n        pre_max = 0\n        cur_max = 0\n\n        for num in nums:\n            temp = cur_max\n            cur_max = max(pre_max + num, cur_max)\n            pre_max = temp\n            \n        return cur_max\n\n\nclass Solution:\n    def rob(self, nums: List[int]) -&gt; int:\n        if len(nums) == 0:  # 如果没有房屋，返回0\n            return 0\n        if len(nums) == 1:  # 如果只有一个房屋，返回其金额\n            return nums[0]\n\n        # 创建一个动态规划数组，用于存储最大金额\n        dp = [0] * len(nums) # dp[i] = 到下标 i 为止, 所以是len(nums) 不需要 + 1\n        dp[0] = nums[0]  # 将dp的第一个元素设置为第一个房屋的金额\n        dp[1] = max(nums[0], nums[1])  # 将dp的第二个元素设置为第一二个房屋中的金额较大者\n\n        # 遍历剩余的房屋\n        for i in range(2, len(nums)):\n            # 对于每个房屋，选择抢劫当前房屋和抢劫前一个房屋的最大金额\n            dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])\n\n        return dp[-1]  # 返回最后一个房屋中可抢劫的最大金额"
+  },
+  {
+    "objectID": "note/day38.html#打家劫舍",
+    "href": "note/day38.html#打家劫舍",
+    "title": "算法训练营Day 38 - part07",
+    "section": "",
+    "text": "你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。\n给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。\n示例 1：\n输入：[1,2,3,1]\n输出：4\n解释：偷窃 1 号房屋 (金额 = 1) ，然后偷窃 3 号房屋 (金额 = 3)。偷窃到的最高金额 = 1 + 3 = 4 。\n示例 2：\n\n\n输入：[2,7,9,3,1]\n输出：12\n解释：偷窃 1 号房屋 (金额 = 2), 偷窃 3 号房屋 (金额 = 9)，接着偷窃 5 号房屋 (金额 = 1)。偷窃到的最高金额 = 2 + 9 + 1 = 12 。\n\n\nclass Solution:\n    def rob(self, nums: List[int]) -&gt; int:\n        if not nums:\n            return 0\n\n        pre_max = 0\n        cur_max = 0\n\n        for num in nums:\n            temp = cur_max\n            cur_max = max(pre_max + num, cur_max)\n            pre_max = temp\n            \n        return cur_max\n\n\nclass Solution:\n    def rob(self, nums: List[int]) -&gt; int:\n        if len(nums) == 0:  # 如果没有房屋，返回0\n            return 0\n        if len(nums) == 1:  # 如果只有一个房屋，返回其金额\n            return nums[0]\n\n        # 创建一个动态规划数组，用于存储最大金额\n        dp = [0] * len(nums) # dp[i] = 到下标 i 为止, 所以是len(nums) 不需要 + 1\n        dp[0] = nums[0]  # 将dp的第一个元素设置为第一个房屋的金额\n        dp[1] = max(nums[0], nums[1])  # 将dp的第二个元素设置为第一二个房屋中的金额较大者\n\n        # 遍历剩余的房屋\n        for i in range(2, len(nums)):\n            # 对于每个房屋，选择抢劫当前房屋和抢劫前一个房屋的最大金额\n            dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])\n\n        return dp[-1]  # 返回最后一个房屋中可抢劫的最大金额"
+  },
+  {
+    "objectID": "note/day38.html#打家劫舍ii",
+    "href": "note/day38.html#打家劫舍ii",
+    "title": "算法训练营Day 38 - part07",
+    "section": "213.打家劫舍II",
+    "text": "213.打家劫舍II\n\n你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都 围成一圈 ，这意味着第一个房屋和最后一个房屋是紧挨着的。同时，相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警 。\n给定一个代表每个房屋存放金额的非负整数数组，计算你 在不触动警报装置的情况下 ，今晚能够偷窃到的最高金额。\n示例 1：\n输入：nums = [2,3,2]\n输出：3\n解释：你不能先偷窃 1 号房屋（金额 = 2），然后偷窃 3 号房屋（金额 = 2）, 因为他们是相邻的。\n示例 2：\n输入：nums = [1,2,3,1]\n输出：4\n解释：你可以先偷窃 1 号房屋（金额 = 1），然后偷窃 3 号房屋（金额 = 3）。偷窃到的最高金额 = 1 + 3 = 4 。\n示例 3：\n输入：nums = [1,2,3]\n输出：3\n\n\nclass Solution:\n    def rob(self, nums: List[int]) -&gt; int:\n        if len(nums) == 0:\n            return 0\n        if len(nums) == 1:\n            return nums[0]\n\n        result1 = self.robRange(nums, 0, len(nums) - 2)\n        result2 = self.robRange(nums, 1, len(nums) - 1)\n        return max(result1, result2)\n        \n    def robRange(self, nums, start, end):\n        if end ==  start:\n            return nums[start]\n\n        pre_max = nums[start]\n        cur_max = max(nums[start], nums[start + 1])\n\n        for i in range(start + 2, end + 1):\n            temp = cur_max\n            cur_max = max(pre_max + nums[i], cur_max)\n            pre_max = temp\n        return cur_max"
+  },
+  {
+    "objectID": "note/day38.html#打家劫舍-iii",
+    "href": "note/day38.html#打家劫舍-iii",
+    "title": "算法训练营Day 38 - part07",
+    "section": "337.打家劫舍 III",
+    "text": "337.打家劫舍 III\n\n小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。\n除了 root 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。\n给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额 。\n\n\n\n\n# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\nclass Solution:\n    def rob(self, root: Optional[TreeNode]) -&gt; int:\n        dp = self.traversal(root)\n        return max(dp)\n        \n\n    def traversal(self, node):\n        if not node:\n            return (0, 0)\n        \n        left = self.traversal(node.left)\n        right = self.traversal(node.right)\n\n        val_0 = max(left[0], left[1]) + max(right[0], right[1])\n        val_1 = node.val + left[0] + right[0]\n\n        return (val_0, val_1)"
+  },
+  {
+    "objectID": "note/day36.html",
+    "href": "note/day36.html",
+    "title": "算法训练营Day 36 - 动态规划 part05",
+    "section": "",
+    "text": "def knapsack(n, bag_weight, weight, value):\n    dp = [[0] * (bag_weight + 1) for _ in range(n)]\n\n    for j in range(weight[0], bag_weight + 1):\n        dp[0][j] = dp[0][j - weight[0]] + value[0]\n\n    for i in range(1, n):\n        for j in range(bag_weight + 1):\n            if j &lt; weight[i]:\n                dp[i][j] = dp[i - 1][j]\n            else:\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - weight[i]] + value[i])\n    return dp[n - 1][bag_weight]\n\nn, bag_weight = map(int,input().split())\nweight = []\nvalue = []\nfor _ in range(n):\n    w, v = map(int, input().split())\n    weight.append(w)\n    value.append(v)\n\nprint(knapsack(n, bag_weight, weight, value))"
+  },
+  {
+    "objectID": "note/day36.html#卡码网-52---携带研究材料",
+    "href": "note/day36.html#卡码网-52---携带研究材料",
+    "title": "算法训练营Day 36 - 动态规划 part05",
+    "section": "",
+    "text": "def knapsack(n, bag_weight, weight, value):\n    dp = [[0] * (bag_weight + 1) for _ in range(n)]\n\n    for j in range(weight[0], bag_weight + 1):\n        dp[0][j] = dp[0][j - weight[0]] + value[0]\n\n    for i in range(1, n):\n        for j in range(bag_weight + 1):\n            if j &lt; weight[i]:\n                dp[i][j] = dp[i - 1][j]\n            else:\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - weight[i]] + value[i])\n    return dp[n - 1][bag_weight]\n\nn, bag_weight = map(int,input().split())\nweight = []\nvalue = []\nfor _ in range(n):\n    w, v = map(int, input().split())\n    weight.append(w)\n    value.append(v)\n\nprint(knapsack(n, bag_weight, weight, value))"
+  },
+  {
+    "objectID": "note/day36.html#零钱兑换ii",
+    "href": "note/day36.html#零钱兑换ii",
+    "title": "算法训练营Day 36 - 动态规划 part05",
+    "section": "518.零钱兑换II",
+    "text": "518.零钱兑换II\n\n给你一个整数数组 coins 表示不同面额的硬币，另给一个整数 amount 表示总金额。\n请你计算并返回可以凑成总金额的硬币组合数。如果任何硬币组合都无法凑出总金额，返回 0 。\n假设每一种面额的硬币有无限个。\n题目数据保证结果符合 32 位带符号整数。\n\n\n\nclass Solution:\n    def change(self, amount: int, coins: List[int]) -&gt; int:\n        dp = [0]*(amount + 1)\n        dp[0] = 1\n        # 遍历物品\n        for i in range(len(coins)):\n            # 遍历背包\n            for j in range(coins[i], amount + 1): # j &lt; coin 的时候，这个硬币放不进去，不需要计算，所以循环直接从 coin 开始。\n                dp[j] += dp[j - coins[i]]\n        return dp[amount]"
+  },
+  {
+    "objectID": "note/day36.html#组合总和-ⅳ",
+    "href": "note/day36.html#组合总和-ⅳ",
+    "title": "算法训练营Day 36 - 动态规划 part05",
+    "section": "377. 组合总和 Ⅳ",
+    "text": "377. 组合总和 Ⅳ\n\n给你一个由 不同 整数组成的数组 nums ，和一个目标整数 target 。请你从 nums 中找出并返回总和为 target 的元素排列的个数。\n题目数据保证答案符合 32 位整数范围。\n\n\n\nclass Solution:\n    def combinationSum4(self, nums: List[int], target: int) -&gt; int:\n        dp = [0] * (target + 1)\n        dp[0] = 1\n        for i in range(1, target + 1): # # i 是当前要凑的“总和” ,谁是“容量那一维”，谁就是“当前凑的和”\n            for j in range(len(nums)): # # j 是遍历数组 nums 的下标\n                if i - nums[j] &gt;= 0:\n                    dp[i] += dp[i - nums[j]]\n        return dp[target]"
+  },
+  {
+    "objectID": "note/day36.html#爬楼梯进阶版",
+    "href": "note/day36.html#爬楼梯进阶版",
+    "title": "算法训练营Day 36 - 动态规划 part05",
+    "section": "70. 爬楼梯（进阶版）",
+    "text": "70. 爬楼梯（进阶版）\n\n\ndef climbing_stairs(n,m):\n    dp = [0]*(n+1) # 背包总容量\n    dp[0] = 1 \n    # 排列题，注意循环顺序，背包在外物品在内\n    for j in range(1,n+1):\n        for i in range(1,m+1):\n            if j&gt;=i:\n                dp[j] += dp[j-i] # 这里i就是重量而非index\n    return dp[n]\n\nif __name__ == '__main__':\n    n,m = list(map(int,input().split(' ')))\n    print(climbing_stairs(n,m))"
+  },
+  {
+    "objectID": "note/day34.html",
+    "href": "note/day34.html",
+    "title": "算法训练营Day 34 - 动态规划 part03",
+    "section": "",
+    "text": "小明是一位科学家，他需要参加一场重要的国际科学大会，以展示自己的最新研究成果。他需要带一些研究材料，但是他的行李箱空间有限。这些研究材料包括实验设备、文献资料和实验样本等等，它们各自占据不同的空间，并且具有不同的价值。\n小明的行李空间为 N，问小明应该如何抉择，才能携带最大价值的研究材料，每种研究材料只能选择一次，并且只有选与不选两种选择，不能进行切割。\n\n\n\nn, bagweight = map(int, input().split())\n\nweight = list(map(int, input().split()))\nvalue = list(map(int, input().split()))\n\ndp = [[0] * (bagweight + 1) for _ in range(n)] # 这里面n是row， bagweight是column\n\n# 初始化第 0 个物品\nfor j in range(weight[0], bagweight + 1):\n    dp[0][j] = value[0] # 把第 0 个物品能放进去的所有容量都标记成它的价值\n\n# 开始动态规划\nfor i in range(1, n): # 从第 1 个物品开始处理\n    for j in range(bagweight + 1): # 容量从 0 遍历到最大容量\n        if j &lt; weight[i]:\n            dp[i][j] = dp[i - 1][j] # 第 i 个物品根本放不进去，只能沿用“不选它”的结果\n        else: # 可以选择放或不放\n            dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i]) # 这个地方用 dp[i] 的话等于你在同一行里又用了一次第 i 个物品，这就变成“物品可重复选”了，但是题目要求 每个物品最多选一次\n\nprint(dp[n - 1][bagweight]) # 这里用 n - 1 是因为第n的物品的下标是n - 1\n\n\n\n\n\nn, bagweight = map(int, input().split())\nweight = list(map(int, input().split()))\nvalue = list(map(int, input().split()))\n\ndp = [0] * (bagweight + 1)  # 创建一个动态规划数组dp，初始值为0\n\ndp[0] = 0  # 初始化dp[0] = 0,背包容量为0，价值最大为0\n\nfor i in range(n):  # 应该先遍历物品，如果遍历背包容量放在上一层，那么每个dp[j]就只会放入一个物品\n    for j in range(bagweight, weight[i]-1, -1):  # 倒序遍历背包容量是为了保证物品i只被放入一次\n        dp[j] = max(dp[j], dp[j - weight[i]] + value[i])\n\nprint(dp[bagweight])"
+  },
+  {
+    "objectID": "note/day34.html#携带研究材料第六期模拟笔试",
+    "href": "note/day34.html#携带研究材料第六期模拟笔试",
+    "title": "算法训练营Day 34 - 动态规划 part03",
+    "section": "",
+    "text": "小明是一位科学家，他需要参加一场重要的国际科学大会，以展示自己的最新研究成果。他需要带一些研究材料，但是他的行李箱空间有限。这些研究材料包括实验设备、文献资料和实验样本等等，它们各自占据不同的空间，并且具有不同的价值。\n小明的行李空间为 N，问小明应该如何抉择，才能携带最大价值的研究材料，每种研究材料只能选择一次，并且只有选与不选两种选择，不能进行切割。\n\n\n\nn, bagweight = map(int, input().split())\n\nweight = list(map(int, input().split()))\nvalue = list(map(int, input().split()))\n\ndp = [[0] * (bagweight + 1) for _ in range(n)] # 这里面n是row， bagweight是column\n\n# 初始化第 0 个物品\nfor j in range(weight[0], bagweight + 1):\n    dp[0][j] = value[0] # 把第 0 个物品能放进去的所有容量都标记成它的价值\n\n# 开始动态规划\nfor i in range(1, n): # 从第 1 个物品开始处理\n    for j in range(bagweight + 1): # 容量从 0 遍历到最大容量\n        if j &lt; weight[i]:\n            dp[i][j] = dp[i - 1][j] # 第 i 个物品根本放不进去，只能沿用“不选它”的结果\n        else: # 可以选择放或不放\n            dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i]) # 这个地方用 dp[i] 的话等于你在同一行里又用了一次第 i 个物品，这就变成“物品可重复选”了，但是题目要求 每个物品最多选一次\n\nprint(dp[n - 1][bagweight]) # 这里用 n - 1 是因为第n的物品的下标是n - 1\n\n\n\n\n\nn, bagweight = map(int, input().split())\nweight = list(map(int, input().split()))\nvalue = list(map(int, input().split()))\n\ndp = [0] * (bagweight + 1)  # 创建一个动态规划数组dp，初始值为0\n\ndp[0] = 0  # 初始化dp[0] = 0,背包容量为0，价值最大为0\n\nfor i in range(n):  # 应该先遍历物品，如果遍历背包容量放在上一层，那么每个dp[j]就只会放入一个物品\n    for j in range(bagweight, weight[i]-1, -1):  # 倒序遍历背包容量是为了保证物品i只被放入一次\n        dp[j] = max(dp[j], dp[j - weight[i]] + value[i])\n\nprint(dp[bagweight])"
+  },
+  {
+    "objectID": "note/day34.html#分割等和子集",
+    "href": "note/day34.html#分割等和子集",
+    "title": "算法训练营Day 34 - 动态规划 part03",
+    "section": "416. 分割等和子集",
+    "text": "416. 分割等和子集\n\n给你一个 只包含正整数 的 非空 数组 nums 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。\n示例 1：\n\n输入：nums = [1,5,11,5]\n输出：true\n解释：数组可以分割成 [1, 5, 5] 和 [11] 。\n\n示例 2：\n\n输入：nums = [1,2,3,5]\n输出：false\n解释：数组不能分割成两个元素和相等的子集。\n\n\n\nclass Solution:\n    def canPartition(self, nums: List[int]) -&gt; bool:\n        if sum(nums) % 2 != 0:\n            return False\n        target = sum(nums) // 2\n        dp = [0] * (target + 1)\n        for num in nums:\n            for j in range(target, num-1, -1):\n                dp[j] = max(dp[j], dp[j-num] + num)\n        return dp[-1] == target"
+  },
+  {
+    "objectID": "note/day32.html",
+    "href": "note/day32.html",
+    "title": "算法训练营Day 32 - Dynamic Programming",
+    "section": "",
+    "text": "今天开始动态规划（Dynamic Programming），简称DP！\n对于动态规划问题，将拆解为如下五步曲，这五步都搞清楚了，才能说把动态规划真的掌握了！"
+  },
+  {
+    "objectID": "note/day32.html#斐波那契数",
+    "href": "note/day32.html#斐波那契数",
+    "title": "算法训练营Day 32 - Dynamic Programming",
+    "section": "509. 斐波那契数",
+    "text": "509. 斐波那契数\n\n斐波那契数 （通常用 F(n) 表示）形成的序列称为 斐波那契数列 。该数列由 0 和 1 开始，后面的每一项数字都是前面两项数字的和。也就是：\n\nF(0) = 0，F(1) = 1\nF(n) = F(n - 1) + F(n - 2)，其中 n &gt; 1\n\n给定 n ，请计算 F(n) 。\n示例 1：\n\n输入：n = 2\n输出：1\n解释：F(2) = F(1) + F(0) = 1 + 0 = 1\n\n示例 2：\n\n输入：n = 3\n输出：2\n解释：F(3) = F(2) + F(1) = 1 + 1 = 2\n\n示例 3：\n\n输入：n = 4\n输出：3\n解释：F(4) = F(3) + F(2) = 2 + 1 = 3\n\n\n\nclass Solution:\n    def fib(self, n: int) -&gt; int:\n        if n == 0:\n            return 0\n\n        dp = [0] * (n + 1)\n\n        dp[0] = 0\n        dp[1] = 1\n\n        for i in range(2, n + 1): # 我们前面已经定义了dp[0]和dp[1]，所以for range里面要从2开始到n + 1,也就是dp[n]的位置\n            dp[i] = dp[i - 1] + dp[i - 2]\n\n        return dp[n]"
+  },
+  {
+    "objectID": "note/day32.html#爬楼梯",
+    "href": "note/day32.html#爬楼梯",
+    "title": "算法训练营Day 32 - Dynamic Programming",
+    "section": "70. 爬楼梯",
+    "text": "70. 爬楼梯\n\n假设你正在爬楼梯。需要 n 阶你才能到达楼顶。\n每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？\n示例 1：\n\n输入：n = 2\n输出：2\n解释：有两种方法可以爬到楼顶。\n\n1 阶 + 1 阶\n\n\n2 阶\n\n\n示例 2：\n\n输入：n = 3\n输出：3\n解释：有三种方法可以爬到楼顶。\n\n1 阶 + 1 阶 + 1 阶\n\n\n1 阶 + 2 阶\n\n\n2 阶 + 1 阶\n\n\n\n\nclass Solution:\n    def climbStairs(self, n: int) -&gt; int:\n        if n &lt;= 1:\n            return n\n\n        dp = [0] * (n + 1)\n        dp[1] = 1\n        dp[2] = 2\n        \n        for i in range(3, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n\n        return dp[n]"
+  },
+  {
+    "objectID": "note/day32.html#使用最小花费爬楼梯",
+    "href": "note/day32.html#使用最小花费爬楼梯",
+    "title": "算法训练营Day 32 - Dynamic Programming",
+    "section": "746. 使用最小花费爬楼梯",
+    "text": "746. 使用最小花费爬楼梯\n\n给你一个整数数组 cost ，其中 cost[i] 是从楼梯第 i 个台阶向上爬需要支付的费用。一旦你支付此费用，即可选择向上爬一个或者两个台阶。\n你可以选择从下标为 0 或下标为 1 的台阶开始爬楼梯。\n请你计算并返回达到楼梯顶部的最低花费。\n\n\n\nclass Solution:\n    def minCostClimbingStairs(self, cost: List[int]) -&gt; int:\n        dp = [0] * (len(cost) + 1)\n        dp[1] = 0\n        dp[0] = 0\n\n        for i in range(2, len(cost) + 1):\n            dp[i] = min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2])\n\n        return dp[len(cost)]"
+  },
+  {
+    "objectID": "note/day30.html",
+    "href": "note/day30.html",
+    "title": "算法训练营Day 30",
+    "section": "",
+    "text": "有一些球形气球贴在一堵用 XY 平面表示的墙面上。墙面上的气球记录在整数数组 points ，其中points[i] = [xstart, xend] 表示水平直径在 xstart 和 xend之间的气球。你不知道气球的确切 y 坐标。\n一支弓箭可以沿着 x 轴从不同点 完全垂直 地射出。在坐标 x 处射出一支箭，若有一个气球的直径的开始和结束坐标为 xstart，xend， 且满足 xstart ≤ x ≤ xend，则该气球会被 引爆 。可以射出的弓箭的数量 没有限制 。 弓箭一旦被射出之后，可以无限地前进。\n给你一个数组 points ，返回引爆所有气球所必须射出的 最小 弓箭数 。\n\n\n\nclass Solution:\n    def findMinArrowShots(self, points: List[List[int]]) -&gt; int:\n        if len(points) == 0: return 0\n        points.sort(key=lambda x: x[0])\n        result = 1\n        for i in range(1, len(points)):\n          # 比较左边气球的右边界 和 右边气球的左边界，如果右边气球的左边界 &gt; 左边气球的右边界,说明这两个气球一定没有重叠，那么就要多用一只箭\n            if points[i][0] &gt; points[i - 1][1]: # 气球i和气球i-1不挨着，注意这里不是&gt;=\n                result += 1     \n            else:\n                points[i][1] = min(points[i - 1][1], points[i][1]) # 更新重叠气球最小右边界\n        return result"
+  },
+  {
+    "objectID": "note/day30.html#用最少数量的箭引爆气球",
+    "href": "note/day30.html#用最少数量的箭引爆气球",
+    "title": "算法训练营Day 30",
+    "section": "",
+    "text": "有一些球形气球贴在一堵用 XY 平面表示的墙面上。墙面上的气球记录在整数数组 points ，其中points[i] = [xstart, xend] 表示水平直径在 xstart 和 xend之间的气球。你不知道气球的确切 y 坐标。\n一支弓箭可以沿着 x 轴从不同点 完全垂直 地射出。在坐标 x 处射出一支箭，若有一个气球的直径的开始和结束坐标为 xstart，xend， 且满足 xstart ≤ x ≤ xend，则该气球会被 引爆 。可以射出的弓箭的数量 没有限制 。 弓箭一旦被射出之后，可以无限地前进。\n给你一个数组 points ，返回引爆所有气球所必须射出的 最小 弓箭数 。\n\n\n\nclass Solution:\n    def findMinArrowShots(self, points: List[List[int]]) -&gt; int:\n        if len(points) == 0: return 0\n        points.sort(key=lambda x: x[0])\n        result = 1\n        for i in range(1, len(points)):\n          # 比较左边气球的右边界 和 右边气球的左边界，如果右边气球的左边界 &gt; 左边气球的右边界,说明这两个气球一定没有重叠，那么就要多用一只箭\n            if points[i][0] &gt; points[i - 1][1]: # 气球i和气球i-1不挨着，注意这里不是&gt;=\n                result += 1     \n            else:\n                points[i][1] = min(points[i - 1][1], points[i][1]) # 更新重叠气球最小右边界\n        return result"
+  },
+  {
+    "objectID": "note/day30.html#无重叠区间",
+    "href": "note/day30.html#无重叠区间",
+    "title": "算法训练营Day 30",
+    "section": "435. 无重叠区间",
+    "text": "435. 无重叠区间\n\n给定一个区间的集合 intervals ，其中 intervals[i] = [starti, endi] 。返回 需要移除区间的最小数量，使剩余区间互不重叠 。\n注意 只在一点上接触的区间是 不重叠的。例如 [1, 2] 和 [2, 3] 是不重叠的。\n示例 1:\n\n输入: intervals = [[1,2],[2,3],[3,4],[1,3]]\n输出: 1\n解释: 移除 [1,3] 后，剩下的区间没有重叠。\n\n示例 2:\n\n输入: intervals = [ [1,2], [1,2], [1,2] ]\n输出: 2\n解释: 你需要移除两个 [1,2] 来使剩下的区间没有重叠。\n\n示例 3:\n\n输入: intervals = [ [1,2], [2,3] ]\n输出: 0\n解释: 你不需要移除任何区间，因为它们已经是无重叠的了。\n\n\n\n版本一\n\nclass Solution:\n    def eraseOverlapIntervals(self, intervals: List[List[int]]) -&gt; int:\n        if not intervals:\n            return 0\n        \n        intervals.sort(key=lambda x: x[0])  # 按照左边界升序排序\n        count = 0  # 记录重叠区间数量\n        \n        for i in range(1, len(intervals)):\n            if intervals[i][0] &lt; intervals[i - 1][1]:  # 存在重叠区间\n                intervals[i][1] = min(intervals[i - 1][1], intervals[i][1])  # 更新重叠区间的右边界\n                count += 1\n        \n        return count\n\n\n\n版本二：修改重叠区域气球的code\n\nclass Solution:\n    def eraseOverlapIntervals(self, intervals: List[List[int]]) -&gt; int:\n        if not intervals:\n            return 0\n        \n        intervals.sort(key=lambda x: x[0])  # 按照左边界升序排序\n        \n        result = 1  # 不重叠区间数量，初始化为1，因为至少有一个不重叠的区间\n        \n        for i in range(1, len(intervals)):\n            if intervals[i][0] &gt;= intervals[i - 1][1]:  # 没有重叠\n                result += 1\n            else:  # 重叠情况\n                intervals[i][1] = min(intervals[i - 1][1], intervals[i][1])  # 更新重叠区间的右边界\n        \n        return len(intervals) - result"
+  },
+  {
+    "objectID": "note/day30.html#划分字母区间",
+    "href": "note/day30.html#划分字母区间",
+    "title": "算法训练营Day 30",
+    "section": "763.划分字母区间",
+    "text": "763.划分字母区间\n\n给你一个字符串 s 。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。例如，字符串 “ababcc” 能够被分为 [“abab”, “cc”]，但类似 [“aba”, “bcc”] 或 [“ab”, “ab”, “cc”] 的划分是非法的。\n注意，划分结果需要满足：将所有划分结果按顺序连接，得到的字符串仍然是 s 。\n返回一个表示每个字符串片段的长度的列表。\n示例 1：\n\n输入：s = “ababcbacadefegdehijhklij”\n输出：[9,7,8]\n解释：\n\n划分结果为 “ababcbaca”、“defegde”、“hijhklij” 。\n每个字母最多出现在一个片段中。\n像 “ababcbacadefegde”, “hijhklij” 这样的划分是错误的，因为划分的片段数较少。\n示例 2：\n\n输入：s = “eccbbbbdec”\n输出：[10]\n\n\n\nclass Solution:\n    def partitionLabels(self, s: str) -&gt; List[int]:\n        last_occurrence = {}  # 存储每个字符最后出现的位置\n        for i, ch in enumerate(s): # ch表示字母，i表示字母出现的位置\n            last_occurrence[ch] = i # 更新每个 ch（字母）最后出现的 i (位置)\n\n        result = []\n        start = 0\n        end = 0\n        for i, ch in enumerate(s):\n            end = max(end, last_occurrence[ch])  # 找到当前字符出现的最远位置\n            if i == end:  # 如果当前位置是最远位置，表示可以分割出一个区间\n                result.append(end - start + 1) # 因为题目要求我们返回每一段的长度，不是返回分段字符串，所以这里我们只用记录每一段的len\n                start = i + 1\n\n        return result"
+  },
+  {
+    "objectID": "note/day28.html",
+    "href": "note/day28.html",
+    "title": "算法训练营Day 28",
+    "section": "",
+    "text": "给你一个整数数组 prices ，其中 prices[i] 表示某支股票第 i 天的价格。\n在每一天，你可以决定是否购买和/或出售股票。你在任何时候 最多 只能持有 一股 股票。然而，你可以在 同一天 多次买卖该股票，但要确保你持有的股票不超过一股。\n返回 你能获得的 最大 利润 。\n\n\n\n# 局部最优：收集每天的正利润\nclass Solution:\n    def maxProfit(self, prices: List[int]) -&gt; int:\n        result = 0\n        for i in range(1, len(prices)):\n            result += max(prices[i] - prices[i - 1], 0) # 如果是负利润，那么max(negative,0)就是0，相当于跳过负利润，只收集正利润\n        return result"
+  },
+  {
+    "objectID": "note/day28.html#买卖股票的最佳时机-ii",
+    "href": "note/day28.html#买卖股票的最佳时机-ii",
+    "title": "算法训练营Day 28",
+    "section": "",
+    "text": "给你一个整数数组 prices ，其中 prices[i] 表示某支股票第 i 天的价格。\n在每一天，你可以决定是否购买和/或出售股票。你在任何时候 最多 只能持有 一股 股票。然而，你可以在 同一天 多次买卖该股票，但要确保你持有的股票不超过一股。\n返回 你能获得的 最大 利润 。\n\n\n\n# 局部最优：收集每天的正利润\nclass Solution:\n    def maxProfit(self, prices: List[int]) -&gt; int:\n        result = 0\n        for i in range(1, len(prices)):\n            result += max(prices[i] - prices[i - 1], 0) # 如果是负利润，那么max(negative,0)就是0，相当于跳过负利润，只收集正利润\n        return result"
+  },
+  {
+    "objectID": "note/day28.html#跳跃游戏",
+    "href": "note/day28.html#跳跃游戏",
+    "title": "算法训练营Day 28",
+    "section": "55. 跳跃游戏",
+    "text": "55. 跳跃游戏\n\n给你一个非负整数数组 nums ，你最初位于数组的 第一个下标 。数组中的每个元素代表你在该位置可以跳跃的最大长度。\n判断你是否能够到达最后一个下标，如果可以，返回 true ；否则，返回 false 。\n示例 1：\n\n输入：nums = [2,3,1,1,4]\n输出：true\n解释：可以先跳 1 步，从下标 0 到达下标 1, 然后再从下标 1 跳 3 步到达最后一个下标。\n\n示例 2：\n\n输入：nums = [3,2,1,0,4]\n输出：false\n解释：无论怎样，总会到达下标为 3 的位置。但该下标的最大跳跃长度是 0 ， 所以永远不可能到达最后一个下标。\n\n\n\nclass Solution:\n    def canJump(self, nums: List[int]) -&gt; bool:\n        cover = 0\n        if len(nums) == 1: return True\n        i = 0\n        # python不支持动态修改for循环中变量,使用while循环代替\n        while i &lt;= cover: # 只要当前位置 i 还在我能覆盖的范围内，我就可以站在 i 上继续跳\n            cover = max(i + nums[i], cover) # 我走到当前位置 i 后，我的最远可达范围能不能被扩展\n            if cover &gt;= len(nums) - 1: return True\n            i += 1 # 模拟向右移动，去检查下一个位置是否还能继续扩展 cover\n        return False"
+  },
+  {
+    "objectID": "note/day28.html#跳跃游戏-ii",
+    "href": "note/day28.html#跳跃游戏-ii",
+    "title": "算法训练营Day 28",
+    "section": "45.跳跃游戏 II",
+    "text": "45.跳跃游戏 II\n\n给定一个长度为 n 的 0 索引整数数组 nums。初始位置在下标 0。\n每个元素 nums[i] 表示从索引 i 向后跳转的最大长度。换句话说，如果你在索引 i 处，你可以跳转到任意 (i + j) 处：\n0 &lt;= j &lt;= nums[i] 且 i + j &lt; n\n返回到达 n - 1 的最小跳跃次数。测试用例保证可以到达 n - 1。\n\n\nclass Solution:\n    def jump(self, nums: List[int]) -&gt; int:\n        cover = 0\n        result = 0\n        if len(nums) == 1:\n            return 0\n        i = 0\n\n        while i &lt;= cover:\n            for i in range(i, cover + 1): # 最小跳数的贪心是“扫完当前这一跳能到的区间”就步数 +1，而不是扫完整个数组,，所有右边的range是cover + 1而不是len(nums)\n                cover = max(nums[i] + i, cover)\n                if cover &gt;= len(nums) - 1: # 在当前这一步里，我已经发现：下一步一定可以直接跳到终点，所以直接返回 count + 1\n                    return result + 1\n            result += 1"
+  },
+  {
+    "objectID": "note/day28.html#k次取反后最大化的数组和",
+    "href": "note/day28.html#k次取反后最大化的数组和",
+    "title": "算法训练营Day 28",
+    "section": "1005.K次取反后最大化的数组和",
+    "text": "1005.K次取反后最大化的数组和\n\n给你一个整数数组 nums 和一个整数 k ，按以下方法修改该数组：\n\n选择某个下标 i 并将 nums[i] 替换为 -nums[i] 。\n\n重复这个过程恰好 k 次。可以多次选择同一个下标 i 。\n以这种方式修改数组后，返回数组 可能的最大和 。\n示例 1：\n\n输入：nums = [4,2,3], k = 1\n输出：5\n解释：选择下标 1 ，nums 变为 [4,-2,3] 。\n\n示例 2：\n\n输入：nums = [3,-1,0,2], k = 3\n输出：6\n解释：选择下标 (1, 2, 2) ，nums 变为 [3,1,0,2] 。\n\n示例 3：\n\n输入：nums = [2,-3,-1,5,-4], k = 2\n输出：13\n解释：选择下标 (1, 4) ，nums 变为 [2,3,-1,5,4] 。\n\n\n\nclass Solution:\n    def largestSumAfterKNegations(self, A: List[int], K: int) -&gt; int:\n        A.sort(key=lambda x: abs(x), reverse=True)  # 第一步：按照绝对值降序排序数组A\n\n        for i in range(len(A)):  # 第二步：执行K次取反操作\n            if A[i] &lt; 0 and K &gt; 0:\n                A[i] *= -1\n                K -= 1\n\n        if K % 2 == 1:  # 第三步：如果K还有剩余次数，将绝对值最小的元素取反\n            A[-1] *= -1\n\n        result = sum(A)  # 第四步：计算数组A的元素和\n        return result"
+  },
+  {
+    "objectID": "note/day25.html",
+    "href": "note/day25.html",
+    "title": "算法训练营Day 25",
+    "section": "",
+    "text": "给你一个整数数组 nums ，找出并返回所有该数组中不同的递增子序列，递增子序列中 至少有两个元素 。你可以按 任意顺序 返回答案。\n数组中可能含有重复元素，如出现两个整数相等，也可以视作递增序列的一种特殊情况。\n示例 1：\n\n输入：nums = [4,6,7,7]\n输出：[[4,6],[4,6,7],[4,6,7,7],[4,7],[4,7,7],[6,7],[6,7,7],[7,7]]\n\n示例 2：\n\n输入：nums = [4,4,3,2,1]\n输出：[[4,4]]\n\n\n\nclass Solution:\n  def findSubsequences(self, nums: List[int]) -&gt; List[List[int]]:\n    result = []\n    self.backtracking(nums, 0, [], result)\n    return result\n\n  def backtracking(self, nums, startIndex, path, result):\n    if len(path) &gt; 1:\n      result.append(path[:])\n      # 这个地方不能return，len(path) &gt; 1 就 return 会把更长的答案全砍掉\n      # 正确做法是：len(path) &gt;= 2 时把它加入结果，但 不要 return，继续往下搜\n\n    used = set()\n    for i in range(startIndex, len(nums)):\n      # 这个地方判断两种情况：\n      # 1. nums这个数字是否已经用过了，如果它已经存在于used set里面，就跳过它用来去重\n      # 2. 如果path存在，并且nums的下一个数字小于前一个数字，那么它就不符合递增规律，跳过它\n      if nums[i] in used or (path and nums[i] &lt; path[-1]): \n        continue\n\n      used.add(nums[i]) # set只能用add，不能用append\n      path.append(nums[i])\n      self.backtracking(nums, i + 1, path, result)\n      path.pop()"
+  },
+  {
+    "objectID": "note/day25.html#递增子序列",
+    "href": "note/day25.html#递增子序列",
+    "title": "算法训练营Day 25",
+    "section": "",
+    "text": "给你一个整数数组 nums ，找出并返回所有该数组中不同的递增子序列，递增子序列中 至少有两个元素 。你可以按 任意顺序 返回答案。\n数组中可能含有重复元素，如出现两个整数相等，也可以视作递增序列的一种特殊情况。\n示例 1：\n\n输入：nums = [4,6,7,7]\n输出：[[4,6],[4,6,7],[4,6,7,7],[4,7],[4,7,7],[6,7],[6,7,7],[7,7]]\n\n示例 2：\n\n输入：nums = [4,4,3,2,1]\n输出：[[4,4]]\n\n\n\nclass Solution:\n  def findSubsequences(self, nums: List[int]) -&gt; List[List[int]]:\n    result = []\n    self.backtracking(nums, 0, [], result)\n    return result\n\n  def backtracking(self, nums, startIndex, path, result):\n    if len(path) &gt; 1:\n      result.append(path[:])\n      # 这个地方不能return，len(path) &gt; 1 就 return 会把更长的答案全砍掉\n      # 正确做法是：len(path) &gt;= 2 时把它加入结果，但 不要 return，继续往下搜\n\n    used = set()\n    for i in range(startIndex, len(nums)):\n      # 这个地方判断两种情况：\n      # 1. nums这个数字是否已经用过了，如果它已经存在于used set里面，就跳过它用来去重\n      # 2. 如果path存在，并且nums的下一个数字小于前一个数字，那么它就不符合递增规律，跳过它\n      if nums[i] in used or (path and nums[i] &lt; path[-1]): \n        continue\n\n      used.add(nums[i]) # set只能用add，不能用append\n      path.append(nums[i])\n      self.backtracking(nums, i + 1, path, result)\n      path.pop()"
+  },
+  {
+    "objectID": "note/day25.html#全排列",
+    "href": "note/day25.html#全排列",
+    "title": "算法训练营Day 25",
+    "section": "46.全排列",
+    "text": "46.全排列\n\n给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。\n示例 1：\n\n输入：nums = [1,2,3]\n输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]\n\n示例 2：\n\n输入：nums = [0,1]\n输出：[[0,1],[1,0]]\n\n示例 3：\n\n输入：nums = [1]\n输出：[[1]]\n\n\n\nclass Solution:\n    def permute(self, nums: List[int]) -&gt; List[List[int]]:\n        result = []\n        self.backtracking(nums, [], [False] * len(nums), result) # 这个地方要写[False] * len(nums)，不然会out of index\n        return result\n\n    def backtracking(self, nums, path, used, result):\n        if len(path) == len(nums):\n            result.append(path[:])\n            return\n\n        for i in range(len(nums)):\n            if used[i]:\n                continue\n\n            used[i] = True\n            path.append(nums[i])\n            self.backtracking(nums, path, used, result)\n            path.pop()\n            used[i] = False"
+  },
+  {
+    "objectID": "note/day25.html#全排列-ii",
+    "href": "note/day25.html#全排列-ii",
+    "title": "算法训练营Day 25",
+    "section": "47.全排列 II",
+    "text": "47.全排列 II\n\n给定一个可包含重复数字的序列 nums ，按任意顺序 返回所有不重复的全排列。\nimage\n\n\n\nclass Solution:\n    def permuteUnique(self, nums: List[int]) -&gt; List[List[int]]:\n        result = []\n        self.backtracking(nums, [], [False] * len(nums), result)\n        return result\n        \n    def backtracking(self, nums, path, used, result):\n        if len(path) == len(nums):\n            result.append(path[:])\n            result\n\n        for i in range(len(nums)):\n            if used[i]:\n                continue\n            \n            # 要记得写这一步用来去重，一定要有i &gt; 0和not used [i - 1]\n            if i &gt; 0 and nums[i] == nums[i - 1] and not used[i - 1]: \n                continue\n\n            used[i] = True\n            path.append(nums[i])\n            self.backtracking(nums, path, used, result)\n            path.pop()\n            used[i] = False"
+  },
+  {
+    "objectID": "note/day23.html",
+    "href": "note/day23.html",
+    "title": "算法训练营Day 23",
+    "section": "",
+    "text": "给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合。\ncandidates 中的 同一个 数字可以 无限制重复被选取 。如果至少一个数字的被选数量不同，则两种组合是不同的。\n对于给定的输入，保证和为 target 的不同组合数少于 150 个。\n\n\n\nclass Solution:\n    def backtracking(self, candidates, curSum, target, startIndex, path, result):\n        if curSum == target:\n            result.append(path[:])\n            return result\n        if curSum &gt; target:\n            return\n\n        for i in range(startIndex, len(candidates)):\n            curSum += candidates[i]\n            path.append(candidates[i])\n            self.backtracking(candidates, curSum, target, i, path, result)\n            curSum -= candidates[i]\n            path.pop()\n\n    def combinationSum(self, candidates: List[int], target: int) -&gt; List[List[int]]:\n        result = []\n        self.backtracking(candidates, 0, target, 0, [], result)\n        return result"
+  },
+  {
+    "objectID": "note/day23.html#组合总和",
+    "href": "note/day23.html#组合总和",
+    "title": "算法训练营Day 23",
+    "section": "",
+    "text": "给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合。\ncandidates 中的 同一个 数字可以 无限制重复被选取 。如果至少一个数字的被选数量不同，则两种组合是不同的。\n对于给定的输入，保证和为 target 的不同组合数少于 150 个。\n\n\n\nclass Solution:\n    def backtracking(self, candidates, curSum, target, startIndex, path, result):\n        if curSum == target:\n            result.append(path[:])\n            return result\n        if curSum &gt; target:\n            return\n\n        for i in range(startIndex, len(candidates)):\n            curSum += candidates[i]\n            path.append(candidates[i])\n            self.backtracking(candidates, curSum, target, i, path, result)\n            curSum -= candidates[i]\n            path.pop()\n\n    def combinationSum(self, candidates: List[int], target: int) -&gt; List[List[int]]:\n        result = []\n        self.backtracking(candidates, 0, target, 0, [], result)\n        return result"
+  },
+  {
+    "objectID": "note/day23.html#组合总和ii",
+    "href": "note/day23.html#组合总和ii",
+    "title": "算法训练营Day 23",
+    "section": "40.组合总和II",
+    "text": "40.组合总和II\n\n给定一个候选人编号的集合 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。\ncandidates 中的每个数字在每个组合中只能使用 一次 。\n注意：解集不能包含重复的组合。\n\n\n\nclass Solution:\n    def backtracking(self, candidates, target, curSum, startIndex, path, result):\n        if curSum &gt; target:\n            return\n        if curSum == target:\n            result.append(path[:])\n            return result\n        \n        for i in range(startIndex, len(candidates)):\n            if i &gt; startIndex and candidates[i] == candidates[i - 1]:\n                continue # 如果有连续的两个val相同，跳过第二个相同值\n\n            if curSum + candidates[i] &gt; target:\n                break\n\n            curSum += candidates[i]\n            path.append(candidates[i])\n            self.backtracking(candidates, target, curSum, i + 1, path, result)\n            curSum -= candidates[i]\n            path.pop()\n\n    def combinationSum2(self, candidates: List[int], target: int) -&gt; List[List[int]]:\n        result = []\n        candidates.sort()\n        self.backtracking(candidates, target, 0, 0, [], result)\n        return result"
+  },
+  {
+    "objectID": "note/day23.html#分割回文串",
+    "href": "note/day23.html#分割回文串",
+    "title": "算法训练营Day 23",
+    "section": "131.分割回文串",
+    "text": "131.分割回文串\n\n给你一个字符串 s，请你将 s 分割成一些 子串，使每个子串都是 回文串 。返回 s 所有可能的分割方案。\n示例 1：\n\n输入：s = “aab”\n输出：[[“a”,“a”,“b”],[“aa”,“b”]]\n\n示例 2：\n\n输入：s = “a”\n输出：[[“a”]]\n\n\n\nclass Solution:\n    def backtracking(self, s, startIndex, path, result):\n        if startIndex == len(s):\n            result.append(path[:])\n            return result\n\n        for i in range(startIndex, len(s)):\n            if s[startIndex : i + 1] == s[startIndex : i + 1][::-1]: # 若反序和正序相同，意味着这是回文串\n                path.append(s[startIndex : i + 1])\n                self.backtracking(s, i + 1, path, result)\n                path.pop()\n\n    def partition(self, s: str) -&gt; List[List[str]]:\n        result = []\n        self.backtracking(s, 0, [], result)\n        return result"
+  },
+  {
+    "objectID": "note/day22.html",
+    "href": "note/day22.html",
+    "title": "算法训练营Day 22",
+    "section": "",
+    "text": "回溯算法理论基础\n回溯算法模板框架如下：\nvoid backtracking(参数) {\n    if (终止条件) {\n        存放结果;\n        return;\n    }\n\n    for (选择：本层集合中元素（树中节点孩子的数量就是集合的大小）) {\n        处理节点;\n        backtracking(路径，选择列表); // 递归\n        回溯，撤销处理结果\n    }\n}"
+  },
+  {
+    "objectID": "note/day22.html#组合",
+    "href": "note/day22.html#组合",
+    "title": "算法训练营Day 22",
+    "section": "77. 组合",
+    "text": "77. 组合\n\n给定两个整数 n 和 k，返回范围 [1, n] 中所有可能的 k 个数的组合。\n你可以按 任何顺序 返回答案。\n\n\n\nclass Solution:\n    def backtracking(self, n, k, startindex, path, result):\n        if len(path) == k:\n            result.append(path[:])\n            return\n\n        for i in range(startindex, n + 1):\n            path.append(i)\n            self.backtracking(n, k, i + 1, path, result)\n            path.pop()\n\n    def combine(self, n: int, k: int) -&gt; List[List[int]]:\n        result = []\n        self.backtracking(n, k, 1, [], result)\n        return result"
+  },
+  {
+    "objectID": "note/day22.html#组合总和iii",
+    "href": "note/day22.html#组合总和iii",
+    "title": "算法训练营Day 22",
+    "section": "216.组合总和III",
+    "text": "216.组合总和III\n\n找出所有相加之和为 n 的 k 个数的组合，且满足下列条件：\n\n只使用数字1到9\n每个数字 最多使用一次\n\n返回 所有可能的有效组合的列表 。该列表不能包含相同的组合两次，组合可以以任何顺序返回。\n\n\n\nclass Solution:\n    def backtracking(self, targetSum, k, curSum, startIndex, path, result):\n        if curSum &gt; targetSum:\n            return\n\n        if len(path) == k:\n            if curSum == targetSum:\n                result.append(path[:])\n            return\n\n        for i in range(startIndex, 9 - (k - len(path)) + 2):\n            curSum += i\n            path.append(i)\n            self.backtracking(targetSum, k, curSum, i + 1, path, result)\n            curSum -= i\n            path.pop()\n\n    def combinationSum3(self, k: int, n: int) -&gt; List[List[int]]:\n        result = []\n        self.backtracking(n, k, 0, 1, [], result)\n        return result"
+  },
+  {
+    "objectID": "note/day22.html#电话号码的字母组合",
+    "href": "note/day22.html#电话号码的字母组合",
+    "title": "算法训练营Day 22",
+    "section": "17.电话号码的字母组合",
+    "text": "17.电话号码的字母组合\n\n给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。\n给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。\n\n\n\n\nclass Solution:\n    def __init__(self):\n        self.letterMap = [\n            \"\",     # 0\n            \"\",     # 1\n            \"abc\",  # 2\n            \"def\",  # 3\n            \"ghi\",  # 4\n            \"jkl\",  # 5\n            \"mno\",  # 6\n            \"pqrs\", # 7\n            \"tuv\",  # 8\n            \"wxyz\"  # 9\n        ]\n        self.result = []\n        self.s = \"\"\n\n    def backtracking(self, digits, index): # 这里index指的是digits的第几位\n        # self.s是用来存当前未完成的结果，就是每个字母可以和谁配\n        # self.result是用来存已经搜索好的结果\n        if index == len(digits):\n            self.result.append(self.s)\n            return\n\n        digit = int(digits[index]) # 找digits里面每一个index对应的是哪个val\n        letters = self.letterMap[digit] # 找这个val对应的letters\n\n        for i in range(len(letters)):\n            self.s += letters[i]\n            self.backtracking(digits, index + 1)\n            self.s = self.s[:-1]\n\n    def letterCombinations(self, digits: str) -&gt; List[str]:\n        if len(digits)  == 0:\n            return self.result\n\n        self.backtracking(digits, 0)\n        return self.result"
+  },
+  {
+    "objectID": "note/day24.html",
+    "href": "note/day24.html",
+    "title": "算法训练营Day 24",
+    "section": "",
+    "text": "有效 IP 地址 正好由四个整数（每个整数位于 0 到 255 之间组成，且不能含有前导 0），整数之间用 ‘.’ 分隔。\n例如：“0.1.2.201” 和 “192.168.1.1” 是 有效 IP 地址，但是 “0.011.255.245”、“192.168.1.312” 和 “192.168@1.1” 是 无效 IP 地址。\n给定一个只包含数字的字符串 s ，用以表示一个 IP 地址，返回所有可能的有效 IP 地址，这些地址可以通过在 s 中插入 ‘.’ 来形成。你 不能 重新排序或删除 s 中的任何数字。你可以按 任何 顺序返回答案。\n示例 1：\n\n输入：s = “25525511135”\n输出：[“255.255.11.135”,“255.255.111.35”]\n\n示例 2：\n\n\n\n输入：s = “0000”\n输出：[“0.0.0.0”]\n\n示例 3：\n\n输入：s = “101023”\n输出：[“1.0.10.23”,“1.0.102.3”,“10.1.0.23”,“10.10.2.3”,“101.0.2.3”]\n\n\n\nclass Solution:\n    def restoreIpAddresses(self, s: str) -&gt; List[str]:\n        result = []\n        self.backtracking(s, 0, 0, \"\", result)\n        return result\n\n    def backtracking(self, s, start_index, point_num, current, result):\n        if point_num == 3:  # 逗点数量为3时，分隔结束\n            if self.is_valid(s, start_index, len(s) - 1):  # 判断第四段子字符串是否合法\n                current += s[start_index:]  # 添加最后一段子字符串\n                result.append(current)\n            return\n\n        for i in range(start_index, len(s)):\n            if self.is_valid(s, start_index, i):  # 判断 [start_index, i] 这个区间的子串是否合法\n                sub = s[start_index:i + 1] # s[a:b]  # 左闭右开，右边必须写 i + 1\n                self.backtracking(s, i + 1, point_num + 1, current + sub + '.', result) # 这里的i + 1是下一段起点\n            else:\n                break\n\n    def is_valid(self, s, start, end):\n        # 这是一段防御性判断，检查要检查的子串是否存在，也就是所谓的空区间\n        if start &gt; end:\n            return False\n        \n        # 这不是单独的一个 0，而是一个以 0 开头的多位数，0开头的数字不合法\n        if s[start] == '0' and start != end:  # 如果这是一个只有一位的0，那么start == end\n            return False\n        num = 0\n        for i in range(start, end + 1):\n            if not s[i].isdigit():  # 遇到非数字字符不合法\n                return False\n            num = num * 10 + int(s[i])\n            if num &gt; 255:  # 如果大于255了不合法\n                return False\n        return True"
+  },
+  {
+    "objectID": "note/day24.html#复原ip地址",
+    "href": "note/day24.html#复原ip地址",
+    "title": "算法训练营Day 24",
+    "section": "",
+    "text": "有效 IP 地址 正好由四个整数（每个整数位于 0 到 255 之间组成，且不能含有前导 0），整数之间用 ‘.’ 分隔。\n例如：“0.1.2.201” 和 “192.168.1.1” 是 有效 IP 地址，但是 “0.011.255.245”、“192.168.1.312” 和 “192.168@1.1” 是 无效 IP 地址。\n给定一个只包含数字的字符串 s ，用以表示一个 IP 地址，返回所有可能的有效 IP 地址，这些地址可以通过在 s 中插入 ‘.’ 来形成。你 不能 重新排序或删除 s 中的任何数字。你可以按 任何 顺序返回答案。\n示例 1：\n\n输入：s = “25525511135”\n输出：[“255.255.11.135”,“255.255.111.35”]\n\n示例 2：\n\n\n\n输入：s = “0000”\n输出：[“0.0.0.0”]\n\n示例 3：\n\n输入：s = “101023”\n输出：[“1.0.10.23”,“1.0.102.3”,“10.1.0.23”,“10.10.2.3”,“101.0.2.3”]\n\n\n\nclass Solution:\n    def restoreIpAddresses(self, s: str) -&gt; List[str]:\n        result = []\n        self.backtracking(s, 0, 0, \"\", result)\n        return result\n\n    def backtracking(self, s, start_index, point_num, current, result):\n        if point_num == 3:  # 逗点数量为3时，分隔结束\n            if self.is_valid(s, start_index, len(s) - 1):  # 判断第四段子字符串是否合法\n                current += s[start_index:]  # 添加最后一段子字符串\n                result.append(current)\n            return\n\n        for i in range(start_index, len(s)):\n            if self.is_valid(s, start_index, i):  # 判断 [start_index, i] 这个区间的子串是否合法\n                sub = s[start_index:i + 1] # s[a:b]  # 左闭右开，右边必须写 i + 1\n                self.backtracking(s, i + 1, point_num + 1, current + sub + '.', result) # 这里的i + 1是下一段起点\n            else:\n                break\n\n    def is_valid(self, s, start, end):\n        # 这是一段防御性判断，检查要检查的子串是否存在，也就是所谓的空区间\n        if start &gt; end:\n            return False\n        \n        # 这不是单独的一个 0，而是一个以 0 开头的多位数，0开头的数字不合法\n        if s[start] == '0' and start != end:  # 如果这是一个只有一位的0，那么start == end\n            return False\n        num = 0\n        for i in range(start, end + 1):\n            if not s[i].isdigit():  # 遇到非数字字符不合法\n                return False\n            num = num * 10 + int(s[i])\n            if num &gt; 255:  # 如果大于255了不合法\n                return False\n        return True"
+  },
+  {
+    "objectID": "note/day24.html#子集",
+    "href": "note/day24.html#子集",
+    "title": "算法训练营Day 24",
+    "section": "78. 子集",
+    "text": "78. 子集\n\n给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。\n解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。\n示例 1：\n\n输入：nums = [1,2,3]\n输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]\n\n示例 2：\n\n输入：nums = [0]\n输出：[[],[0]]\n\n\n\nclass Solution:\n    def backtracking(self, nums, startIndex, path, result):\n        result.append(path[:])\n\n        for i in range(startIndex, len(nums)):\n            path.append(nums[i])\n            self.backtracking(nums, i + 1, path, result)\n            path.pop()\n\n    def subsets(self, nums: List[int]) -&gt; List[List[int]]:\n        result = []\n        self.backtracking(nums, 0, [], result)\n        return result"
+  },
+  {
+    "objectID": "note/day24.html#子集ii",
+    "href": "note/day24.html#子集ii",
+    "title": "算法训练营Day 24",
+    "section": "90.子集II",
+    "text": "90.子集II\n\n给你一个整数数组 nums ，其中可能包含重复元素，请你返回该数组所有可能的 子集（幂集）。\n解集 不能 包含重复的子集。返回的解集中，子集可以按 任意顺序 排列。\n示例 1：\n\n输入：nums = [1,2,2]\n输出：[[],[1],[1,2],[1,2,2],[2],[2,2]]\n\n示例 2：\n\n输入：nums = [0]\n输出：[[],[0]]\n\n\n\nclass Solution:\n    def backtracking(self, nums, startIndex, path, result):\n        result.append(path[:])\n\n        for i in range(startIndex, len(nums)):\n            # 这行代码只会“横向去重”，不会“纵向去重”，它只管同一层里面[1,2]这个会不会重复，而不会略过[1,2,2]这种结果\n            if i &gt; startIndex and nums[i] == nums[i - 1]:\n                continue\n            path.append(nums[i])\n            self.backtracking(nums, i + 1, path, result)\n            path.pop()\n\n    def subsetsWithDup(self, nums: List[int]) -&gt; List[List[int]]:\n        result = []\n        nums.sort()\n        self.backtracking(nums, 0, [], result)\n        return result"
+  },
+  {
+    "objectID": "note/day27.html",
+    "href": "note/day27.html",
+    "title": "算法训练营Day 27",
+    "section": "",
+    "text": "今天是贪心算法（Greedy Algorithm）。"
+  },
+  {
+    "objectID": "note/day27.html#分发饼干",
+    "href": "note/day27.html#分发饼干",
+    "title": "算法训练营Day 27",
+    "section": "455.分发饼干",
+    "text": "455.分发饼干\n\n假设你是一位很棒的家长，想要给你的孩子们一些小饼干。但是，每个孩子最多只能给一块饼干。\n对每个孩子 i，都有一个胃口值 g[i]，这是能让孩子们满足胃口的饼干的最小尺寸；并且每块饼干 j，都有一个尺寸 s[j] 。如果 s[j] &gt;= g[i]，我们可以将这个饼干 j 分配给孩子 i ，这个孩子会得到满足。你的目标是满足尽可能多的孩子，并输出这个最大数值。\n\n\n\n贪心 大饼干优先\n\nclass Solution:\n    def findContentChildren(self, g: List[int], s: List[int]) -&gt; int:\n        g.sort()\n        s.sort()\n        index = len(s) - 1 # index是s的，用来控制最大的饼干\n        result = 0\n        for i in range(len(g) - 1, -1, -1): # range是左闭右开，现在我们从list末尾从后往前数所以len(g)要减1\n          if index &gt;= 0 and s[index] &gt;= g[i]: # g[i]是用来找哪个是胃口最大的孩子\n            resule += 1\n            index -= 1\n        return result\n\n\n\n贪心 小饼干优先\n\nclass Solution:\n    def findContentChildren(self, g, s):\n        g.sort()  # 将孩子的贪心因子排序\n        s.sort()  # 将饼干的尺寸排序\n        index = 0\n        for i in range(len(s)):  # 遍历饼干\n            if index &lt; len(g) and g[index] &lt;= s[i]:  # 如果当前孩子的贪心因子小于等于当前饼干尺寸\n                index += 1  # 满足一个孩子，指向下一个孩子\n        return index  # 返回满足的孩子数目"
+  },
+  {
+    "objectID": "note/day27.html#摆动序列",
+    "href": "note/day27.html#摆动序列",
+    "title": "算法训练营Day 27",
+    "section": "376. 摆动序列",
+    "text": "376. 摆动序列\n\n如果连续数字之间的差严格地在正数和负数之间交替，则数字序列称为 摆动序列 。第一个差（如果存在的话）可能是正数或负数。仅有一个元素或者含两个不等元素的序列也视作摆动序列。\n例如， [1, 7, 4, 9, 2, 5] 是一个 摆动序列 ，因为差值 (6, -3, 5, -7, 3) 是正负交替出现的。\n相反，[1, 4, 7, 2, 5] 和 [1, 7, 4, 5, 5] 不是摆动序列，第一个序列是因为它的前两个差值都是正数，第二个序列是因为它的最后一个差值为零。 子序列 可以通过从原始序列中删除一些（也可以不删除）元素来获得，剩下的元素保持其原始顺序。\n给你一个整数数组 nums ，返回 nums 中作为 摆动序列 的 最长子序列的长度 。\n\n\n\nclass Solution:\n    def wiggleMaxLength(self, nums: List[int]) -&gt; int:\n        if len(nums) &lt;= 1:\n            return len(nums)\n\n        prediff, curdiff, result = 0, 0, 1\n        for i in range(len(nums) - 1):\n            curdiff = nums[i + 1] - nums[i]\n            if prediff * curdiff &lt;= 0 and curdiff != 0:\n            # 版本二：if (preDiff &lt;= 0 and curDiff &gt; 0) or (preDiff &gt;= 0 and curDiff &lt; 0):\n                result += 1\n                prediff = curdiff\n        return result"
+  },
+  {
+    "objectID": "note/day27.html#最大子序和",
+    "href": "note/day27.html#最大子序和",
+    "title": "算法训练营Day 27",
+    "section": "53. 最大子序和",
+    "text": "53. 最大子序和\n\n给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。\n子数组是数组中的一个连续部分。\n示例 1：\n\n输入：nums = [-2,1,-3,4,-1,2,1,-5,4]\n输出：6\n解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。\n\n示例 2：\n\n输入：nums = [1]\n输出：1\n\n示例 3：\n\n输入：nums = [5,4,-1,7,8]\n输出：23\n\n\n\n暴力法（但是提交会超出时间限制）\n\nclass Solution:\n    def maxSubArray(self, nums: List[int]) -&gt; int:\n        max_sum = float('-inf')\n        count = 0\n        for i in range(len(nums)):\n            count = 0\n            for j in range(i, len(nums)):\n                count += nums[j]\n                max_sum = max(count, max_sum)\n        return max_sum\n\n\n\n贪心算法\n\nclass Solution:\n    def maxSubArray(self, nums):\n        result = float('-inf')  # 初始化结果为负无穷大\n        count = 0\n        for i in range(len(nums)):\n            count += nums[i]\n            if count &gt; result:  # 取区间累计的最大值（相当于不断确定最大子序终止位置）\n                result = count\n            if count &lt;= 0:  # 相当于重置最大子序起始位置，因为遇到负数一定是拉低总和\n                count = 0\n        return result"
+  },
+  {
+    "objectID": "note/day29.html",
+    "href": "note/day29.html",
+    "title": "算法训练营Day 29",
+    "section": "",
+    "text": "在一条环路上有 n 个加油站，其中第 i 个加油站有汽油 gas[i] 升。\n你有一辆油箱容量无限的的汽车，从第 i 个加油站开往第 i+1 个加油站需要消耗汽油 cost[i] 升。你从其中的一个加油站出发，开始时油箱为空。\n给定两个整数数组 gas 和 cost ，如果你可以按顺序绕环路行驶一周，则返回出发时加油站的编号，否则返回 -1 。如果存在解，则 保证 它是 唯一 的。\n\n\n\n\n\n这里是index = (i + 1) % len(cost) 模拟 环形前进 的实例解释：\n{width = 60%}\n\nclass Solution:\n    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -&gt; int:\n        for i in range(len(cost)):\n            rest = gas[i] - cost[i]  # 记录剩余油量\n            index = (i + 1) % len(cost)  # 下一个加油站的索引\n\n            while rest &gt; 0 and index != i:  # 模拟以i为起点行驶一圈, 如果index == i, 说明车又回到了起点 i，已经跑了一整圈，可以停了\n                rest += gas[index] - cost[index]  # 更新剩余油量\n                index = (index + 1) % len(cost)  # 更新下一个加油站的索引\n\n            if rest &gt;= 0 and index == i:  # 如果以i为起点跑一圈，剩余油量&gt;=0，并且回到起始位置\n                return i  # 返回起始位置i\n\n        return -1  # 所有起始位置都无法环绕一圈，返回-1\n\n\n\n\n\nclass Solution:\n    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -&gt; int:\n        curSum = 0  # 当前累计的剩余油量\n        totalSum = 0  # 总剩余油量\n        start = 0  # 起始位置\n        \n        for i in range(len(gas)):\n            curSum += gas[i] - cost[i]\n            totalSum += gas[i] - cost[i]\n            \n            if curSum &lt; 0:  # 当前累计剩余油量curSum小于0\n                start = i + 1  # 起始位置更新为i+1\n                curSum = 0  # curSum重新从0开始累计\n        \n        if totalSum &lt; 0:\n            return -1  # 总剩余油量totalSum小于0，说明无法环绕一圈\n        return start"
+  },
+  {
+    "objectID": "note/day29.html#加油站",
+    "href": "note/day29.html#加油站",
+    "title": "算法训练营Day 29",
+    "section": "",
+    "text": "在一条环路上有 n 个加油站，其中第 i 个加油站有汽油 gas[i] 升。\n你有一辆油箱容量无限的的汽车，从第 i 个加油站开往第 i+1 个加油站需要消耗汽油 cost[i] 升。你从其中的一个加油站出发，开始时油箱为空。\n给定两个整数数组 gas 和 cost ，如果你可以按顺序绕环路行驶一周，则返回出发时加油站的编号，否则返回 -1 。如果存在解，则 保证 它是 唯一 的。\n\n\n\n\n\n这里是index = (i + 1) % len(cost) 模拟 环形前进 的实例解释：\n{width = 60%}\n\nclass Solution:\n    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -&gt; int:\n        for i in range(len(cost)):\n            rest = gas[i] - cost[i]  # 记录剩余油量\n            index = (i + 1) % len(cost)  # 下一个加油站的索引\n\n            while rest &gt; 0 and index != i:  # 模拟以i为起点行驶一圈, 如果index == i, 说明车又回到了起点 i，已经跑了一整圈，可以停了\n                rest += gas[index] - cost[index]  # 更新剩余油量\n                index = (index + 1) % len(cost)  # 更新下一个加油站的索引\n\n            if rest &gt;= 0 and index == i:  # 如果以i为起点跑一圈，剩余油量&gt;=0，并且回到起始位置\n                return i  # 返回起始位置i\n\n        return -1  # 所有起始位置都无法环绕一圈，返回-1\n\n\n\n\n\nclass Solution:\n    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -&gt; int:\n        curSum = 0  # 当前累计的剩余油量\n        totalSum = 0  # 总剩余油量\n        start = 0  # 起始位置\n        \n        for i in range(len(gas)):\n            curSum += gas[i] - cost[i]\n            totalSum += gas[i] - cost[i]\n            \n            if curSum &lt; 0:  # 当前累计剩余油量curSum小于0\n                start = i + 1  # 起始位置更新为i+1\n                curSum = 0  # curSum重新从0开始累计\n        \n        if totalSum &lt; 0:\n            return -1  # 总剩余油量totalSum小于0，说明无法环绕一圈\n        return start"
+  },
+  {
+    "objectID": "note/day29.html#分发糖果",
+    "href": "note/day29.html#分发糖果",
+    "title": "算法训练营Day 29",
+    "section": "135. 分发糖果",
+    "text": "135. 分发糖果\n\nn 个孩子站成一排。给你一个整数数组 ratings 表示每个孩子的评分。\n你需要按照以下要求，给这些孩子分发糖果：\n\n每个孩子至少分配到 1 个糖果。\n相邻两个孩子中，评分更高的那个会获得更多的糖果。\n\n请你给每个孩子分发糖果，计算并返回需要准备的 最少糖果数目 。\n示例 1：\n\n输入：ratings = [1,0,2]\n输出：5\n解释：你可以分别给第一个、第二个、第三个孩子分发 2、1、2 颗糖果。\n\n示例 2：\n\n输入：ratings = [1,2,2]\n输出：4\n解释：你可以分别给第一个、第二个、第三个孩子分发 1、2、1 颗糖果。\n第三个孩子只得到 1 颗糖果，这满足题面中的两个条件。\n\n\n\nclass Solution:\n    def candy(self, ratings: List[int]) -&gt; int:\n        n = len(ratings)\n        candies = [1] * n\n        \n        # Forward pass: handle cases where right rating is higher than left\n        for i in range(1, n):\n            if ratings[i] &gt; ratings[i - 1]:\n                candies[i] = candies[i - 1] + 1\n        \n        # Backward pass: handle cases where left rating is higher than right\n        for i in range(n - 2, -1, -1):\n            if ratings[i] &gt; ratings[i + 1]:\n                candies[i] = max(candies[i], candies[i + 1] + 1)\n        \n        return sum(candies)"
+  },
+  {
+    "objectID": "note/day29.html#柠檬水找零",
+    "href": "note/day29.html#柠檬水找零",
+    "title": "算法训练营Day 29",
+    "section": "860.柠檬水找零",
+    "text": "860.柠檬水找零\n\n在柠檬水摊上，每一杯柠檬水的售价为 5 美元。顾客排队购买你的产品，（按账单 bills 支付的顺序）一次购买一杯。\n每位顾客只买一杯柠檬水，然后向你付 5 美元、10 美元或 20 美元。你必须给每个顾客正确找零，也就是说净交易是每位顾客向你支付 5 美元。\n注意，一开始你手头没有任何零钱。\n给你一个整数数组 bills ，其中 bills[i] 是第 i 位顾客付的账。如果你能给每位顾客正确找零，返回 true ，否则返回 false 。\n\n\n\nclass Solution:\n    def lemonadeChange(self, bills: List[int]) -&gt; bool:\n        five = 0\n        ten = 0\n        twenty = 0\n        \n        for bill in bills:\n            # 情况一：收到5美元\n            if bill == 5:\n                five += 1\n            \n            # 情况二：收到10美元\n            if bill == 10:\n                if five &lt;= 0:\n                    return False\n                ten += 1\n                five -= 1\n            \n            # 情况三：收到20美元\n            if bill == 20:\n                # 先尝试使用10美元和5美元找零\n                if five &gt; 0 and ten &gt; 0:\n                    five -= 1\n                    ten -= 1\n                    #twenty += 1\n                # 如果无法使用10美元找零，则尝试使用三张5美元找零\n                elif five &gt;= 3:\n                    five -= 3\n                    #twenty += 1\n                else:\n                    return False\n        \n        return True"
+  },
+  {
+    "objectID": "note/day29.html#根据身高重建队列",
+    "href": "note/day29.html#根据身高重建队列",
+    "title": "算法训练营Day 29",
+    "section": "406.根据身高重建队列",
+    "text": "406.根据身高重建队列\n\n假设有打乱顺序的一群人站成一个队列，数组 people 表示队列中一些人的属性（不一定按顺序）。每个 people[i] = [hi, ki] 表示第 i 个人的身高为 hi ，前面 正好 有 ki 个身高大于或等于 hi 的人。\n请你重新构造并返回输入数组 people 所表示的队列。返回的队列应该格式化为数组 queue ，其中 queue[j] = [hj, kj] 是队列中第 j 个人的属性（queue[0] 是排在队列前面的人）。\n\n\ninsert(p[1], p) example: \n\nclass Solution:\n    def reconstructQueue(self, people: List[List[int]]) -&gt; List[List[int]]:\n        # 先按照h维度的身高顺序从高到低排序。确定第一个维度\n        # lambda返回的是一个元组：当-x[0](维度h）相同时，再根据x[1]（维度k）从小到大排序\n        people.sort(key=lambda x: (-x[0], x[1]))\n        que = []\n    \n    # 根据每个元素的第二个维度k，贪心算法，进行插入\n        # people已经排序过了：同一高度时k值小的排前面。\n        for p in people:\n            que.insert(p[1], p)\n        return que"
+  },
+  {
+    "objectID": "note/day31.html",
+    "href": "note/day31.html",
+    "title": "算法训练营Day 31",
+    "section": "",
+    "text": "以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。\n示例 1：\n\n输入：intervals = [[1,3],[2,6],[8,10],[15,18]]\n输出：[[1,6],[8,10],[15,18]]\n解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].\n\n示例 2：\n\n输入：intervals = [[1,4],[4,5]]\n输出：[[1,5]]\n解释：区间 [1,4] 和 [4,5] 可被视为重叠区间。\n\n示例 3：\n\n输入：intervals = [[4,7],[1,4]]\n输出：[[1,7]]\n解释：区间 [1,4] 和 [4,7] 可被视为重叠区间。\n\n\n\nclass Solution:\n    def merge(self, intervals: List[List[int]]) -&gt; List[List[int]]:\n      result = []\n      if not intervals:\n        return result\n\n      intervals.sort(key=lambda x:x[0])\n      result.append(intervals[0]) # 因为intervals已经排序了，第一个区间直接放进去，因为没得比较\n      for i in range(1, len(intervals)): # 这里的i就从 i = 1开始处理了，也就是我们要比i = 1的左边界 intervals[i][0] 和result里面已经有的区间的右边界 result[-1][1]\n        if result[-1][1] &gt;= intervals[i][0]:\n          result[-1][1] = max(result[-1][1], intervals[i][1]) # 更新右边界\n        else:\n          result.append(intervals[i])\n      return result"
+  },
+  {
+    "objectID": "note/day31.html#合并区间",
+    "href": "note/day31.html#合并区间",
+    "title": "算法训练营Day 31",
+    "section": "",
+    "text": "以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。\n示例 1：\n\n输入：intervals = [[1,3],[2,6],[8,10],[15,18]]\n输出：[[1,6],[8,10],[15,18]]\n解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].\n\n示例 2：\n\n输入：intervals = [[1,4],[4,5]]\n输出：[[1,5]]\n解释：区间 [1,4] 和 [4,5] 可被视为重叠区间。\n\n示例 3：\n\n输入：intervals = [[4,7],[1,4]]\n输出：[[1,7]]\n解释：区间 [1,4] 和 [4,7] 可被视为重叠区间。\n\n\n\nclass Solution:\n    def merge(self, intervals: List[List[int]]) -&gt; List[List[int]]:\n      result = []\n      if not intervals:\n        return result\n\n      intervals.sort(key=lambda x:x[0])\n      result.append(intervals[0]) # 因为intervals已经排序了，第一个区间直接放进去，因为没得比较\n      for i in range(1, len(intervals)): # 这里的i就从 i = 1开始处理了，也就是我们要比i = 1的左边界 intervals[i][0] 和result里面已经有的区间的右边界 result[-1][1]\n        if result[-1][1] &gt;= intervals[i][0]:\n          result[-1][1] = max(result[-1][1], intervals[i][1]) # 更新右边界\n        else:\n          result.append(intervals[i])\n      return result"
+  },
+  {
+    "objectID": "note/day31.html#单调递增的数字",
+    "href": "note/day31.html#单调递增的数字",
+    "title": "算法训练营Day 31",
+    "section": "738.单调递增的数字",
+    "text": "738.单调递增的数字\n\n当且仅当每个相邻位数上的数字 x 和 y 满足 x &lt;= y 时，我们称这个整数是单调递增的。\n给定一个整数 n ，返回 小于或等于 n 的最大数字，且数字呈 单调递增 。\n示例 1:\n\n输入: n = 10\n输出: 9\n\n示例 2:\n\n输入: n = 1234\n输出: 1234\n\n示例 3:\n\n输入: n = 332\n输出: 299\n\n\n\n暴力法（超时）\n\nclass Solution:\n    def checkNum(self, num):\n      max_digit = 10 \n      for i in range(num):\n        digit = num % 10 # 找个位数的数字\n        if max_digit &gt; digit: # max_digit是最后一位的数字，如果这个数想单调递增那么后面一位的数字要大于前一位，所以要max_digit &gt; digit\n          max_digit = digit # 更新max_digit,后面就是倒数第二位的数字跟最后一位数字比较大小\n        else:\n          return False\n        num // 10 # 移除已经比较过的末位数字，num//10之后开始比较新的末位数字（倒数第二位，倒数第三位...）\n      return True\n\n  def monotoneIncreasingDigits(self, N):\n    for i in range(N, 0, -1): # range(start, stop, step) 从 start 开始, 每次走 step, 一直走到 到达 stop 之前停止,这里的意思就是 从N开始每次减 1，一直到大于 0 为止，不包含 0\n      if self.checkNum(i):\n        return i\n    return 0\n\n\n\n贪心\n\nclass Solution:\n    def monotoneIncreasingDigits(self, n: int) -&gt; int:\n        strNum = list(str(n)) # 先把数字变成字符串列表，因为字符串不能改某一位\n\n        for i in range(len(strNum) - 1, 0, -1): # 从右往左遍历\n            if strNum[i - 1] &gt; strNum[i]: # 找到破坏递增的地方，左边数字 &gt; 右边数字\n                strNum[i - 1] = str(int(strNum[i - 1]) - 1) # 把左边减 1\n                for j in range(i, len(strNum)): # 把i后面的数字全部变成9，因为我们想让结果尽可能大，例如把 ’322‘ -&gt; '329'\n                    strNum[j] = '9'\n\n        return int(''.join(strNum))"
+  },
+  {
+    "objectID": "note/day31.html#监控二叉树-目前先跳过",
+    "href": "note/day31.html#监控二叉树-目前先跳过",
+    "title": "算法训练营Day 31",
+    "section": "968.监控二叉树 (目前先跳过)",
+    "text": "968.监控二叉树 (目前先跳过)\n\n给定一个二叉树，我们在树的节点上安装摄像头。\n节点上的每个摄影头都可以监视其父对象、自身及其直接子对象。\n计算监控树的所有节点所需的最小摄像头数量。"
+  },
+  {
+    "objectID": "note/day33.html",
+    "href": "note/day33.html",
+    "title": "算法训练营Day 33 - 动态规划 part02",
+    "section": "",
+    "text": "一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。\n机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。\n问总共有多少条不同的路径？\n\n\n\n\n\nclass Solution:\n    def uniquePaths(self, m: int, n: int) -&gt; int:\n        if m == 1 and n == 1:\n            return 1\n\n        return self.uniquePaths(m - 1, n) + self.uniquePaths(m, n - 1)\n\n\n\n\n\nclass Solution:\n    def uniquePaths(self, m: int, n: int) -&gt; int:\n        # 外层 range(m) → 创建 m 行\n        # 内层 [0] * n → 每一行有 n 列\n        dp = [[0] * n for _ in range(m)]  \n\n        for i in range(m): # m控制行\n            dp[i][0] = 1\n        for j in range(n):\n            dp[0][j] = 1\n\n        for i in range(1, m): # 这个地方的起始点是1不是0, 我们已经定义了dp[0][j]和dp[i][0]\n            for j in range(1, n):\n                dp[i][j] = dp[i - 1][j] + dp[i][j - 1] # 题目规定了机器人只能往下或者往右走，所以它的上一步一定是左边或者上面\n        return dp[m - 1][n - 1] # 终点格子的坐标是 (m - 1), (n - 1)"
+  },
+  {
+    "objectID": "note/day33.html#不同路径",
+    "href": "note/day33.html#不同路径",
+    "title": "算法训练营Day 33 - 动态规划 part02",
+    "section": "",
+    "text": "一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。\n机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。\n问总共有多少条不同的路径？\n\n\n\n\n\nclass Solution:\n    def uniquePaths(self, m: int, n: int) -&gt; int:\n        if m == 1 and n == 1:\n            return 1\n\n        return self.uniquePaths(m - 1, n) + self.uniquePaths(m, n - 1)\n\n\n\n\n\nclass Solution:\n    def uniquePaths(self, m: int, n: int) -&gt; int:\n        # 外层 range(m) → 创建 m 行\n        # 内层 [0] * n → 每一行有 n 列\n        dp = [[0] * n for _ in range(m)]  \n\n        for i in range(m): # m控制行\n            dp[i][0] = 1\n        for j in range(n):\n            dp[0][j] = 1\n\n        for i in range(1, m): # 这个地方的起始点是1不是0, 我们已经定义了dp[0][j]和dp[i][0]\n            for j in range(1, n):\n                dp[i][j] = dp[i - 1][j] + dp[i][j - 1] # 题目规定了机器人只能往下或者往右走，所以它的上一步一定是左边或者上面\n        return dp[m - 1][n - 1] # 终点格子的坐标是 (m - 1), (n - 1)"
+  },
+  {
+    "objectID": "note/day33.html#不同路径-ii",
+    "href": "note/day33.html#不同路径-ii",
+    "title": "算法训练营Day 33 - 动态规划 part02",
+    "section": "63. 不同路径 II",
+    "text": "63. 不同路径 II\n\n给定一个 m x n 的整数数组 grid。一个机器人初始位于 左上角（即 grid[0][0]）。机器人尝试移动到 右下角（即 grid[m - 1][n - 1]）。机器人每次只能向下或者向右移动一步。\n网格中的障碍物和空位置分别用 1 和 0 来表示。机器人的移动路径中不能包含 任何 有障碍物的方格。\n返回机器人能够到达右下角的不同路径数量。\n测试用例保证答案小于等于 2 * 109。\n\n\n\n\nclass Solution:\n    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -&gt; int:\n        # 获取网格的行数和列数\n        m = len(obstacleGrid)      # 行数\n        n = len(obstacleGrid[0])   # 列数\n\n        # 如果起点或终点是障碍物，直接返回0（无法到达）\n        if obstacleGrid[m - 1][n - 1] == 1 or obstacleGrid[0][0] == 1:\n            return 0\n\n        # 创建dp数组\n        # dp[i][j] 表示从 (0,0) 走到 (i,j) 的不同路径数量\n        dp = [[0] * n for _ in range(m)]\n\n        # 初始化第一列\n        # 第一列只能从上往下走\n        # 一旦遇到障碍物，后面的格子都不可达\n        for i in range(m):\n            if obstacleGrid[i][0] == 0:\n                dp[i][0] = 1\n            else:\n                break  # 遇到障碍物，后面全部为0，直接退出\n\n        # 初始化第一行\n        # 第一行只能从左往右走\n        # 一旦遇到障碍物，后面的格子都不可达\n        for j in range(n):\n            if obstacleGrid[0][j] == 0:\n                dp[0][j] = 1\n            else:\n                break  # 遇到障碍物，后面全部为0\n\n        # 开始状态转移\n        # 从 (1,1) 开始遍历，因为第一行第一列已经初始化过\n        for i in range(1, m):\n            for j in range(1, n):\n                # 如果当前格子是障碍物，则无法到达，保持0\n                if obstacleGrid[i][j] == 1:\n                    continue\n\n                # 如果不是障碍物\n                # 当前路径数 = 上面路径数 + 左边路径数\n                dp[i][j] = dp[i - 1][j] + dp[i][j - 1]\n\n        # 返回右下角的路径数量\n        return dp[m - 1][n - 1]"
+  },
+  {
+    "objectID": "note/day33.html#不同的二叉搜索树",
+    "href": "note/day33.html#不同的二叉搜索树",
+    "title": "算法训练营Day 33 - 动态规划 part02",
+    "section": "96.不同的二叉搜索树",
+    "text": "96.不同的二叉搜索树\n\n给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？返回满足题意的二叉搜索树的种数。"
+  },
+  {
+    "objectID": "note/day35.html",
+    "href": "note/day35.html",
+    "title": "算法训练营Day 35 - 动态规划 part04",
+    "section": "",
+    "text": "有一堆石头，用整数数组 stones 表示。其中 stones[i] 表示第 i 块石头的重量。\n每一回合，从中选出任意两块石头，然后将它们一起粉碎。假设石头的重量分别为 x 和 y，且 x &lt;= y。那&gt; 么粉碎的可能结果如下：\n\n\n\n如果 x == y，那么两块石头都会被完全粉碎；\n如果 x != y，那么重量为 x 的石头将会完全粉碎，而重量为 y 的石头新重量为 y-x。\n\n最后，最多只会剩下一块 石头。返回此石头 最小的可能重量 。如果没有石头剩下，就返回 0。\n\n\n\nclass Solution:\n    def lastStoneWeightII(self, stones: List[int]) -&gt; int:\n        total_sum = sum(stones)\n        target = total_sum // 2\n\n        dp = [0] * (target + 1)\n\n        for stone in stones:\n            for j in range(target, stone -1, -1):\n                dp[j] = max(dp[j], dp[j - stone] + stone)\n\n        return total_sum - 2 * dp[-1] \n        # S2 - S1\n        # = total_sum - S1 - S1\n        # = total_sum - 2*S1"
+  },
+  {
+    "objectID": "note/day35.html#最后一块石头的重量ii",
+    "href": "note/day35.html#最后一块石头的重量ii",
+    "title": "算法训练营Day 35 - 动态规划 part04",
+    "section": "",
+    "text": "有一堆石头，用整数数组 stones 表示。其中 stones[i] 表示第 i 块石头的重量。\n每一回合，从中选出任意两块石头，然后将它们一起粉碎。假设石头的重量分别为 x 和 y，且 x &lt;= y。那&gt; 么粉碎的可能结果如下：\n\n\n\n如果 x == y，那么两块石头都会被完全粉碎；\n如果 x != y，那么重量为 x 的石头将会完全粉碎，而重量为 y 的石头新重量为 y-x。\n\n最后，最多只会剩下一块 石头。返回此石头 最小的可能重量 。如果没有石头剩下，就返回 0。\n\n\n\nclass Solution:\n    def lastStoneWeightII(self, stones: List[int]) -&gt; int:\n        total_sum = sum(stones)\n        target = total_sum // 2\n\n        dp = [0] * (target + 1)\n\n        for stone in stones:\n            for j in range(target, stone -1, -1):\n                dp[j] = max(dp[j], dp[j - stone] + stone)\n\n        return total_sum - 2 * dp[-1] \n        # S2 - S1\n        # = total_sum - S1 - S1\n        # = total_sum - 2*S1"
+  },
+  {
+    "objectID": "note/day35.html#目标和",
+    "href": "note/day35.html#目标和",
+    "title": "算法训练营Day 35 - 动态规划 part04",
+    "section": "494.目标和",
+    "text": "494.目标和\n\n给你一个非负整数数组 nums 和一个整数 target 。\n向数组中的每个整数前添加 ‘+’ 或 ‘-’ ，然后串联起所有整数，可以构造一个 表达式 ：\n\n例如，nums = [2, 1] ，可以在 2 之前添加 ‘+’ ，在 1 之前添加 ‘-’ ，然后串联起来得到表达式 “+2-1” 。\n\n返回可以通过上述方法构造的、运算结果等于 target 的不同 表达式 的数目。\n\n\n\nclass Solution:\n    def findTargetSumWays(self, nums: List[int], target: int) -&gt; int:\n        total_sum = sum(nums)  # 计算nums的总和\n        if abs(target) &gt; total_sum:\n            return 0  # 此时没有方案\n        if (target + total_sum) % 2 == 1: # target + sum(nums) 必须是偶数才能让 P 是个正整数\n            # P - N = target\n            # P + N = sum(nums)\n            # 2P = target + sum(nums)\n            # P = (target + sum(nums)) / 2\n            return 0  # 此时没有方案\n        target_sum = (target + total_sum) // 2  # 目标和\n        dp = [0] * (target_sum + 1)  # 创建动态规划数组，初始化为0，什么都不选，组成 0 的方法有 1 种。\n        dp[0] = 1  # 当目标和为0时，只有一种方案，即什么都不选\n        for num in nums:\n            for j in range(target_sum, num - 1, -1):\n                dp[j] += dp[j - num]  # 状态转移方程，累加不同选择方式的数量\n        return dp[target_sum]  # 返回达到目标和的方案数"
+  },
+  {
+    "objectID": "note/day35.html#一和零",
+    "href": "note/day35.html#一和零",
+    "title": "算法训练营Day 35 - 动态规划 part04",
+    "section": "474.一和零",
+    "text": "474.一和零\n\n给你一个二进制字符串数组 strs 和两个整数 m 和 n 。\n请你找出并返回 strs 的最大子集的长度，该子集中 最多 有 m 个 0 和 n 个 1 。\n如果 x 的所有元素也是 y 的元素，集合 x 是集合 y 的 子集 。\n\n\n\nclass Solution:\n    def findMaxForm(self, strs: List[str], m: int, n: int) -&gt; int:\n        dp = [[0] * (n + 1) for _ in range(m + 1)]\n        for s in strs:\n            one_sum = s.count(\"1\")\n            zero_sum = s.count(\"0\")\n            for i in range(m, zero_sum -1, -1): # m个0\n                for j in range(n, one_sum - 1, -1): # n个1\n                    dp[i][j] = max(dp[i][j], dp[i - zero_sum][j - one_sum] + 1)\n        return dp[m][n]"
+  },
+  {
+    "objectID": "note/day37.html",
+    "href": "note/day37.html",
+    "title": "算法训练营Day 37 - 动态规划 part06",
+    "section": "",
+    "text": "对于背包问题：\n如果求组合数就是外层for循环遍历物品，内层for遍历背包。 如果求排列数就是外层for遍历背包，内层for循环遍历物品。"
+  },
+  {
+    "objectID": "note/day37.html#零钱兑换",
+    "href": "note/day37.html#零钱兑换",
+    "title": "算法训练营Day 37 - 动态规划 part06",
+    "section": "322. 零钱兑换",
+    "text": "322. 零钱兑换\n\n给你一个整数数组 coins ，表示不同面额的硬币；以及一个整数 amount ，表示总金额。\n计算并返回可以凑成总金额所需的 最少的硬币个数 。如果没有任何一种硬币组合能组成总金额，返回 -1 。\n你可以认为每种硬币的数量是无限的。\n示例 1：\n输入：coins = [1, 2, 5], amount = 11 - 输出：3\n解释：11 = 5 + 5 + 1\n示例 2：\n输入：coins = [2], amount = 3 - 输出：-1\n示例 3：\n输入：coins = [1], amount = 0 - 输出：0\n\n\nclass Solution:\n    def coinChange(self, coins: List[int], amount: int) -&gt; int:\n        dp = [float('inf')] * (amount + 1)  # 创建动态规划数组，初始值为正无穷大\n        dp[0] = 0  # 初始化背包容量为0时的最小硬币数量为0\n\n        for i in range(1, amount + 1):  # 遍历背包容量\n            for j in range(len(coins)):  # 遍历硬币列表，相当于遍历物品\n                if i - coins[j] &gt;= 0 and dp[i - coins[j]] != float('inf'):  # 如果dp[i - coins[j]]不是初始值，则进行状态转移\n                    dp[i] = min(dp[i - coins[j]] + 1, dp[i])  # 更新最小硬币数量\n\n        if dp[amount] == float('inf'):  # 如果最终背包容量的最小硬币数量仍为正无穷大，表示无解\n            return -1\n        return dp[amount]  # 返回背包容量为amount时的最小硬币数量"
+  },
+  {
+    "objectID": "note/day37.html#完全平方数给你一个整数-n-返回-和为-n-的完全平方数的最少数量",
+    "href": "note/day37.html#完全平方数给你一个整数-n-返回-和为-n-的完全平方数的最少数量",
+    "title": "算法训练营Day 37 - 动态规划 part06",
+    "section": "[279.完全平方数](给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。",
+    "text": "[279.完全平方数](给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。\n\n完全平方数 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。)\n示例 1：\n输入：n = 12 - 输出：3\n解释：12 = 4 + 4 + 4\n示例 2：\n输入：n = 13 - 输出：2\n解释：13 = 4 + 9\n\n\nclass Solution:\n    def numSquares(self, n: int) -&gt; int:\n        dp = [float('inf')] * (n + 1)\n        dp[0] = 0\n\n        for i in range(1, n + 1):\n            # j = 1 → 1² = 1 是最小的完全平方数\n            # j = 2 → 4\n            # j = 3 → 9\n            # j = 4 → 16\n            j = 1\n            while j * j &lt;= i:\n                dp[i] = min(dp[i], dp[i - j * j] + 1)\n                j += 1\n        return dp[n]"
+  },
+  {
+    "objectID": "note/day37.html#单词拆分",
+    "href": "note/day37.html#单词拆分",
+    "title": "算法训练营Day 37 - 动态规划 part06",
+    "section": "139.单词拆分",
+    "text": "139.单词拆分\n\n给你一个字符串 s 和一个字符串列表 wordDict 作为字典。如果可以利用字典中出现的一个或多个单词拼接出 s 则返回 true。\n注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。\n示例 1：\n输入: s = “leetcode”, wordDict = [“leet”, “code”] - 输出: true\n解释: 返回 true 因为 “leetcode” 可以由 “leet” 和 “code” 拼接成。\n示例 2：\n输入: s = “applepenapple”, wordDict = [“apple”, “pen”] - 输出: true\n解释: 返回 true 因为 “applepenapple” 可以由 “apple” “pen” “apple” 拼接成。 注意，你可以重复使用字典中的单词。\n示例 3：\n输入: s = “catsandog”, wordDict = [“cats”, “dog”, “sand”, “and”, “cat”] - 输出: false\n\n\nclass Solution:\n    def wordBreak(self, s: str, wordDict: List[str]) -&gt; bool:\n        dp = [False] * (len(s) + 1)\n        dp[0] = True # 空字符串是可以被“成功拆分”的\n\n        for j in range(1, len(s) + 1):\n            for word in wordDict:\n                if j &gt;= len(word):\n                    dp[j] = dp[j] or (dp[j - len(word)] and word == s[j - len(word) : j])\n        return dp[len(s)]"
+  },
+  {
+    "objectID": "note/day37.html#携带矿石资源",
+    "href": "note/day37.html#携带矿石资源",
+    "title": "算法训练营Day 37 - 动态规划 part06",
+    "section": "56. 携带矿石资源",
+    "text": "56. 携带矿石资源\n题目描述:\n\n你是一名宇航员，即将前往一个遥远的行星。在这个行星上，有许多不同类型的矿石资源，每种矿石都有不同的重要性和价值。你需要选择哪些矿石带回地球，但你的宇航舱有一定的容量限制。\n给定一个宇航舱，最大容量为 C。现在有 N 种不同类型的矿石，每种矿石有一个重量 w[i]，一个价值 v[i]，以及最多 k[i] 个可用。不同类型的矿石在地球上的市场价值不同。你需要计算如何在不超过宇航舱容量的情况下，最大化你所能获取的总价值。\n\n输入描述:\n\n输入共包括四行，第一行包含两个整数 C 和 N，分别表示宇航舱的容量和矿石的种类数量。\n接下来的三行，每行包含 N 个正整数。具体如下：\n第二行包含 N 个整数，表示 N 种矿石的重量。\n第三行包含 N 个整数，表示 N 种矿石的价格。\n第四行包含 N 个整数，表示 N 种矿石的可用数量上限。\n\n输出描述:\n\n输出一个整数，代表获取的最大价值。\n\n输入示例:\n\n10 3\n1 3 4\n15 20 30\n2 3 2\n\n输出示例:\n\n90\n\n提示信息:\n\n数据范围：\n1 &lt;= C &lt;= 2000;\n1 &lt;= N &lt;= 100;\n1 &lt;= w[i], v[i], k[i] &lt;= 1000;"
+  },
+  {
+    "objectID": "note/day39.html",
+    "href": "note/day39.html",
+    "title": "算法训练营Day 39 - DP",
+    "section": "",
+    "text": "给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。\n你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。\n返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。\n示例 1：\n输入：[7,1,5,3,6,4]\n输出：5\n解释：在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6-1 = 5 。注意利润不能是 7-1 = 6, 因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。\n示例 2：\n输入：prices = [7,6,4,3,1]\n输出：0\n解释：在这种情况下, 没有交易完成, 所以最大利润为 0。\n\n\n\n\nclass Solution:\n    def maxProfit(self, prices: List[int]) -&gt; int:\n        low = float('inf')\n        result = 0\n        for i in range(len(prices)):\n            low = min(low, prices[i])\n            result = max(result, prices[i] - low)\n        return result\n\n\n\n\n\nclass Solution:\n    def maxProfit(self, prices: List[int]) -&gt; int:\n        length = len(prices)\n        if length == 0:\n            return 0\n        dp = [[0] * 2 for _ in range(length)]\n        # dp[i][0]  第 i 天 持有股票 时的最大收益\n        # dp[i][1]  第 i 天 不持有股票 时的最大收益\n        dp[0][0] = -prices[0] # 如果持有股票 → 一定是买了 → 利润 = -prices[0]\n        dp[0][1] = 0 # 如果不持有股票 → 什么都没做 → 利润 = 0\n        for i in range(1, length):\n\n            # 第 i 天持有股票，有两种可能：\n            # 1. dp[i-1][0]：昨天就持有，今天什么都不做（dp[i - 1][0]一定是&lt;= 0 ）\n            # 2. -prices[i]：今天买入 | dp[i-1][1] 一定等于 0\n            # dp[i-1][1] - prices[i] = 0 - prices[i] = -prices[i]\n            dp[i][0] = max(dp[i - 1][0], -prices[i]) \n\n            # 第 i 天不持有股票：\n            # 1. dp[i-1][1]：昨天就没持有 → 什么都不做\n            # 2. prices[i] + dp[i-1][0]：今天卖出\n            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] + prices[i])\n        return dp[-1][1] # 最后一天：持有股票没有意义，必须卖掉才能算利润，也可以写成           dp[length-1][1]"
+  },
+  {
+    "objectID": "note/day39.html#买卖股票的最佳时机",
+    "href": "note/day39.html#买卖股票的最佳时机",
+    "title": "算法训练营Day 39 - DP",
+    "section": "",
+    "text": "给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。\n你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。\n返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。\n示例 1：\n输入：[7,1,5,3,6,4]\n输出：5\n解释：在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6-1 = 5 。注意利润不能是 7-1 = 6, 因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。\n示例 2：\n输入：prices = [7,6,4,3,1]\n输出：0\n解释：在这种情况下, 没有交易完成, 所以最大利润为 0。\n\n\n\n\nclass Solution:\n    def maxProfit(self, prices: List[int]) -&gt; int:\n        low = float('inf')\n        result = 0\n        for i in range(len(prices)):\n            low = min(low, prices[i])\n            result = max(result, prices[i] - low)\n        return result\n\n\n\n\n\nclass Solution:\n    def maxProfit(self, prices: List[int]) -&gt; int:\n        length = len(prices)\n        if length == 0:\n            return 0\n        dp = [[0] * 2 for _ in range(length)]\n        # dp[i][0]  第 i 天 持有股票 时的最大收益\n        # dp[i][1]  第 i 天 不持有股票 时的最大收益\n        dp[0][0] = -prices[0] # 如果持有股票 → 一定是买了 → 利润 = -prices[0]\n        dp[0][1] = 0 # 如果不持有股票 → 什么都没做 → 利润 = 0\n        for i in range(1, length):\n\n            # 第 i 天持有股票，有两种可能：\n            # 1. dp[i-1][0]：昨天就持有，今天什么都不做（dp[i - 1][0]一定是&lt;= 0 ）\n            # 2. -prices[i]：今天买入 | dp[i-1][1] 一定等于 0\n            # dp[i-1][1] - prices[i] = 0 - prices[i] = -prices[i]\n            dp[i][0] = max(dp[i - 1][0], -prices[i]) \n\n            # 第 i 天不持有股票：\n            # 1. dp[i-1][1]：昨天就没持有 → 什么都不做\n            # 2. prices[i] + dp[i-1][0]：今天卖出\n            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] + prices[i])\n        return dp[-1][1] # 最后一天：持有股票没有意义，必须卖掉才能算利润，也可以写成           dp[length-1][1]"
+  },
+  {
+    "objectID": "note/day39.html#买卖股票的最佳时机ii",
+    "href": "note/day39.html#买卖股票的最佳时机ii",
+    "title": "算法训练营Day 39 - DP",
+    "section": "122.买卖股票的最佳时机II",
+    "text": "122.买卖股票的最佳时机II\n\n给你一个整数数组 prices ，其中 prices[i] 表示某支股票第 i 天的价格。\n在每一天，你可以决定是否购买和/或出售股票。你在任何时候 最多 只能持有 一股 股票。然而，你可以在 同一天 多次买卖该股票，但要确保你持有的股票不超过一股。\n返回 你能获得的 最大 利润 。\n\n\n\nclass Solution:\n    def maxProfit(self, prices: List[int]) -&gt; int:\n        length = len(prices)\n        if length == 0:\n            return 0\n        dp = [[0] * 2 for _ in range(length)]\n        dp[0][0] = -prices[0]\n        dp[0][1] = 0\n        for i in range(1, length):\n            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] - prices[i]) #注意这里是和121. 买卖股票的最佳时机唯一不同的地方\n            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] + prices[i])\n        return dp[-1][1]"
+  },
+  {
+    "objectID": "note/day39.html#买卖股票的最佳时机iii",
+    "href": "note/day39.html#买卖股票的最佳时机iii",
+    "title": "算法训练营Day 39 - DP",
+    "section": "123.买卖股票的最佳时机III",
+    "text": "123.买卖股票的最佳时机III\n\n给定一个数组，它的第 i 个元素是一支给定的股票在第 i 天的价格。\n设计一个算法来计算你所能获取的最大利润。你最多可以完成 两笔 交易。\n注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。\n\n\n\nclass Solution:\n    def maxProfit(self, prices: List[int]) -&gt; int:\n        # dp[1] 第一次买入后\n        # dp[2] 第一次卖出后\n        # dp[3] 第二次买入后\n        # dp[4] 第二次卖出后\n        if len(prices) == 0:\n            return 0\n\n        dp = [0] * 5\n        dp[1] = dp[3] = -prices[0]\n        for i in range(1, len(prices)):\n            dp[1] = max(dp[1], dp[0] - prices[i])\n            dp[2] = max(dp[2], dp[1] + prices[i])\n            dp[3] = max(dp[3], dp[2] - prices[i])\n            dp[4] = max(dp[4], dp[3] + prices[i])\n        return dp[4]"
   }
 ]
