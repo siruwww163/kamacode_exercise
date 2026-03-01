@@ -1,5 +1,5 @@
 ---
-title: "算法训练营Day 39 - part08"
+title: "算法训练营Day 39 - DP"
 author: "Siru Wu"
 date: today
 format: 
