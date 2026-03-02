@@ -94,6 +94,20 @@ website:
             text: Day 42
           - href: note/day43.qmd
             text: Day 43
+          - href: note/day44.qmd
+            text: Day 44
+          - href: note/day45.qmd
+            text: Day 45
+          - href: note/day46.qmd
+            text: Day 46
+          - href: note/day47.qmd
+            text: Day 47
+          - href: note/day48.qmd
+            text: Day 48
+          - href: note/day49.qmd
+            text: Day 49
+          - href: note/day50.qmd
+            text: Day 50
 
 format:
   html:
