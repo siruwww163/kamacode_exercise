@@ -92,6 +92,8 @@ website:
         menu:
           - href: note/day42.qmd
             text: Day 42
+          - href: note/day43.qmd
+            text: Day 43
 
 format:
   html:
