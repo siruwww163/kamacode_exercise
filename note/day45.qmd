@@ -32,13 +32,57 @@ format:
 > - 解释：6个回文子串: "a", "a", "a", "aa", "aa", "aaa"
 
 ```{python}
-
+class Solution:
+    def countSubstrings(self, s: str) -> int:
+        dp = [[False] * len(s) for _ in range(len(s))]
+        result = 0
+        for i in range(len(s) - 1, -1, -1): # dp[i][j] 依赖 dp[i+1][j-1]，所以i要倒着遍历
+            for j in range(i, len(s)): # j 从 i 开始是因为子串必须满足 i ≤ j，因为 s[i:j]。如果 i > j，子串不存在
+                if s[i] == s[j] and (j - i <= 1 or dp[i+1][j-1]): 
+                    # 情况一 和 情况二
+                    # 情况一：下标i 与 j相同，同一个字符例如a，当然是回文子串
+                    # 情况二：下标i 与 j相差为1，例如aa，也是回文子串
+                        result += 1
+                        dp[i][j] = True
+                    #情况三（s[i] == s[j] + dp[i+1][j-1]）：下标：i 与 j相差大于1的时候，例如cabac，此时s[i]与s[j]已经相同了，我们看i到j区间是不是回文子串就看aba是不是回文就可以了，那么aba的区间就是 i+1 与 j-1区间，这个区间是不是回文就看dp[i + 1][j - 1]是否为true。
+        return result
 ```
 
-## []()
+## [516.最长回文子序列](https://leetcode.cn/problems/longest-palindromic-subsequence/description/)
 
+> 给你一个字符串 s ，找出其中最长的回文子序列，并返回该序列的长度。
 > 
+> 子序列定义为：不改变剩余字符顺序的情况下，删除某些字符或者不删除任何字符形成的一个序列。
+> 
+> **示例 1：**
+> 
+> - 输入：s = "bbbab"
+> 
+> - 输出：4
+> 
+> - 解释：一个可能的最长回文子序列为 "bbbb" 。
+> 
+> **示例 2：**
+> 
+> - 输入：s = "cbbd"
+> 
+> - 输出：2
+> 
+> - 解释：一个可能的最长回文子序列为 "bb" 。
 
 ```{python}
-
+class Solution:
+    def longestPalindromeSubseq(self, s: str) -> int:
+        if len(s) == 0:
+            return 0
+        dp = [[0] * len(s) for _ in range(len(s))]
+        for i in range(len(s)):
+            dp[i][i] = 1
+        for i in range(len(s)-1, -1, -1):
+            for j in range(i + 1, len(s)):
+                if s[i] == s[j]:
+                    dp[i][j] = dp[i + 1][j - 1] + 2
+                else:
+                    dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
+        return dp[0][-1]
 ```
