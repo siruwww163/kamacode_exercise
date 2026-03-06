@@ -30,7 +30,16 @@ format:
 > - 输出: [1,1,0]
 
 ```{python}
-
+class Solution:
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        answer = [0] * len(temperatures)
+        stack = [] # stack 存的 index
+        for i in range(len(temperatures)):
+            while len(stack) > 0 and temperatures[i] > temperatures[stack[-1]]:
+                answer[stack[-1]] = i - stack[-1]
+                stack.pop()
+            stack.append(i)
+        return answer
 ```
 
 ## [496.下一个更大元素 I]()
@@ -46,7 +55,22 @@ format:
 > ![](/image/496.png){width=60%}
 
 ```{python}
+class Solution:
+    def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        stack = []
+        next_map = {}
 
+        for num in nums2:
+            while stack and num > stack [-1]:
+                next_map[stack[-1]] = num
+                stack.pop()
+            stack.append(num)
+
+        res = []
+        for num in nums1:
+            res.append(next_map.get(num, -1))
+
+        return res
 ```
 
 ## [503.下一个更大元素II](https://leetcode.cn/problems/next-greater-element-ii/description/)
