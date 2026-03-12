@@ -1,0 +1,105 @@
+---
+title: "算法训练营Day 52 - 图论 04"
+author: "Siru Wu"
+date: today
+format: 
+  html:
+    embed-resources: true
+---
+
+## [110. 字符串接龙]()
+
+> **题目描述**
+> 
+> 字典 strList 中从字符串 beginStr 和 endStr 的转换序列是一个按下述规格形成的序列： 
+> 
+> 1. 序列中第一个字符串是 beginStr。
+> 
+> 2. 序列中最后一个字符串是 endStr。 
+> 
+> 3. 每次转换只能改变一个字符。 
+> 
+> 4. 转换过程中的中间字符串必须是字典 strList 中的字符串，且strList里的每个字符串只用使用一次。 
+> 
+> 给你两个字符串 beginStr 和 endStr 和一个字典 strList，找到从 beginStr 到 endStr 的最短转换序列中的字符串数目。如果不存在这样的转换序列，返回 0。
+> 
+> **输入描述**
+> 
+> 第一行包含一个整数 N，表示字典 strList 中的字符串数量。 第二行包含两个字符串，用空格隔开，分别代表 beginStr 和 endStr。 后续 N 行，每行一个字符串，代表 strList 中的字符串。
+> 
+> **输出描述**
+> 
+> 输出一个整数，代表从 beginStr 转换到 endStr 需要的最短转换序列中的字符串数量。如果不存在这样的转换序列，则输出 0。
+>
+> ![](/image/kama_110.png)
+
+```{python}
+# BFS第一次找到的路径一定是最短路径
+
+# 判断 两个字符串是否只差一个字符
+def judege(s1, s2):
+    count = 0
+    for i in range(len(s1)):
+        if s1[i] != s2[i]:
+            count += 1
+    return count == 1 # 这里用来判断两个字符串是否只差一个字符，如果是的话就return True
+
+if __name__=='__main__':
+    n = int(input())
+    beginstr, endstr=map(str,input().split())
+
+    # 判断 beginstr和endstr相同的情况
+    if beginstr == endstr:
+        print(0)
+        exit()
+
+    strList = []
+    for i in range(n):
+        strList.append(input())
+
+    queue = [[beginstr, 1]]
+    visited = [False for i in range(n)]
+
+    # while queue:
+#     取出当前单词
+
+#     如果当前单词可以一步变成终点:
+#         输出答案
+#         结束程序
+
+#     否则:
+#         找所有可以一步变换得到的新单词
+#         放入队列继续搜索
+    while queue:
+        str, step = queue.pop(0)
+        if judege(str, endstr):
+            print(step + 1)
+            exit()
+
+        for i in range(n):
+            if visited[i] == False and judege(strList[i], str):
+                visited[i] = True
+                queue.append([strList[i], step + 1])
+
+    print(0)
+```
+
+## [105.有向图的完全联通](https://kamacoder.com/problempage.php?pid=1177)
+
+> **题目描述**
+> 
+> 给定一个有向图，包含 N 个节点，节点编号分别为 1，2，...，N。现从 1 号节点开始，如果可以从 1 号节点的边可以到达任何节点，则输出 1，否则输出 -1。
+> 
+> **输入描述**
+> 
+> 第一行包含两个正整数，表示节点数量 N 和边的数量 K。 后续 K 行，每行两个正整数 s 和 t，表示从 s 节点有一条边单向连接到 t 节点。
+> 
+> **输出描述**
+> 
+> 如果可以从 1 号节点的边可以到达任何节点，则输出 1，否则输出 -1。
+>
+> ![](/image/kama_105.png)
+
+```{python}
+
+```
