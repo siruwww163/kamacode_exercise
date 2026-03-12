@@ -102,13 +102,21 @@ website:
             text: Day 46
           - href: note/day47.qmd
             text: Day 47
-          - href: note/day48.qmd
-            text: Day 48
           - href: note/day49.qmd
             text: Day 49
           - href: note/day50.qmd
             text: Day 50
-
+      - text: "Note 41 - 50"
+        menu:
+          - href: note/day51.qmd
+            text: Day 51
+          - href: note/day52.qmd
+            text: Day 52
+          - href: note/day53.qmd
+            text: Day 53
+          - href: note/day54.qmd
+            text: Day 54
+          
 format:
   html:
     theme: cosmo
