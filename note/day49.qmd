@@ -1,5 +1,5 @@
 ---
-title: "算法训练营Day 49 - 图论 02"
+title: "算法训练营Day 49 - 图论 01"
 author: "Siru Wu"
 date: today
 format: 
@@ -7,221 +7,63 @@ format:
     embed-resources: true
 ---
 
-## [99. 计数孤岛](https://kamacoder.com/problempage.php?pid=1171)
+## [98. 所有可达路径](https://kamacoder.com/problempage.php?pid=1170)
 
 > **题目描述**
 > 
-> 给定一个由 1（陆地）和 0（水）组成的矩阵，你需要计算岛屿的数量。岛屿由水平方向或垂直方向上相邻的陆地连接而成，并且四周都是水域。你可以假设矩阵外均被水包围。
+> 给定一个有 n 个节点的有向无环图，节点编号从 1 到 n。请编写一个函数，找出并返回所有从节点 1 到节点 n 的路径。每条路径应以节点编号的列表形式表示。
 > 
 > **输入描述**
+> 第一行包含两个整数 N，M，表示图中拥有 N 个节点，M 条边
 > 
-> 第一行包含两个整数 N, M，表示矩阵的行数和列数。
-> 
-> 后续 N 行，每行包含 M 个数字，数字为 1 或者 0。
+> 后续 M 行，每行包含两个整数 s 和 t，表示图中的 s 节点与 t 节点中有一条路径
 > 
 > **输出描述**
 > 
-> 输出一个整数，表示岛屿的数量。如果不存在岛屿，则输出 0。
+> 输出所有的可达路径，路径中所有节点之间空格隔开，每条路径独占一行，存在多条路径，路径输出的顺序可任意。如果不存在任何一条路径，则输出 -1。
+> 
+> 注意输出的序列中，最后一个节点后面没有空格！ 例如正确的答案是 `1 3 5`,而不是 `1 3 5 `， 5后面没有空格！
 >
-> ![](/image/kama_99.png)
-
-### DFS
-
-```{python}
-# 右边：(x, y+1)
-# 下边：(x+1, y)
-# 左边：(x, y-1)
-# 上边：(x-1, y)
-
-direction = [[0, 1], [1, 0], [0, -1], [-1, 0]]  # 四个方向：上、右、下、左
-
-def dfs(grid, visited, x, y):
-    for i, j in direction:
-        next_x = x + i
-        next_y = y + j
-        if next_x < 0 or next_x >= len(grid) or next_y < 0 or next_y >= len(grid[0]):
-            continue
-
-        # 未访问的陆地，标记并调用深度优先搜索
-        if not visited[next_x][next_y] and grid[next_x][next_y] == 1:
-            visited[next_x][next_y] = True
-            dfs(grid, visited, next_x, next_y)
-
-if __name__ == "__main__":
-    n, m = map(int, input().split())
-
-    grid = []
-    for i in range(n):
-        grid.append(list(map(int, input().split())))
-
-    visited = [[False] * m for _ in range(n)]
-
-    res = 0
-    for i in range(n):
-        for j in range(m):
-            # 判断：如果当前节点是陆地，res+1并标记访问该节点，使用深度搜索标记相邻陆地。
-            if grid[i][j] == 1 and not visited[i][j]:
-                res += 1
-                visited[i][j] = True
-                dfs(grid, visited, i, j)
-    print(res)
-```
-
-### BFS
-
-```{python}
-# function numIslands(grid):
-
-#     n = grid 的行数
-#     m = grid 的列数
-
-#     visited = n × m 的布尔数组，全部初始化为 False
-
-#     res = 0
-
-#     for i 从 0 到 n-1:
-#         for j 从 0 到 m-1:
-
-#             if grid[i][j] == 1 且 visited[i][j] == False:
-
-#                 res = res + 1
-
-#                 BFS(grid, visited, i, j)
-
-#     return res
-
-# =========================================================
-
-# function BFS(grid, visited, x, y):
-
-#     创建队列 queue
-
-#     queue.push((x,y))
-
-#     visited[x][y] = True
-
-#     while queue 不为空:
-
-#         (cur_x, cur_y) = queue.pop()
-
-#         for 每个方向 (dx,dy) in [(0,1),(1,0),(0,-1),(-1,0)]:
-
-#             next_x = cur_x + dx
-#             next_y = cur_y + dy
-
-#             如果 next_x 或 next_y 越界:
-#                 continue
-
-#             如果 grid[next_x][next_y] == 1 且 visited[next_x][next_y] == False:
-
-#                 visited[next_x][next_y] = True
-
-#                 queue.push((next_x,next_y))
-from collections import deque
-
-directions = [[0, 1], [1, 0], [0, -1], [-1, 0]]
-
-def bfs(grid, visited, x, y):
-    que = deque([])
-    que.append([x, y])
-    visited[x][y] = True
-    while que:
-        cur_x, cur_y = que.popleft()
-        for i, j in directions:
-            next_x = cur_x + i
-            next_y = cur_y + j
-            if next_y < 0 or next_x < 0 or next_x >= len(grid) or next_y >= len(grid[0]):
-                continue
-            if not visited[next_x][next_y] and grid[next_x][next_y] == 1:
-                visited[next_x][next_y] = True
-                que.append([next_x, next_y])
-
-
-    
-def main():
-    grid = []
-    n, m = map(int, input().split())
-
-    for i in range(n):
-        grid.append(list(map(int, input().split())))
-    
-    visited = [[False] * m for _ in range(n)]
-    res = 0
-
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 1 and visited[i][j] == False:
-                res += 1
-                bfs(grid, visited, i, j)
-    print(res)
-
-if __name__ == "__main__":
-    main()
-```
-
-## [100. 岛屿的最大面积](https://kamacoder.com/problempage.php?pid=1172)
-
-> **题目描述**
-> 
-> 给定一个由 1（陆地）和 0（水）组成的矩阵，计算岛屿的最大面积。岛屿面积的计算方式为组成岛屿的陆地的总数。岛屿由水平方向或垂直方向上相邻的陆地连接而成，并且四周都是水域。你可以假设矩阵外均被水包围。
-> 
-> **输入描述**
-> 
-> 第一行包含两个整数 N, M，表示矩阵的行数和列数。后续 N 行，每行包含 M 个数字，数字为 1 或者 0，表示岛屿的单元格。
-> 
-> **输出描述**
-> 
-> 输出一个整数，表示岛屿的最大面积。如果不存在岛屿，则输出 0。
+> ![](/image/kama_98_1.png)
 >
-> ![](/image/kama_100.png)
-
-
-### BFS
+> ![](/image/kama_98_2.png)
 
 ```{python}
-from collections import deque
+def dfs(graph, x, n, path, result):
+    # 参数	  含义
+    # graph	  邻接矩阵表示的图
+    # x	      当前所在节点
+    # n	      标节点
+    # path	  当前路径
+    # result  所有路径结果
 
-directions = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+    if x == n:
+        result.append(path.copy())
+        return
+    for i in range(1, n + 1):
+        if graph[x][i] == 1:
+            path.append(i)
+            dfs(graph, i, n, path, result)
+            path.pop()
 
-def bfs(grid, visited, x, y):
-    que = deque() # que = deque([])
-    que.append((x, y)) # que.append([x, y])
-    visited[x][y] = True
-    area = 1
-
-    while que:
-        cur_x, cur_y = que.popleft()
-        for i, j in directions:
-            next_x = cur_x + i
-            next_y = cur_y + j
-
-            if next_x < 0 or next_y < 0 or next_x >= len(grid) or next_y >= len(grid[0]):
-                continue
-
-            if not visited[next_x][next_y] and grid[next_x][next_y] == 1:
-                visited[next_x][next_y] = True
-                que.append((next_x, next_y))
-                area += 1
-    return area
 
 def main():
-    n, m = map(int, input().split())
+    n, m  = map(int, input().split())
+    graph = [[0] * (n + 1) for _ in range(n + 1)]
 
-    grid = []
-    for i in range(n):
-        grid.append(list(map(int, input().split())))
+    for _ in range(m):
+        s, t = map(int, input().split())
+        graph[s][t] = 1
 
-    visited = [[False] * m for _ in range(n)]
-    
-    max_area = 0
+    result = []
+    # 第一次调用 DFS 时，x和path都是1
+    dfs(graph, 1, n, [1], result)
 
-    for i in range(n):
-        for j in range(m):
-            if not visited[i][j] and grid[i][j] == 1:
-                cur_area = bfs(grid, visited, i, j)
-                max_area = max(cur_area, max_area)
-    
-    print(max_area)
+    if not result:
+        print(-1)
+    else:
+        for path in result:
+            print(' '.join (map(str, path)))
 
 if __name__ == "__main__":
     main()
