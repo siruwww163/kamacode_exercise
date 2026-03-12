@@ -177,5 +177,150 @@ if __name__ == "__main__":
 > ![](/image/kama_103.png)
 
 ```{python}
+directions = [[-1, 0], [0, 1], [1, 0], [0, -1]]
+first = set()
+second = set()
 
+def dfs(i, j, grid, visited, side):
+    if visited[i][j]:
+        return
+
+    visited[i][j] = True
+    side.add((i, j)) # 把坐标 (i, j) 加入到集合 side 里面
+
+    for x, y in directions:
+        next_x = x + i
+        next_y = y + j
+
+        if (
+            0 <= next_y < len(grid[0])
+            and 0 <= next_x < len(grid)
+            and int(grid[next_x][next_y]) >= int(grid[i][j])
+            ):
+            dfs(next_x, next_y, grid, visited, side)
+
+def main():
+    global first
+    global second
+    n, m = map(int, input().split())
+
+    grid = []
+
+    for _ in range(n):
+        grid.append(list(map(int, input().split())))
+
+    # 是否可到达第一边界
+    visited = [[False] * m for _ in range(n)]
+    # first = 上边界 + 左边界
+    for i in range(n):
+        dfs(i, 0, grid, visited, first)
+    for i in range(m):
+        dfs(0, i, grid, visited, first)
+
+    # 是否可到达第二边界
+    visited = [[False] * m for _ in range(n)]
+    for i in range(m):
+        dfs(n - 1, i, grid, visited, second)
+    for i in range(n):
+        dfs(i, m - 1, grid, visited, second)
+    
+
+    res = first & second
+
+    for x, y in res:
+        print(f"{x} {y}")
+
+if __name__ == "__main__":
+    main()
+```
+
+## [104.建造最大岛屿](https://kamacoder.com/problempage.php?pid=1176)
+
+> **题目描述**
+> 
+> 给定一个由 1（陆地）和 0（水）组成的矩阵，你最多可以将矩阵中的一格水变为一块陆地，在执行了此操作之后，矩阵中最大的岛屿面积是多少。
+> 
+> 岛屿面积的计算方式为组成岛屿的陆地的总数。岛屿是被水包围，并且通过水平方向或垂直方向上相邻的陆地连接而成的。你可以假设矩阵外均被水包围。
+> 
+> **输入描述**
+> 
+> 第一行包含两个整数 N, M，表示矩阵的行数和列数。之后 N 行，每行包含 M 个数字，数字为 1 或者 0，表示岛屿的单元格。
+> 
+> **输出描述**
+> 
+> 输出一个整数，表示最大的岛屿面积。
+>
+> ![](/image/kama_104.png)
+
+```{python}
+import collections
+
+directions = [[-1, 0], [0, 1], [0, -1], [1, 0]]
+area = 0
+
+def dfs(i, j, grid, visited, num):
+    global area
+    
+    if visited[i][j]:
+        return
+
+    visited[i][j] = True
+    grid[i][j] = num  # 标记岛屿号码
+    area += 1
+    
+    for x, y in directions:
+        new_x = i + x
+        new_y = j + y
+        if (
+            0 <= new_x < len(grid)
+            and 0 <= new_y < len(grid[0])
+            and grid[new_x][new_y] == "1"
+        ):
+            dfs(new_x, new_y, grid, visited, num)
+    
+
+def main():
+    global area
+    
+    N, M = map(int, input().strip().split())
+    grid = []
+    for i in range(N):
+        grid.append(input().strip().split())
+    visited = [[False] * M for _ in range(N)]
+    rec = collections.defaultdict(int)
+    
+    cnt = 2
+    for i in range(N):
+        for j in range(M):
+            if grid[i][j] == "1":
+                area = 0
+                dfs(i, j, grid, visited, cnt)
+                rec[cnt] = area  # 纪录岛屿面积
+                cnt += 1
+    
+    res = 0
+    for i in range(N):
+        for j in range(M):
+            if grid[i][j] == "0":
+                max_island = 1  # 将水变为陆地，故从1开始计数
+                v = set()
+                for x, y in directions:
+                    new_x = i + x
+                    new_y = j + y
+                    if (
+                        0 <= new_x < len(grid)
+                        and 0 <= new_y < len(grid[0])
+                        and grid[new_x][new_y] != "0"
+                        and grid[new_x][new_y] not in v  # 岛屿不可重复
+                    ):
+                        max_island += rec[grid[new_x][new_y]]
+                        v.add(grid[new_x][new_y])
+                res = max(res, max_island)
+
+    if res == 0:
+        return max(rec.values())  # 无水的情况
+    return res
+    
+if __name__ == "__main__":
+    print(main())
 ```
