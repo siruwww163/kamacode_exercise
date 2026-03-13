@@ -27,14 +27,183 @@ format:
 
 
 ```{python}
+father = list()
 
+# father[u] 不一定等于 find(u)
+# 并查集（Union Find）里的结构不像普通树那样有 方向意义
+
+# def find 找到节点 u 所在集合的 root（根节点）, 同时进行路径压缩，更新 father
+def find(u): # 路径压缩, 直接把节点连到根节点
+
+    if u == father[u]:
+        return u
+    else:
+        # 原本结构: 1 → 2 → 3 → 4
+        # find(1) 后变成:
+            # 1 → 4
+            # 2 → 4
+            # 3 → 4
+            # 这样以后查找会更快
+        father[u] = find(father[u])
+        return father[u]
+
+# def is_same 用来判断两个节点是否属于同一个集合
+def is_same(u, v):
+    u = find(u)
+    v = find(v)
+    return u == v
+
+# def join 用来把两个集合合并
+def join(u, v):
+    u = find(u)
+    v = find(v)
+    if u != v:
+        father[u] = v # 把u挂到v下
+
+if __name__ == "__main__":
+    n = int(input())
+
+    # 初始化father
+    for i in range(n + 1):
+        father.append(i)
+
+    # 寻找冗余边
+    result = None
+    for i in range(n):
+        s, t = map(int, input().split())
+        if is_same(s, t):
+            result = str(s) + ' ' + str(t)
+        else:
+            join(s, t)
+    
+    print(result)
 ```
 
-## []()
+## [109. 多余的边II](https://kamacoder.com/problempage.php?pid=1182)
 
+> **题目描述**
+>
+> ![](/image/kama_109.png)
+>
+> **输入描述**
+> 
+> 第一行输入一个整数 N，表示有向图中节点和边的个数。 
+> 
+> 后续 N 行，每行输入两个整数 s 和 t，代表这是 s 节点连接并指向 t 节点的单向边
+> 
+> **输出描述**
+> 
+> 输出一条可以删除的边，若有多条边可以删除，请输出标准输入中最后出现的一条边。
+>
+> ![](/image/kama_109_output.png)
 
 ```{python}
+# 这段代码分成三块：
 
+    # 并查集基础函数
+        # find
+        # is_same
+        # join
+
+    # 辅助判断函数
+        # is_tree_after_remove_edge
+        # get_remove_edge
+
+    # 主逻辑
+        # 统计入度
+        # 判断有没有入度为 2 的节点
+        # 分情况输出答案
+
+from collections import defaultdict
+
+father = list()
+
+def find(u):
+    if u != father[u]:
+        father[u] = find(father[u])
+        return father[u]
+    else:
+        return u
+
+def is_same(u, v):
+    u = find(u)
+    v = find(v)
+    return u == v
+
+def join(u, v):
+    u = find(u)
+    v = find(v)
+    if u != v:
+        father[u] = v
+
+# 情况1：有节点入度为2：但不知道该删哪一条，于是调用：is_tree_after_remove_edge()来 测试删掉哪条边能变成树。
+
+# 这个函数的目的就是 判断：删掉某条边以后，剩下的图是不是一棵树。所以它返回的是一个 布尔值（True / False）。
+def is_tree_after_remove_edge(edges, edge, n):
+    # 初始化并查集
+    # 只有当函数里 重新赋值 father 时才需要 global father
+    global father
+    father = [i for i in range(n + 1)]
+
+    for i in range(len(edges)):
+        if i == edge:
+            continue
+
+        s, t = edges[i]
+        if is_same(s, t): # 成环，即不是有向树
+            return False
+        else:
+            join(s, t)
+    return True
+
+# 情况2：没有节点入度为2，图里有环，这时就不用试删哪条边了。直接：找到导致环的边
+def get_remove_edge(edges):
+    # 初始化并查集
+    global father
+    father = [i for i in range(n + 1)]
+
+    for s, t in edges:
+        if is_same(s, t):
+            print(s, t)
+            return 
+        else:
+            join(s, t)
+
+if __name__ == "__main__":
+    # Input
+    n = int(input())
+    edges = list()
+    in_degree = defaultdict(int)
+
+    for i in range(n):
+        s, t = map(int, input().split())
+        in_degree[t] += 1
+        edges.append([s, t])
+
+    # 寻找入度为2的边，并纪录其下标(index)
+    vec = list()
+
+    # 如果有多个答案，返回输入顺序靠后的那条边。所以倒着找，vec[0] 就是后出现的那条边，vec[1] 是前出现的那条边。
+    for i in range(n - 1, -1, -1): 
+        if in_degree[edges[i][1]] == 2:
+            vec.append(i)
+
+    # vec[0] 是后出现的那条边
+    # vec[1] 是前出现的那条边
+
+    # 输出
+    if len(vec) > 0:
+
+        # 情况一：删除输出顺序靠后的边, 看看剩下的图是不是一棵树
+        if is_tree_after_remove_edge(edges, vec[0], n):
+            print(edges[vec[0]][0], edges[vec[0]][1])
+        else:
+            print(edges[vec[1]][0], edges[vec[1]][1])
+
+        # 情况二：只能删除特定的边
+        # 删后面的边仍然有问题（比如还有环），那就只能删 前面的那条边
+    else: # 情况三： 原图有环
+        get_remove_edge(edges)
 ```
 
 
