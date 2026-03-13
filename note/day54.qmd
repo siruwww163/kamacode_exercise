@@ -1,0 +1,40 @@
+---
+title: "算法训练营Day 54 - 图论 06"
+author: "Siru Wu"
+date: today
+format: 
+  html:
+    embed-resources: true
+---
+
+## [108. 多余的边](https://kamacoder.com/problempage.php?pid=1181)
+
+> **题目描述**
+>
+> ![](/image/kama_108_question.png)
+>
+> **输入描述**
+> 
+> 第一行包含一个整数 N，表示图的节点个数和边的个数。
+> 
+> 后续 N 行，每行包含两个整数 s 和 t，表示图中 s 和 t 之间有一条边。
+> 
+> **输出描述**
+> 
+> 输出一条可以删除的边。如果有多个答案，请删除标准输入中最后出现的那条边。
+>
+> ![](/image/kama_108.png)
+
+
+```{python}
+
+```
+
+## []()
+
+
+```{python}
+
+```
+
+
