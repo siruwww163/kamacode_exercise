@@ -116,8 +116,16 @@ website:
             text: Day 53
           - href: note/day54.qmd
             text: Day 54
-          - href: note/day55.qmd
-            text: Day 55
+          - href: note/day56.qmd
+            text: Day 56
+          - href: note/day57.qmd
+            text: Day 57
+          - href: note/day58.qmd
+            text: Day 58
+          - href: note/day59.qmd
+            text: Day 59
+          - href: note/day60.qmd
+            text: Day 60
 
           
 format:
