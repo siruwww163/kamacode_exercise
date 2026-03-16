@@ -7,6 +7,10 @@ format:
     embed-resources: true
 ---
 
+**Kruskal 与 prim 的关键区别在于，prim维护的是节点的集合，而 Kruskal 维护的是边的集合。**
+
+**如果 一个图中，节点多，但边相对较少，那么使用Kruskal 更优。**
+
 ## [53. 寻宝](https://kamacoder.com/problempage.php?pid=1053)
 
 > **题目描述**
@@ -30,6 +34,8 @@ format:
 > ![](/image/kama_53.png)
 >
 > ![](/image/kama_53_1.png)
+
+### Prim 算法 (维护节点的集合)
 
 ```{python}
 v, e = list(map(int, input().split()))
@@ -73,11 +79,64 @@ for i in range(2, v + 1):
 print(ans)
 ```
 
-## []()
-
->
-
+### kruskal 算法 (维护边的集合)
 
 ```{python}
+class Edge:
+    def __init__(self, l, r, val):
+        self.l = l
+        self.r = r
+        self.val = val
 
+n = 10001
+father = list(range(n))
+
+def init():
+    global father
+    father = list(range(n))
+
+def find(u):
+    if u != father[u]:
+        father[u] = find(father[u])
+    return father[u]
+
+def join(u, v):
+    u = find(u)
+    v = find(v)
+    if u != v:
+        father[v] = u
+
+def kruskal(v, edges):
+    edges.sort(key=lambda edge: edge.val)
+    init()
+    result_val = 0
+
+    for edge in edges: # edge 是 Edge(l, r, val)
+        x = find(edge.l)
+        y = find(edge.r)
+        if x != y:
+            result_val += edge.val
+            join(x, y)
+
+    return result_val
+
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+
+    v = int(data[0])
+    e = int(data[1])
+
+    edges = []
+    index = 2
+    for _ in range(e):
+        v1 = int(data[index])
+        v2 = int(data[index + 1])
+        val = int(data[index + 2])
+        edges.append(Edge(v1, v2, val))
+        index += 3
+
+    result_val = kruskal(v, edges)
+    print(result_val)
 ```
