@@ -1,0 +1,137 @@
+---
+title: "算法训练营Day 58 - 图论 09"
+author: "Siru Wu"
+date: today
+format: 
+  html:
+    embed-resources: true
+---
+
+## [47. 参加科学大会](https://kamacoder.com/problempage.php?pid=1047)
+
+> **题目描述**
+> 
+> 小明是一位科学家，他需要参加一场重要的国际科学大会，以展示自己的最新研究成果。
+> 
+> 小明的起点是第一个车站，终点是最后一个车站。然而，途中的各个车站之间的道路状况、交通拥堵程度以及可能的自然因素（如天气变化）等不同，这些因素都会影响每条路径的通行时间。
+> 
+> 小明希望能选择一条花费时间最少的路线，以确保他能够尽快到达目的地。
+> 
+> **输入描述**
+> 
+> 第一行包含两个正整数，第一个正整数 N 表示一共有 N 个公共汽车站，第二个正整数 M 表示有 M 条公路。 
+> 
+> 接下来为 M 行，每行包括三个整数，S、E 和 V，代表了从 S 车站可以单向直达 E 车站，并且需要花费 V 单位的时间。
+> 
+> **输出描述**
+> 
+> 输出一个整数，代表小明从起点到终点所花费的最小时间。
+>
+> ![](/image/kama_47_image.png)
+>
+> ![](/image/kama_47.png)
+
+### dijkstra（堆优化版）
+
+```{python}
+import heapq
+
+class Edge:
+    def __init__(self, to, val):
+        self.to = to
+        self.val = val
+
+def dijkstra(n, m, edges, start, end):
+    grid = [[] for _ in range(n + 1)]
+
+    for p1, p2, val in edges:
+        grid[p1].append(Edge(p2, val))
+
+    minDist = [float('inf')] * (n + 1)
+    visited = [False] * (n + 1)
+
+    pq = []
+    heapq.heappush(pq, (0, start))
+    minDist[start] = 0
+
+    while pq:
+        cur_dist, cur_node = heapq.heappop(pq)
+
+        if visited[cur_node]:
+            continue
+
+        visited[cur_node] = True
+
+        for edge in grid[cur_node]:
+            if not visited[edge.to] and cur_dist + edge.val < minDist[edge.to]:
+                minDist[edge.to] = cur_dist + edge.val
+                heapq.heappush(pq, (minDist[edge.to], edge.to))
+
+    return -1 if minDist[end] == float('inf') else minDist[end]
+
+# 输入
+n, m = map(int, input().split())
+edges = [tuple(map(int, input().split())) for _ in range(m)]
+start = 1  # 起点
+end = n    # 终点
+
+# 运行算法并输出结果
+result = dijkstra(n, m, edges, start, end)
+print(result)
+```
+
+## [94. 城市间货物运输 I](https://kamacoder.com/problempage.php?pid=1152)
+
+> **题目描述**
+> 
+> 某国为促进城市间经济交流，决定对货物运输提供补贴。共有 n 个编号为 1 到 n 的城市，通过道路网络连接，网络中的道路仅允许从某个城市单向通行到另一个城市，不能反向通行。
+> 
+> 网络中的道路都有各自的运输成本和政府补贴，道路的权值计算方式为：运输成本 - 政府补贴。权值为正表示扣除了政府补贴后运输货物仍需支付的费用；权值为负则表示政府的补贴超过了支出的运输成本，实际表现为运输过程中还能赚取一定的收益。
+> 
+> 请找出从城市 1 到城市 n 的所有可能路径中，综合政府补贴后的最低运输成本。如果最低运输成本是一个负数，它表示在遵循最优路径的情况下，运输过程中反而能够实现盈利。
+> 
+> 城市 1 到城市 n 之间可能会出现没有路径的情况，同时保证道路网络中不存在任何负权回路。
+> 
+> **输入描述**
+> 
+> 第一行包含两个正整数，第一个正整数 n 表示该国一共有 n 个城市，第二个整数 m 表示这些城市中共有 m 条道路。 
+> 
+> 接下来为 m 行，每行包括三个整数，s、t 和 v，表示 s 号城市运输货物到达 t 号城市，道路权值为 v （单向图）。
+> 
+> **输出描述**
+> 
+> 如果能够从城市 1 到连通到城市 n， 请输出一个整数，表示运输成本。如果该整数是负数，则表示实现了盈利。如果从城市 1 没有路径可达城市 n，请输出 "unconnected"。
+>
+> ![](/image/kama_94.png)
+>
+> ![](/image/kama_94_2.png)
+
+```{python}
+def main():
+    n, m = map(int, input().split())
+    edges = []
+
+    for _ in range(m):
+        src, dest, weight = map(int, input().strip().split())
+        edges.append([src, dest, weight])
+
+    minDist = [float('inf')] * (n + 1)
+    minDist[1] = 0
+
+    for i in range(1, n): # 一共只有 n - 1条边
+        updated = False
+        for src, dest, weight in edges:
+            if minDist[src] != float('inf') and minDist[src] + weight < minDist[dest]:
+                minDist[dest] = minDist[src] + weight
+                updated = True
+
+        if not updated:
+            break
+
+    if minDist[-1] == float('inf'):
+        return "unconnected"
+    return minDist[-1]
+    
+if __name__ == "__main__":
+    print(main())
+```
