@@ -51,7 +51,7 @@ format:
 
 **游戏开发、地图导航、数据包路**由等都广泛使用 **A * 算法**。
 
-## [97. 小明逛公园]()
+## [97. 小明逛公园](https://kamacoder.com/problempage.php?pid=1155)
 
 > **题目描述**
 > 
@@ -78,7 +78,32 @@ format:
 > ![](/image/kama_97.png)
 
 ```{python}
+if __name__ == '__main__':
+    max_int = 10005  # 设置最大路径，因为边最大距离为10^4
 
+    n, m = map(int, input().split())
+
+    grid = [[max_int]*(n+1) for _ in range(n+1)]  # 初始化二维dp数组
+
+    for _ in range(m):
+        p1, p2, val = map(int, input().split())
+        grid[p1][p2] = val
+        grid[p2][p1] = val
+
+    # 开始floyd
+    for k in range(1, n+1):
+        for i in range(1, n+1):
+            for j in range(1, n+1):
+                grid[i][j] = min(grid[i][j], grid[i][k] + grid[k][j])
+
+    # 输出结果
+    z = int(input())
+    for _ in range(z):
+        start, end = map(int, input().split())
+        if grid[start][end] == max_int:
+            print(-1)
+        else:
+            print(grid[start][end])
 ```
 
 ## [127. 骑士的攻击](https://kamacoder.com/problempage.php?pid=1203)
@@ -100,6 +125,36 @@ format:
 > 输出共 n 行，每行输出一个整数，表示骑士从起点到目标点的最短路径长度。
 
 ```{python}
+import heapq
 
+n = int(input())
+
+moves = [(1, 2), (2, 1), (-1, 2), (2, -1), (1, -2), (-2, 1), (-1, -2), (-2, -1)]
+
+def distance(a, b):
+    return ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2) ** 0.5
+
+def bfs(start, end):
+    q = [(distance(start, end), start)]
+    step = {start: 0}
+
+    while q:
+        d, cur = heapq.heappop(q)
+        if cur ==  end:
+            return step[cur]
+
+        for move in moves:
+            new = (move[0] + cur[0], move[1] + cur[1])
+            if 1 <= new[0] <= 1000 and 1 <= new[1] <= 1000:
+                step_new = step[cur] + 1
+                if step_new < step.get(new, float('inf')):
+                    step[new] = step_new
+                    heapq.heappush(q, (distance(new, end) + step_new, new))
+    return False
+
+
+for _ in range(n):
+    a1, a2, b1, b2 = map(int, input().split())
+    print(bfs((a1, a2), (b1, b2)))
 ```
 
