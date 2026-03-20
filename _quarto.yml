@@ -126,6 +126,8 @@ website:
             text: Day 59
           - href: note/day60.qmd
             text: Day 60
+          - href: note/day61_summary.qmd
+            text: Day 61 Summary
 
           
 format:
